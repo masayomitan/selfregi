@@ -1,0 +1,6 @@
+/backend/docekr/mysql/data/*
+/backend/docekr/mysql/sql/*
+
+/public/img
+/node_modules
+.env
