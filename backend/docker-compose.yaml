@@ -10,23 +10,23 @@ services:
     ports:
       - 8000:8000
     volumes:
-      - .:/go/src/app
+      - .:/usr/src/app
     environment:
       - TZ=Asia/Tokyo
 
-  mysql:
-    image: mysql:8.0
-    container_name: selfregi-db
-    ports:
-        - 3306:3306
-    build:
-      context: .
-      dockerfile: docker/mysql/Dockerfile
-    environment:
-      - MYSQL_ROOT_PASSWORD
-      - MYSQL_DATABASE
-      - MYSQL_USER
-      - MYSQL_PASSWORD
-    volumes:
-        - ./docker/mysql/data:/var/lib/mysql
-        - ./docker/config/my.conf:/etc/mysql/conf.d/my.cnf
+  # mysql:
+  #   image: mysql:8.0
+  #   container_name: selfregi-db
+  #   ports:
+  #       - 3306:3306
+  #   build:
+  #     context: .
+  #     dockerfile: docker/mysql/Dockerfile
+  #   environment:
+  #     - MYSQL_ROOT_PASSWORD
+  #     - MYSQL_DATABASE
+  #     - MYSQL_USER
+  #     - MYSQL_PASSWORD
+  #   volumes:
+  #       - ./docker/mysql/data:/var/lib/mysql
+  #       - ./docker/config/my.conf:/etc/mysql/conf.d/my.cnf
