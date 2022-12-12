@@ -17,6 +17,9 @@ type AccountDetail struct {
 // Fields of the AccountDetail.
 func (AccountDetail) Fields() []ent.Field {
 	return []ent.Field{
+		field.Int("account_id").
+			Positive().
+			Optional(),
 		field.Int("visitor_id").
       Positive().
 			Optional(),
@@ -37,6 +40,10 @@ func (AccountDetail) Fields() []ent.Field {
 		field.Int("tax").
 			Nillable(),
 		field.Int("tax_rate").
+			Nillable(),
+		field.Int("discount_id").
+			Positive().
+			Optional().
 			Nillable(),
 		field.String("discount_name").
 			Nillable(),
@@ -64,7 +71,11 @@ func (AccountDetail) Fields() []ent.Field {
 // Edges of the AccountDetail.
 func (AccountDetail) Edges() []ent.Edge {
 	return []ent.Edge{
-		edge.To("accounts", Account.Type).
+		edge.From("account", Account.Type).
+				Ref("account_details").
+				Unique(),
+		edge.From("item", Item.Type).
+				Ref("account_details").
 				Unique(),
 	}
 }

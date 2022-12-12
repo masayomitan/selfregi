@@ -59,8 +59,7 @@ func (Account) Fields() []ent.Field {
 // Edges of the Account.
 func (Account) Edges() []ent.Edge {
 	return []ent.Edge{
-		edge.From("account_details", AccountDetail.Type).
-				Ref("accounts"),
+		edge.To("account_details", AccountDetail.Type),
 		edge.From("visitor", Visitor.Type).
 				Ref("account").
 				Unique().

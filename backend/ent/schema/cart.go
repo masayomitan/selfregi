@@ -15,9 +15,13 @@ type Cart struct {
 }
 
 // Fields of the Cart.
-// visitor_id cart_status
 func (Cart) Fields() []ent.Field {
 	return []ent.Field{
+		field.Int("visitor_id").
+			Positive().
+			Optional(),
+		field.Uint("status").
+			Nillable(),
 		field.Time("created_at").
 			Default(time.Now),
 		field.Time("updated_at").
@@ -28,18 +32,10 @@ func (Cart) Fields() []ent.Field {
 	}
 }
 
-func (Cart) Annotations() []schema.Annotation {
-	return []schema.Annotation{
-			entproto.Message(),
-	}
-}
-
 // Edges of the Cart.
 func (Cart) Edges() []ent.Edge {
 	return []ent.Edge{
-		edge.From("cart_details", CartDetail.Type).
-				Ref("carts").
-				Annotations(entproto.Field(5)),
+		edge.To("cart_details", CartDetail.Type),
 		edge.From("visitor", Visitor.Type).
 				Ref("cart").
 				Unique().

@@ -2,9 +2,9 @@ package schema
 
 import (
 	"entgo.io/ent"
-	// "entgo.io/contrib/entproto"
-	// "entgo.io/ent/schema"
-	// "entgo.io/ent/schema/edge"
+	"entgo.io/ent/schema/edge"
+	"entgo.io/ent/schema/field"
+	"entgo.io/ent/dialect"
 )
 
 // Categories holds the schema definition for the Categories entity.
@@ -15,10 +15,21 @@ type Categories struct {
 
 // Fields of the Categories.
 func (Categories) Fields() []ent.Field {
-	return nil
+	return []ent.Field{
+		field.String("name").
+			SchemaType(map[string]string{
+				dialect.MySQL: "varchar(255)",
+			}),
+		field.String("path").
+			SchemaType(map[string]string{
+				dialect.MySQL: "varchar(255)",
+			}),
+	}
 }
 
 // Edges of the Categories.
 func (Categories) Edges() []ent.Edge {
-	return nil
+	return []ent.Edge{
+		edge.To("items", Item.Type),
+	}
 }
