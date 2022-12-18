@@ -7,6 +7,10 @@ const (
 	Label = "admin"
 	// FieldID holds the string denoting the id field in the database.
 	FieldID = "id"
+	// FieldName holds the string denoting the name field in the database.
+	FieldName = "name"
+	// FieldPassword holds the string denoting the password field in the database.
+	FieldPassword = "password"
 	// Table holds the table name of the admin in the database.
 	Table = "admins"
 )
@@ -14,6 +18,8 @@ const (
 // Columns holds all SQL columns for admin fields.
 var Columns = []string{
 	FieldID,
+	FieldName,
+	FieldPassword,
 }
 
 // ValidColumn reports if the column name is valid (part of the table columns).
@@ -25,3 +31,8 @@ func ValidColumn(column string) bool {
 	}
 	return false
 }
+
+var (
+	// DefaultName holds the default value on creation for the "name" field.
+	DefaultName string
+)

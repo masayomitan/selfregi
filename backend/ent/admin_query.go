@@ -249,6 +249,18 @@ func (aq *AdminQuery) Clone() *AdminQuery {
 
 // GroupBy is used to group vertices by one or more fields/columns.
 // It is often used with aggregate functions, like: count, max, mean, min, sum.
+//
+// Example:
+//
+//	var v []struct {
+//		Name string `json:"name,omitempty"`
+//		Count int `json:"count,omitempty"`
+//	}
+//
+//	client.Admin.Query().
+//		GroupBy(admin.FieldName).
+//		Aggregate(ent.Count()).
+//		Scan(ctx, &v)
 func (aq *AdminQuery) GroupBy(field string, fields ...string) *AdminGroupBy {
 	grbuild := &AdminGroupBy{config: aq.config}
 	grbuild.fields = append([]string{field}, fields...)
@@ -265,6 +277,16 @@ func (aq *AdminQuery) GroupBy(field string, fields ...string) *AdminGroupBy {
 
 // Select allows the selection one or more fields/columns for the given query,
 // instead of selecting all fields in the entity.
+//
+// Example:
+//
+//	var v []struct {
+//		Name string `json:"name,omitempty"`
+//	}
+//
+//	client.Admin.Query().
+//		Select(admin.FieldName).
+//		Scan(ctx, &v)
 func (aq *AdminQuery) Select(fields ...string) *AdminSelect {
 	aq.fields = append(aq.fields, fields...)
 	selbuild := &AdminSelect{AdminQuery: aq}

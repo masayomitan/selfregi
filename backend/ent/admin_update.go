@@ -27,6 +27,26 @@ func (au *AdminUpdate) Where(ps ...predicate.Admin) *AdminUpdate {
 	return au
 }
 
+// SetName sets the "name" field.
+func (au *AdminUpdate) SetName(s string) *AdminUpdate {
+	au.mutation.SetName(s)
+	return au
+}
+
+// SetNillableName sets the "name" field if the given value is not nil.
+func (au *AdminUpdate) SetNillableName(s *string) *AdminUpdate {
+	if s != nil {
+		au.SetName(*s)
+	}
+	return au
+}
+
+// SetPassword sets the "password" field.
+func (au *AdminUpdate) SetPassword(s string) *AdminUpdate {
+	au.mutation.SetPassword(s)
+	return au
+}
+
 // Mutation returns the AdminMutation object of the builder.
 func (au *AdminUpdate) Mutation() *AdminMutation {
 	return au.mutation
@@ -104,6 +124,12 @@ func (au *AdminUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			}
 		}
 	}
+	if value, ok := au.mutation.Name(); ok {
+		_spec.SetField(admin.FieldName, field.TypeString, value)
+	}
+	if value, ok := au.mutation.Password(); ok {
+		_spec.SetField(admin.FieldPassword, field.TypeString, value)
+	}
 	if n, err = sqlgraph.UpdateNodes(ctx, au.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{admin.Label}
@@ -121,6 +147,26 @@ type AdminUpdateOne struct {
 	fields   []string
 	hooks    []Hook
 	mutation *AdminMutation
+}
+
+// SetName sets the "name" field.
+func (auo *AdminUpdateOne) SetName(s string) *AdminUpdateOne {
+	auo.mutation.SetName(s)
+	return auo
+}
+
+// SetNillableName sets the "name" field if the given value is not nil.
+func (auo *AdminUpdateOne) SetNillableName(s *string) *AdminUpdateOne {
+	if s != nil {
+		auo.SetName(*s)
+	}
+	return auo
+}
+
+// SetPassword sets the "password" field.
+func (auo *AdminUpdateOne) SetPassword(s string) *AdminUpdateOne {
+	auo.mutation.SetPassword(s)
+	return auo
 }
 
 // Mutation returns the AdminMutation object of the builder.
@@ -229,6 +275,12 @@ func (auo *AdminUpdateOne) sqlSave(ctx context.Context) (_node *Admin, err error
 				ps[i](selector)
 			}
 		}
+	}
+	if value, ok := auo.mutation.Name(); ok {
+		_spec.SetField(admin.FieldName, field.TypeString, value)
+	}
+	if value, ok := auo.mutation.Password(); ok {
+		_spec.SetField(admin.FieldPassword, field.TypeString, value)
 	}
 	_node = &Admin{config: auo.config}
 	_spec.Assign = _node.assignValues

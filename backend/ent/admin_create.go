@@ -4,6 +4,7 @@ package ent
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"selfregi/ent/admin"
 
@@ -18,6 +19,26 @@ type AdminCreate struct {
 	hooks    []Hook
 }
 
+// SetName sets the "name" field.
+func (ac *AdminCreate) SetName(s string) *AdminCreate {
+	ac.mutation.SetName(s)
+	return ac
+}
+
+// SetNillableName sets the "name" field if the given value is not nil.
+func (ac *AdminCreate) SetNillableName(s *string) *AdminCreate {
+	if s != nil {
+		ac.SetName(*s)
+	}
+	return ac
+}
+
+// SetPassword sets the "password" field.
+func (ac *AdminCreate) SetPassword(s string) *AdminCreate {
+	ac.mutation.SetPassword(s)
+	return ac
+}
+
 // Mutation returns the AdminMutation object of the builder.
 func (ac *AdminCreate) Mutation() *AdminMutation {
 	return ac.mutation
@@ -29,6 +50,7 @@ func (ac *AdminCreate) Save(ctx context.Context) (*Admin, error) {
 		err  error
 		node *Admin
 	)
+	ac.defaults()
 	if len(ac.hooks) == 0 {
 		if err = ac.check(); err != nil {
 			return nil, err
@@ -92,8 +114,22 @@ func (ac *AdminCreate) ExecX(ctx context.Context) {
 	}
 }
 
+// defaults sets the default values of the builder before save.
+func (ac *AdminCreate) defaults() {
+	if _, ok := ac.mutation.Name(); !ok {
+		v := admin.DefaultName
+		ac.mutation.SetName(v)
+	}
+}
+
 // check runs all checks and user-defined validators on the builder.
 func (ac *AdminCreate) check() error {
+	if _, ok := ac.mutation.Name(); !ok {
+		return &ValidationError{Name: "name", err: errors.New(`ent: missing required field "Admin.name"`)}
+	}
+	if _, ok := ac.mutation.Password(); !ok {
+		return &ValidationError{Name: "password", err: errors.New(`ent: missing required field "Admin.password"`)}
+	}
 	return nil
 }
 
@@ -121,6 +157,14 @@ func (ac *AdminCreate) createSpec() (*Admin, *sqlgraph.CreateSpec) {
 			},
 		}
 	)
+	if value, ok := ac.mutation.Name(); ok {
+		_spec.SetField(admin.FieldName, field.TypeString, value)
+		_node.Name = value
+	}
+	if value, ok := ac.mutation.Password(); ok {
+		_spec.SetField(admin.FieldPassword, field.TypeString, value)
+		_node.Password = &value
+	}
 	return _node, _spec
 }
 
@@ -138,6 +182,7 @@ func (acb *AdminCreateBulk) Save(ctx context.Context) ([]*Admin, error) {
 	for i := range acb.builders {
 		func(i int, root context.Context) {
 			builder := acb.builders[i]
+			builder.defaults()
 			var mut Mutator = MutateFunc(func(ctx context.Context, m Mutation) (Value, error) {
 				mutation, ok := m.(*AdminMutation)
 				if !ok {

@@ -12,9 +12,13 @@ import (
 
 // Admin is the model entity for the Admin schema.
 type Admin struct {
-	config
+	config `json:"-"`
 	// ID of the ent.
 	ID int `json:"id,omitempty"`
+	// Name holds the value of the "name" field.
+	Name string `json:"name,omitempty"`
+	// Password holds the value of the "password" field.
+	Password *string `json:"password,omitempty"`
 }
 
 // scanValues returns the types for scanning values from sql.Rows.
@@ -24,6 +28,8 @@ func (*Admin) scanValues(columns []string) ([]any, error) {
 		switch columns[i] {
 		case admin.FieldID:
 			values[i] = new(sql.NullInt64)
+		case admin.FieldName, admin.FieldPassword:
+			values[i] = new(sql.NullString)
 		default:
 			return nil, fmt.Errorf("unexpected column %q for type Admin", columns[i])
 		}
@@ -45,6 +51,19 @@ func (a *Admin) assignValues(columns []string, values []any) error {
 				return fmt.Errorf("unexpected type %T for field id", value)
 			}
 			a.ID = int(value.Int64)
+		case admin.FieldName:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field name", values[i])
+			} else if value.Valid {
+				a.Name = value.String
+			}
+		case admin.FieldPassword:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field password", values[i])
+			} else if value.Valid {
+				a.Password = new(string)
+				*a.Password = value.String
+			}
 		}
 	}
 	return nil
@@ -72,7 +91,14 @@ func (a *Admin) Unwrap() *Admin {
 func (a *Admin) String() string {
 	var builder strings.Builder
 	builder.WriteString("Admin(")
-	builder.WriteString(fmt.Sprintf("id=%v", a.ID))
+	builder.WriteString(fmt.Sprintf("id=%v, ", a.ID))
+	builder.WriteString("name=")
+	builder.WriteString(a.Name)
+	builder.WriteString(", ")
+	if v := a.Password; v != nil {
+		builder.WriteString("password=")
+		builder.WriteString(*v)
+	}
 	builder.WriteByte(')')
 	return builder.String()
 }
