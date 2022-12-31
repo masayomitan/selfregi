@@ -6,7 +6,6 @@ import (
 	"entgo.io/ent/schema/field"
 	"github.com/shopspring/decimal"
 	"entgo.io/ent/schema/edge"
-	"time"
 )
 
 // Account holds the schema definition for the Account entity.
@@ -45,24 +44,22 @@ func (Account) Fields() []ent.Field {
 			Nillable(),
 		field.Int("change").
 			Nillable(),
-
-		field.Time("created_at").
-			Default(time.Now),
-		field.Time("updated_at").
-			Default(time.Now).
-			UpdateDefault(time.Now),
-		field.Time("deleted_at").
-			Nillable(),
 	}
 }
 
 // Edges of the Account.
 func (Account) Edges() []ent.Edge {
 	return []ent.Edge{
-		edge.To("account_details", AccountDetail.Type),
-		edge.From("visitor", Visitor.Type).
-				Ref("account").
-				Unique().
-				Required(),
+		edge.To("managed_account_details", AccountDetail.Type),
+		edge.From("owner", Visitor.Type).
+			Ref("managed_accounts").
+			Unique().
+			Required(),
+	}
+}
+
+func (Account) Mixin() []ent.Mixin {
+	return []ent.Mixin{
+		TimeStamp{},
 	}
 }

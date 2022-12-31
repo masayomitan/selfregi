@@ -30,6 +30,32 @@ func (cu *CartUpdate) Where(ps ...predicate.Cart) *CartUpdate {
 	return cu
 }
 
+// SetUpdatedAt sets the "updated_at" field.
+func (cu *CartUpdate) SetUpdatedAt(t time.Time) *CartUpdate {
+	cu.mutation.SetUpdatedAt(t)
+	return cu
+}
+
+// SetDeletedAt sets the "deleted_at" field.
+func (cu *CartUpdate) SetDeletedAt(t time.Time) *CartUpdate {
+	cu.mutation.SetDeletedAt(t)
+	return cu
+}
+
+// SetNillableDeletedAt sets the "deleted_at" field if the given value is not nil.
+func (cu *CartUpdate) SetNillableDeletedAt(t *time.Time) *CartUpdate {
+	if t != nil {
+		cu.SetDeletedAt(*t)
+	}
+	return cu
+}
+
+// ClearDeletedAt clears the value of the "deleted_at" field.
+func (cu *CartUpdate) ClearDeletedAt() *CartUpdate {
+	cu.mutation.ClearDeletedAt()
+	return cu
+}
+
 // SetVisitorID sets the "visitor_id" field.
 func (cu *CartUpdate) SetVisitorID(i int) *CartUpdate {
 	cu.mutation.ResetVisitorID()
@@ -67,32 +93,6 @@ func (cu *CartUpdate) SetStatus(u uint) *CartUpdate {
 // AddStatus adds u to the "status" field.
 func (cu *CartUpdate) AddStatus(u int) *CartUpdate {
 	cu.mutation.AddStatus(u)
-	return cu
-}
-
-// SetCreatedAt sets the "created_at" field.
-func (cu *CartUpdate) SetCreatedAt(t time.Time) *CartUpdate {
-	cu.mutation.SetCreatedAt(t)
-	return cu
-}
-
-// SetNillableCreatedAt sets the "created_at" field if the given value is not nil.
-func (cu *CartUpdate) SetNillableCreatedAt(t *time.Time) *CartUpdate {
-	if t != nil {
-		cu.SetCreatedAt(*t)
-	}
-	return cu
-}
-
-// SetUpdatedAt sets the "updated_at" field.
-func (cu *CartUpdate) SetUpdatedAt(t time.Time) *CartUpdate {
-	cu.mutation.SetUpdatedAt(t)
-	return cu
-}
-
-// SetDeletedAt sets the "deleted_at" field.
-func (cu *CartUpdate) SetDeletedAt(t time.Time) *CartUpdate {
-	cu.mutation.SetDeletedAt(t)
 	return cu
 }
 
@@ -254,6 +254,15 @@ func (cu *CartUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			}
 		}
 	}
+	if value, ok := cu.mutation.UpdatedAt(); ok {
+		_spec.SetField(cart.FieldUpdatedAt, field.TypeTime, value)
+	}
+	if value, ok := cu.mutation.DeletedAt(); ok {
+		_spec.SetField(cart.FieldDeletedAt, field.TypeTime, value)
+	}
+	if cu.mutation.DeletedAtCleared() {
+		_spec.ClearField(cart.FieldDeletedAt, field.TypeTime)
+	}
 	if value, ok := cu.mutation.VisitorID(); ok {
 		_spec.SetField(cart.FieldVisitorID, field.TypeInt, value)
 	}
@@ -268,15 +277,6 @@ func (cu *CartUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	}
 	if value, ok := cu.mutation.AddedStatus(); ok {
 		_spec.AddField(cart.FieldStatus, field.TypeUint, value)
-	}
-	if value, ok := cu.mutation.CreatedAt(); ok {
-		_spec.SetField(cart.FieldCreatedAt, field.TypeTime, value)
-	}
-	if value, ok := cu.mutation.UpdatedAt(); ok {
-		_spec.SetField(cart.FieldUpdatedAt, field.TypeTime, value)
-	}
-	if value, ok := cu.mutation.DeletedAt(); ok {
-		_spec.SetField(cart.FieldDeletedAt, field.TypeTime, value)
 	}
 	if cu.mutation.CartDetailsCleared() {
 		edge := &sqlgraph.EdgeSpec{
@@ -386,6 +386,32 @@ type CartUpdateOne struct {
 	mutation *CartMutation
 }
 
+// SetUpdatedAt sets the "updated_at" field.
+func (cuo *CartUpdateOne) SetUpdatedAt(t time.Time) *CartUpdateOne {
+	cuo.mutation.SetUpdatedAt(t)
+	return cuo
+}
+
+// SetDeletedAt sets the "deleted_at" field.
+func (cuo *CartUpdateOne) SetDeletedAt(t time.Time) *CartUpdateOne {
+	cuo.mutation.SetDeletedAt(t)
+	return cuo
+}
+
+// SetNillableDeletedAt sets the "deleted_at" field if the given value is not nil.
+func (cuo *CartUpdateOne) SetNillableDeletedAt(t *time.Time) *CartUpdateOne {
+	if t != nil {
+		cuo.SetDeletedAt(*t)
+	}
+	return cuo
+}
+
+// ClearDeletedAt clears the value of the "deleted_at" field.
+func (cuo *CartUpdateOne) ClearDeletedAt() *CartUpdateOne {
+	cuo.mutation.ClearDeletedAt()
+	return cuo
+}
+
 // SetVisitorID sets the "visitor_id" field.
 func (cuo *CartUpdateOne) SetVisitorID(i int) *CartUpdateOne {
 	cuo.mutation.ResetVisitorID()
@@ -423,32 +449,6 @@ func (cuo *CartUpdateOne) SetStatus(u uint) *CartUpdateOne {
 // AddStatus adds u to the "status" field.
 func (cuo *CartUpdateOne) AddStatus(u int) *CartUpdateOne {
 	cuo.mutation.AddStatus(u)
-	return cuo
-}
-
-// SetCreatedAt sets the "created_at" field.
-func (cuo *CartUpdateOne) SetCreatedAt(t time.Time) *CartUpdateOne {
-	cuo.mutation.SetCreatedAt(t)
-	return cuo
-}
-
-// SetNillableCreatedAt sets the "created_at" field if the given value is not nil.
-func (cuo *CartUpdateOne) SetNillableCreatedAt(t *time.Time) *CartUpdateOne {
-	if t != nil {
-		cuo.SetCreatedAt(*t)
-	}
-	return cuo
-}
-
-// SetUpdatedAt sets the "updated_at" field.
-func (cuo *CartUpdateOne) SetUpdatedAt(t time.Time) *CartUpdateOne {
-	cuo.mutation.SetUpdatedAt(t)
-	return cuo
-}
-
-// SetDeletedAt sets the "deleted_at" field.
-func (cuo *CartUpdateOne) SetDeletedAt(t time.Time) *CartUpdateOne {
-	cuo.mutation.SetDeletedAt(t)
 	return cuo
 }
 
@@ -640,6 +640,15 @@ func (cuo *CartUpdateOne) sqlSave(ctx context.Context) (_node *Cart, err error) 
 			}
 		}
 	}
+	if value, ok := cuo.mutation.UpdatedAt(); ok {
+		_spec.SetField(cart.FieldUpdatedAt, field.TypeTime, value)
+	}
+	if value, ok := cuo.mutation.DeletedAt(); ok {
+		_spec.SetField(cart.FieldDeletedAt, field.TypeTime, value)
+	}
+	if cuo.mutation.DeletedAtCleared() {
+		_spec.ClearField(cart.FieldDeletedAt, field.TypeTime)
+	}
 	if value, ok := cuo.mutation.VisitorID(); ok {
 		_spec.SetField(cart.FieldVisitorID, field.TypeInt, value)
 	}
@@ -654,15 +663,6 @@ func (cuo *CartUpdateOne) sqlSave(ctx context.Context) (_node *Cart, err error) 
 	}
 	if value, ok := cuo.mutation.AddedStatus(); ok {
 		_spec.AddField(cart.FieldStatus, field.TypeUint, value)
-	}
-	if value, ok := cuo.mutation.CreatedAt(); ok {
-		_spec.SetField(cart.FieldCreatedAt, field.TypeTime, value)
-	}
-	if value, ok := cuo.mutation.UpdatedAt(); ok {
-		_spec.SetField(cart.FieldUpdatedAt, field.TypeTime, value)
-	}
-	if value, ok := cuo.mutation.DeletedAt(); ok {
-		_spec.SetField(cart.FieldDeletedAt, field.TypeTime, value)
 	}
 	if cuo.mutation.CartDetailsCleared() {
 		edge := &sqlgraph.EdgeSpec{

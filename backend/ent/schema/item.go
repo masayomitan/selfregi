@@ -17,14 +17,24 @@ type Item struct {
 func (Item) Fields() []ent.Field {
 	return []ent.Field{
 		field.String("name").Default("unknown"),
+		field.Int("category_id"),
 	}
 }
 
 // Edges of the Item.
 func (Item) Edges() []ent.Edge {
 	return []ent.Edge{
-		edge.To("accounts", Account.Type).
-				Unique(),
 		edge.To("images", Images.Type),
+		edge.From("category", Categories.Type).
+			Ref("items").
+			Field("category_id").
+			Unique().
+			Required(),
+	}
+}
+
+func (Item) Mixin() []ent.Mixin {
+	return []ent.Mixin{
+		TimeStamp{},
 	}
 }

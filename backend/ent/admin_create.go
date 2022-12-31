@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"selfregi/ent/admin"
+	"time"
 
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
@@ -17,6 +18,48 @@ type AdminCreate struct {
 	config
 	mutation *AdminMutation
 	hooks    []Hook
+}
+
+// SetCreatedAt sets the "created_at" field.
+func (ac *AdminCreate) SetCreatedAt(t time.Time) *AdminCreate {
+	ac.mutation.SetCreatedAt(t)
+	return ac
+}
+
+// SetNillableCreatedAt sets the "created_at" field if the given value is not nil.
+func (ac *AdminCreate) SetNillableCreatedAt(t *time.Time) *AdminCreate {
+	if t != nil {
+		ac.SetCreatedAt(*t)
+	}
+	return ac
+}
+
+// SetUpdatedAt sets the "updated_at" field.
+func (ac *AdminCreate) SetUpdatedAt(t time.Time) *AdminCreate {
+	ac.mutation.SetUpdatedAt(t)
+	return ac
+}
+
+// SetNillableUpdatedAt sets the "updated_at" field if the given value is not nil.
+func (ac *AdminCreate) SetNillableUpdatedAt(t *time.Time) *AdminCreate {
+	if t != nil {
+		ac.SetUpdatedAt(*t)
+	}
+	return ac
+}
+
+// SetDeletedAt sets the "deleted_at" field.
+func (ac *AdminCreate) SetDeletedAt(t time.Time) *AdminCreate {
+	ac.mutation.SetDeletedAt(t)
+	return ac
+}
+
+// SetNillableDeletedAt sets the "deleted_at" field if the given value is not nil.
+func (ac *AdminCreate) SetNillableDeletedAt(t *time.Time) *AdminCreate {
+	if t != nil {
+		ac.SetDeletedAt(*t)
+	}
+	return ac
 }
 
 // SetName sets the "name" field.
@@ -116,6 +159,14 @@ func (ac *AdminCreate) ExecX(ctx context.Context) {
 
 // defaults sets the default values of the builder before save.
 func (ac *AdminCreate) defaults() {
+	if _, ok := ac.mutation.CreatedAt(); !ok {
+		v := admin.DefaultCreatedAt()
+		ac.mutation.SetCreatedAt(v)
+	}
+	if _, ok := ac.mutation.UpdatedAt(); !ok {
+		v := admin.DefaultUpdatedAt()
+		ac.mutation.SetUpdatedAt(v)
+	}
 	if _, ok := ac.mutation.Name(); !ok {
 		v := admin.DefaultName
 		ac.mutation.SetName(v)
@@ -124,6 +175,12 @@ func (ac *AdminCreate) defaults() {
 
 // check runs all checks and user-defined validators on the builder.
 func (ac *AdminCreate) check() error {
+	if _, ok := ac.mutation.CreatedAt(); !ok {
+		return &ValidationError{Name: "created_at", err: errors.New(`ent: missing required field "Admin.created_at"`)}
+	}
+	if _, ok := ac.mutation.UpdatedAt(); !ok {
+		return &ValidationError{Name: "updated_at", err: errors.New(`ent: missing required field "Admin.updated_at"`)}
+	}
 	if _, ok := ac.mutation.Name(); !ok {
 		return &ValidationError{Name: "name", err: errors.New(`ent: missing required field "Admin.name"`)}
 	}
@@ -157,6 +214,18 @@ func (ac *AdminCreate) createSpec() (*Admin, *sqlgraph.CreateSpec) {
 			},
 		}
 	)
+	if value, ok := ac.mutation.CreatedAt(); ok {
+		_spec.SetField(admin.FieldCreatedAt, field.TypeTime, value)
+		_node.CreatedAt = value
+	}
+	if value, ok := ac.mutation.UpdatedAt(); ok {
+		_spec.SetField(admin.FieldUpdatedAt, field.TypeTime, value)
+		_node.UpdatedAt = value
+	}
+	if value, ok := ac.mutation.DeletedAt(); ok {
+		_spec.SetField(admin.FieldDeletedAt, field.TypeTime, value)
+		_node.DeletedAt = &value
+	}
 	if value, ok := ac.mutation.Name(); ok {
 		_spec.SetField(admin.FieldName, field.TypeString, value)
 		_node.Name = value

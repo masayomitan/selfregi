@@ -8,7 +8,6 @@ import (
 )
 
 // Categories holds the schema definition for the Categories entity.
-// name 
 type Categories struct {
 	ent.Schema
 }
@@ -20,10 +19,7 @@ func (Categories) Fields() []ent.Field {
 			SchemaType(map[string]string{
 				dialect.MySQL: "varchar(255)",
 			}),
-		field.String("path").
-			SchemaType(map[string]string{
-				dialect.MySQL: "varchar(255)",
-			}),
+		field.Int("is_display"),
 	}
 }
 
@@ -31,5 +27,11 @@ func (Categories) Fields() []ent.Field {
 func (Categories) Edges() []ent.Edge {
 	return []ent.Edge{
 		edge.To("items", Item.Type),
+	}
+}
+
+func (Categories) Mixin() []ent.Mixin {
+	return []ent.Mixin{
+		TimeStamp{},
 	}
 }

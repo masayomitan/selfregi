@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"selfregi/ent/admin"
 	"selfregi/ent/predicate"
+	"time"
 
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
@@ -24,6 +25,32 @@ type AdminUpdate struct {
 // Where appends a list predicates to the AdminUpdate builder.
 func (au *AdminUpdate) Where(ps ...predicate.Admin) *AdminUpdate {
 	au.mutation.Where(ps...)
+	return au
+}
+
+// SetUpdatedAt sets the "updated_at" field.
+func (au *AdminUpdate) SetUpdatedAt(t time.Time) *AdminUpdate {
+	au.mutation.SetUpdatedAt(t)
+	return au
+}
+
+// SetDeletedAt sets the "deleted_at" field.
+func (au *AdminUpdate) SetDeletedAt(t time.Time) *AdminUpdate {
+	au.mutation.SetDeletedAt(t)
+	return au
+}
+
+// SetNillableDeletedAt sets the "deleted_at" field if the given value is not nil.
+func (au *AdminUpdate) SetNillableDeletedAt(t *time.Time) *AdminUpdate {
+	if t != nil {
+		au.SetDeletedAt(*t)
+	}
+	return au
+}
+
+// ClearDeletedAt clears the value of the "deleted_at" field.
+func (au *AdminUpdate) ClearDeletedAt() *AdminUpdate {
+	au.mutation.ClearDeletedAt()
 	return au
 }
 
@@ -58,6 +85,7 @@ func (au *AdminUpdate) Save(ctx context.Context) (int, error) {
 		err      error
 		affected int
 	)
+	au.defaults()
 	if len(au.hooks) == 0 {
 		affected, err = au.sqlSave(ctx)
 	} else {
@@ -106,6 +134,14 @@ func (au *AdminUpdate) ExecX(ctx context.Context) {
 	}
 }
 
+// defaults sets the default values of the builder before save.
+func (au *AdminUpdate) defaults() {
+	if _, ok := au.mutation.UpdatedAt(); !ok {
+		v := admin.UpdateDefaultUpdatedAt()
+		au.mutation.SetUpdatedAt(v)
+	}
+}
+
 func (au *AdminUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	_spec := &sqlgraph.UpdateSpec{
 		Node: &sqlgraph.NodeSpec{
@@ -123,6 +159,15 @@ func (au *AdminUpdate) sqlSave(ctx context.Context) (n int, err error) {
 				ps[i](selector)
 			}
 		}
+	}
+	if value, ok := au.mutation.UpdatedAt(); ok {
+		_spec.SetField(admin.FieldUpdatedAt, field.TypeTime, value)
+	}
+	if value, ok := au.mutation.DeletedAt(); ok {
+		_spec.SetField(admin.FieldDeletedAt, field.TypeTime, value)
+	}
+	if au.mutation.DeletedAtCleared() {
+		_spec.ClearField(admin.FieldDeletedAt, field.TypeTime)
 	}
 	if value, ok := au.mutation.Name(); ok {
 		_spec.SetField(admin.FieldName, field.TypeString, value)
@@ -147,6 +192,32 @@ type AdminUpdateOne struct {
 	fields   []string
 	hooks    []Hook
 	mutation *AdminMutation
+}
+
+// SetUpdatedAt sets the "updated_at" field.
+func (auo *AdminUpdateOne) SetUpdatedAt(t time.Time) *AdminUpdateOne {
+	auo.mutation.SetUpdatedAt(t)
+	return auo
+}
+
+// SetDeletedAt sets the "deleted_at" field.
+func (auo *AdminUpdateOne) SetDeletedAt(t time.Time) *AdminUpdateOne {
+	auo.mutation.SetDeletedAt(t)
+	return auo
+}
+
+// SetNillableDeletedAt sets the "deleted_at" field if the given value is not nil.
+func (auo *AdminUpdateOne) SetNillableDeletedAt(t *time.Time) *AdminUpdateOne {
+	if t != nil {
+		auo.SetDeletedAt(*t)
+	}
+	return auo
+}
+
+// ClearDeletedAt clears the value of the "deleted_at" field.
+func (auo *AdminUpdateOne) ClearDeletedAt() *AdminUpdateOne {
+	auo.mutation.ClearDeletedAt()
+	return auo
 }
 
 // SetName sets the "name" field.
@@ -187,6 +258,7 @@ func (auo *AdminUpdateOne) Save(ctx context.Context) (*Admin, error) {
 		err  error
 		node *Admin
 	)
+	auo.defaults()
 	if len(auo.hooks) == 0 {
 		node, err = auo.sqlSave(ctx)
 	} else {
@@ -241,6 +313,14 @@ func (auo *AdminUpdateOne) ExecX(ctx context.Context) {
 	}
 }
 
+// defaults sets the default values of the builder before save.
+func (auo *AdminUpdateOne) defaults() {
+	if _, ok := auo.mutation.UpdatedAt(); !ok {
+		v := admin.UpdateDefaultUpdatedAt()
+		auo.mutation.SetUpdatedAt(v)
+	}
+}
+
 func (auo *AdminUpdateOne) sqlSave(ctx context.Context) (_node *Admin, err error) {
 	_spec := &sqlgraph.UpdateSpec{
 		Node: &sqlgraph.NodeSpec{
@@ -275,6 +355,15 @@ func (auo *AdminUpdateOne) sqlSave(ctx context.Context) (_node *Admin, err error
 				ps[i](selector)
 			}
 		}
+	}
+	if value, ok := auo.mutation.UpdatedAt(); ok {
+		_spec.SetField(admin.FieldUpdatedAt, field.TypeTime, value)
+	}
+	if value, ok := auo.mutation.DeletedAt(); ok {
+		_spec.SetField(admin.FieldDeletedAt, field.TypeTime, value)
+	}
+	if auo.mutation.DeletedAtCleared() {
+		_spec.ClearField(admin.FieldDeletedAt, field.TypeTime)
 	}
 	if value, ok := auo.mutation.Name(); ok {
 		_spec.SetField(admin.FieldName, field.TypeString, value)

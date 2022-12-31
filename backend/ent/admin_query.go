@@ -253,12 +253,12 @@ func (aq *AdminQuery) Clone() *AdminQuery {
 // Example:
 //
 //	var v []struct {
-//		Name string `json:"name,omitempty"`
+//		CreatedAt time.Time `json:"created_at,omitempty"`
 //		Count int `json:"count,omitempty"`
 //	}
 //
 //	client.Admin.Query().
-//		GroupBy(admin.FieldName).
+//		GroupBy(admin.FieldCreatedAt).
 //		Aggregate(ent.Count()).
 //		Scan(ctx, &v)
 func (aq *AdminQuery) GroupBy(field string, fields ...string) *AdminGroupBy {
@@ -281,11 +281,11 @@ func (aq *AdminQuery) GroupBy(field string, fields ...string) *AdminGroupBy {
 // Example:
 //
 //	var v []struct {
-//		Name string `json:"name,omitempty"`
+//		CreatedAt time.Time `json:"created_at,omitempty"`
 //	}
 //
 //	client.Admin.Query().
-//		Select(admin.FieldName).
+//		Select(admin.FieldCreatedAt).
 //		Scan(ctx, &v)
 func (aq *AdminQuery) Select(fields ...string) *AdminSelect {
 	aq.fields = append(aq.fields, fields...)

@@ -81,20 +81,6 @@ func IDLTE(id int) predicate.Cart {
 	})
 }
 
-// VisitorID applies equality check predicate on the "visitor_id" field. It's identical to VisitorIDEQ.
-func VisitorID(v int) predicate.Cart {
-	return predicate.Cart(func(s *sql.Selector) {
-		s.Where(sql.EQ(s.C(FieldVisitorID), v))
-	})
-}
-
-// Status applies equality check predicate on the "status" field. It's identical to StatusEQ.
-func Status(v uint) predicate.Cart {
-	return predicate.Cart(func(s *sql.Selector) {
-		s.Where(sql.EQ(s.C(FieldStatus), v))
-	})
-}
-
 // CreatedAt applies equality check predicate on the "created_at" field. It's identical to CreatedAtEQ.
 func CreatedAt(v time.Time) predicate.Cart {
 	return predicate.Cart(func(s *sql.Selector) {
@@ -116,145 +102,17 @@ func DeletedAt(v time.Time) predicate.Cart {
 	})
 }
 
-// VisitorIDEQ applies the EQ predicate on the "visitor_id" field.
-func VisitorIDEQ(v int) predicate.Cart {
+// VisitorID applies equality check predicate on the "visitor_id" field. It's identical to VisitorIDEQ.
+func VisitorID(v int) predicate.Cart {
 	return predicate.Cart(func(s *sql.Selector) {
 		s.Where(sql.EQ(s.C(FieldVisitorID), v))
 	})
 }
 
-// VisitorIDNEQ applies the NEQ predicate on the "visitor_id" field.
-func VisitorIDNEQ(v int) predicate.Cart {
-	return predicate.Cart(func(s *sql.Selector) {
-		s.Where(sql.NEQ(s.C(FieldVisitorID), v))
-	})
-}
-
-// VisitorIDIn applies the In predicate on the "visitor_id" field.
-func VisitorIDIn(vs ...int) predicate.Cart {
-	v := make([]any, len(vs))
-	for i := range v {
-		v[i] = vs[i]
-	}
-	return predicate.Cart(func(s *sql.Selector) {
-		s.Where(sql.In(s.C(FieldVisitorID), v...))
-	})
-}
-
-// VisitorIDNotIn applies the NotIn predicate on the "visitor_id" field.
-func VisitorIDNotIn(vs ...int) predicate.Cart {
-	v := make([]any, len(vs))
-	for i := range v {
-		v[i] = vs[i]
-	}
-	return predicate.Cart(func(s *sql.Selector) {
-		s.Where(sql.NotIn(s.C(FieldVisitorID), v...))
-	})
-}
-
-// VisitorIDGT applies the GT predicate on the "visitor_id" field.
-func VisitorIDGT(v int) predicate.Cart {
-	return predicate.Cart(func(s *sql.Selector) {
-		s.Where(sql.GT(s.C(FieldVisitorID), v))
-	})
-}
-
-// VisitorIDGTE applies the GTE predicate on the "visitor_id" field.
-func VisitorIDGTE(v int) predicate.Cart {
-	return predicate.Cart(func(s *sql.Selector) {
-		s.Where(sql.GTE(s.C(FieldVisitorID), v))
-	})
-}
-
-// VisitorIDLT applies the LT predicate on the "visitor_id" field.
-func VisitorIDLT(v int) predicate.Cart {
-	return predicate.Cart(func(s *sql.Selector) {
-		s.Where(sql.LT(s.C(FieldVisitorID), v))
-	})
-}
-
-// VisitorIDLTE applies the LTE predicate on the "visitor_id" field.
-func VisitorIDLTE(v int) predicate.Cart {
-	return predicate.Cart(func(s *sql.Selector) {
-		s.Where(sql.LTE(s.C(FieldVisitorID), v))
-	})
-}
-
-// VisitorIDIsNil applies the IsNil predicate on the "visitor_id" field.
-func VisitorIDIsNil() predicate.Cart {
-	return predicate.Cart(func(s *sql.Selector) {
-		s.Where(sql.IsNull(s.C(FieldVisitorID)))
-	})
-}
-
-// VisitorIDNotNil applies the NotNil predicate on the "visitor_id" field.
-func VisitorIDNotNil() predicate.Cart {
-	return predicate.Cart(func(s *sql.Selector) {
-		s.Where(sql.NotNull(s.C(FieldVisitorID)))
-	})
-}
-
-// StatusEQ applies the EQ predicate on the "status" field.
-func StatusEQ(v uint) predicate.Cart {
+// Status applies equality check predicate on the "status" field. It's identical to StatusEQ.
+func Status(v uint) predicate.Cart {
 	return predicate.Cart(func(s *sql.Selector) {
 		s.Where(sql.EQ(s.C(FieldStatus), v))
-	})
-}
-
-// StatusNEQ applies the NEQ predicate on the "status" field.
-func StatusNEQ(v uint) predicate.Cart {
-	return predicate.Cart(func(s *sql.Selector) {
-		s.Where(sql.NEQ(s.C(FieldStatus), v))
-	})
-}
-
-// StatusIn applies the In predicate on the "status" field.
-func StatusIn(vs ...uint) predicate.Cart {
-	v := make([]any, len(vs))
-	for i := range v {
-		v[i] = vs[i]
-	}
-	return predicate.Cart(func(s *sql.Selector) {
-		s.Where(sql.In(s.C(FieldStatus), v...))
-	})
-}
-
-// StatusNotIn applies the NotIn predicate on the "status" field.
-func StatusNotIn(vs ...uint) predicate.Cart {
-	v := make([]any, len(vs))
-	for i := range v {
-		v[i] = vs[i]
-	}
-	return predicate.Cart(func(s *sql.Selector) {
-		s.Where(sql.NotIn(s.C(FieldStatus), v...))
-	})
-}
-
-// StatusGT applies the GT predicate on the "status" field.
-func StatusGT(v uint) predicate.Cart {
-	return predicate.Cart(func(s *sql.Selector) {
-		s.Where(sql.GT(s.C(FieldStatus), v))
-	})
-}
-
-// StatusGTE applies the GTE predicate on the "status" field.
-func StatusGTE(v uint) predicate.Cart {
-	return predicate.Cart(func(s *sql.Selector) {
-		s.Where(sql.GTE(s.C(FieldStatus), v))
-	})
-}
-
-// StatusLT applies the LT predicate on the "status" field.
-func StatusLT(v uint) predicate.Cart {
-	return predicate.Cart(func(s *sql.Selector) {
-		s.Where(sql.LT(s.C(FieldStatus), v))
-	})
-}
-
-// StatusLTE applies the LTE predicate on the "status" field.
-func StatusLTE(v uint) predicate.Cart {
-	return predicate.Cart(func(s *sql.Selector) {
-		s.Where(sql.LTE(s.C(FieldStatus), v))
 	})
 }
 
@@ -447,6 +305,162 @@ func DeletedAtLT(v time.Time) predicate.Cart {
 func DeletedAtLTE(v time.Time) predicate.Cart {
 	return predicate.Cart(func(s *sql.Selector) {
 		s.Where(sql.LTE(s.C(FieldDeletedAt), v))
+	})
+}
+
+// DeletedAtIsNil applies the IsNil predicate on the "deleted_at" field.
+func DeletedAtIsNil() predicate.Cart {
+	return predicate.Cart(func(s *sql.Selector) {
+		s.Where(sql.IsNull(s.C(FieldDeletedAt)))
+	})
+}
+
+// DeletedAtNotNil applies the NotNil predicate on the "deleted_at" field.
+func DeletedAtNotNil() predicate.Cart {
+	return predicate.Cart(func(s *sql.Selector) {
+		s.Where(sql.NotNull(s.C(FieldDeletedAt)))
+	})
+}
+
+// VisitorIDEQ applies the EQ predicate on the "visitor_id" field.
+func VisitorIDEQ(v int) predicate.Cart {
+	return predicate.Cart(func(s *sql.Selector) {
+		s.Where(sql.EQ(s.C(FieldVisitorID), v))
+	})
+}
+
+// VisitorIDNEQ applies the NEQ predicate on the "visitor_id" field.
+func VisitorIDNEQ(v int) predicate.Cart {
+	return predicate.Cart(func(s *sql.Selector) {
+		s.Where(sql.NEQ(s.C(FieldVisitorID), v))
+	})
+}
+
+// VisitorIDIn applies the In predicate on the "visitor_id" field.
+func VisitorIDIn(vs ...int) predicate.Cart {
+	v := make([]any, len(vs))
+	for i := range v {
+		v[i] = vs[i]
+	}
+	return predicate.Cart(func(s *sql.Selector) {
+		s.Where(sql.In(s.C(FieldVisitorID), v...))
+	})
+}
+
+// VisitorIDNotIn applies the NotIn predicate on the "visitor_id" field.
+func VisitorIDNotIn(vs ...int) predicate.Cart {
+	v := make([]any, len(vs))
+	for i := range v {
+		v[i] = vs[i]
+	}
+	return predicate.Cart(func(s *sql.Selector) {
+		s.Where(sql.NotIn(s.C(FieldVisitorID), v...))
+	})
+}
+
+// VisitorIDGT applies the GT predicate on the "visitor_id" field.
+func VisitorIDGT(v int) predicate.Cart {
+	return predicate.Cart(func(s *sql.Selector) {
+		s.Where(sql.GT(s.C(FieldVisitorID), v))
+	})
+}
+
+// VisitorIDGTE applies the GTE predicate on the "visitor_id" field.
+func VisitorIDGTE(v int) predicate.Cart {
+	return predicate.Cart(func(s *sql.Selector) {
+		s.Where(sql.GTE(s.C(FieldVisitorID), v))
+	})
+}
+
+// VisitorIDLT applies the LT predicate on the "visitor_id" field.
+func VisitorIDLT(v int) predicate.Cart {
+	return predicate.Cart(func(s *sql.Selector) {
+		s.Where(sql.LT(s.C(FieldVisitorID), v))
+	})
+}
+
+// VisitorIDLTE applies the LTE predicate on the "visitor_id" field.
+func VisitorIDLTE(v int) predicate.Cart {
+	return predicate.Cart(func(s *sql.Selector) {
+		s.Where(sql.LTE(s.C(FieldVisitorID), v))
+	})
+}
+
+// VisitorIDIsNil applies the IsNil predicate on the "visitor_id" field.
+func VisitorIDIsNil() predicate.Cart {
+	return predicate.Cart(func(s *sql.Selector) {
+		s.Where(sql.IsNull(s.C(FieldVisitorID)))
+	})
+}
+
+// VisitorIDNotNil applies the NotNil predicate on the "visitor_id" field.
+func VisitorIDNotNil() predicate.Cart {
+	return predicate.Cart(func(s *sql.Selector) {
+		s.Where(sql.NotNull(s.C(FieldVisitorID)))
+	})
+}
+
+// StatusEQ applies the EQ predicate on the "status" field.
+func StatusEQ(v uint) predicate.Cart {
+	return predicate.Cart(func(s *sql.Selector) {
+		s.Where(sql.EQ(s.C(FieldStatus), v))
+	})
+}
+
+// StatusNEQ applies the NEQ predicate on the "status" field.
+func StatusNEQ(v uint) predicate.Cart {
+	return predicate.Cart(func(s *sql.Selector) {
+		s.Where(sql.NEQ(s.C(FieldStatus), v))
+	})
+}
+
+// StatusIn applies the In predicate on the "status" field.
+func StatusIn(vs ...uint) predicate.Cart {
+	v := make([]any, len(vs))
+	for i := range v {
+		v[i] = vs[i]
+	}
+	return predicate.Cart(func(s *sql.Selector) {
+		s.Where(sql.In(s.C(FieldStatus), v...))
+	})
+}
+
+// StatusNotIn applies the NotIn predicate on the "status" field.
+func StatusNotIn(vs ...uint) predicate.Cart {
+	v := make([]any, len(vs))
+	for i := range v {
+		v[i] = vs[i]
+	}
+	return predicate.Cart(func(s *sql.Selector) {
+		s.Where(sql.NotIn(s.C(FieldStatus), v...))
+	})
+}
+
+// StatusGT applies the GT predicate on the "status" field.
+func StatusGT(v uint) predicate.Cart {
+	return predicate.Cart(func(s *sql.Selector) {
+		s.Where(sql.GT(s.C(FieldStatus), v))
+	})
+}
+
+// StatusGTE applies the GTE predicate on the "status" field.
+func StatusGTE(v uint) predicate.Cart {
+	return predicate.Cart(func(s *sql.Selector) {
+		s.Where(sql.GTE(s.C(FieldStatus), v))
+	})
+}
+
+// StatusLT applies the LT predicate on the "status" field.
+func StatusLT(v uint) predicate.Cart {
+	return predicate.Cart(func(s *sql.Selector) {
+		s.Where(sql.LT(s.C(FieldStatus), v))
+	})
+}
+
+// StatusLTE applies the LTE predicate on the "status" field.
+func StatusLTE(v uint) predicate.Cart {
+	return predicate.Cart(func(s *sql.Selector) {
+		s.Where(sql.LTE(s.C(FieldStatus), v))
 	})
 }
 

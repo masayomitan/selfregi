@@ -10,10 +10,20 @@ import (
 
 	"selfregi/ent/migrate"
 
+	"selfregi/ent/account"
+	"selfregi/ent/accountdetail"
 	"selfregi/ent/admin"
+	"selfregi/ent/cart"
+	"selfregi/ent/cartdetail"
+	"selfregi/ent/categories"
+	"selfregi/ent/images"
+	"selfregi/ent/item"
+	"selfregi/ent/journals"
+	"selfregi/ent/visitor"
 
 	"entgo.io/ent/dialect"
 	"entgo.io/ent/dialect/sql"
+	"entgo.io/ent/dialect/sql/sqlgraph"
 )
 
 // Client is the client that holds all ent builders.
@@ -21,8 +31,26 @@ type Client struct {
 	config
 	// Schema is the client for creating, migrating and dropping schema.
 	Schema *migrate.Schema
+	// Account is the client for interacting with the Account builders.
+	Account *AccountClient
+	// AccountDetail is the client for interacting with the AccountDetail builders.
+	AccountDetail *AccountDetailClient
 	// Admin is the client for interacting with the Admin builders.
 	Admin *AdminClient
+	// Cart is the client for interacting with the Cart builders.
+	Cart *CartClient
+	// CartDetail is the client for interacting with the CartDetail builders.
+	CartDetail *CartDetailClient
+	// Categories is the client for interacting with the Categories builders.
+	Categories *CategoriesClient
+	// Images is the client for interacting with the Images builders.
+	Images *ImagesClient
+	// Item is the client for interacting with the Item builders.
+	Item *ItemClient
+	// Journals is the client for interacting with the Journals builders.
+	Journals *JournalsClient
+	// Visitor is the client for interacting with the Visitor builders.
+	Visitor *VisitorClient
 }
 
 // NewClient creates a new client configured with the given options.
@@ -36,7 +64,16 @@ func NewClient(opts ...Option) *Client {
 
 func (c *Client) init() {
 	c.Schema = migrate.NewSchema(c.driver)
+	c.Account = NewAccountClient(c.config)
+	c.AccountDetail = NewAccountDetailClient(c.config)
 	c.Admin = NewAdminClient(c.config)
+	c.Cart = NewCartClient(c.config)
+	c.CartDetail = NewCartDetailClient(c.config)
+	c.Categories = NewCategoriesClient(c.config)
+	c.Images = NewImagesClient(c.config)
+	c.Item = NewItemClient(c.config)
+	c.Journals = NewJournalsClient(c.config)
+	c.Visitor = NewVisitorClient(c.config)
 }
 
 // Open opens a database/sql.DB specified by the driver name and
@@ -68,9 +105,18 @@ func (c *Client) Tx(ctx context.Context) (*Tx, error) {
 	cfg := c.config
 	cfg.driver = tx
 	return &Tx{
-		ctx:    ctx,
-		config: cfg,
-		Admin:  NewAdminClient(cfg),
+		ctx:           ctx,
+		config:        cfg,
+		Account:       NewAccountClient(cfg),
+		AccountDetail: NewAccountDetailClient(cfg),
+		Admin:         NewAdminClient(cfg),
+		Cart:          NewCartClient(cfg),
+		CartDetail:    NewCartDetailClient(cfg),
+		Categories:    NewCategoriesClient(cfg),
+		Images:        NewImagesClient(cfg),
+		Item:          NewItemClient(cfg),
+		Journals:      NewJournalsClient(cfg),
+		Visitor:       NewVisitorClient(cfg),
 	}, nil
 }
 
@@ -88,16 +134,25 @@ func (c *Client) BeginTx(ctx context.Context, opts *sql.TxOptions) (*Tx, error) 
 	cfg := c.config
 	cfg.driver = &txDriver{tx: tx, drv: c.driver}
 	return &Tx{
-		ctx:    ctx,
-		config: cfg,
-		Admin:  NewAdminClient(cfg),
+		ctx:           ctx,
+		config:        cfg,
+		Account:       NewAccountClient(cfg),
+		AccountDetail: NewAccountDetailClient(cfg),
+		Admin:         NewAdminClient(cfg),
+		Cart:          NewCartClient(cfg),
+		CartDetail:    NewCartDetailClient(cfg),
+		Categories:    NewCategoriesClient(cfg),
+		Images:        NewImagesClient(cfg),
+		Item:          NewItemClient(cfg),
+		Journals:      NewJournalsClient(cfg),
+		Visitor:       NewVisitorClient(cfg),
 	}, nil
 }
 
 // Debug returns a new debug-client. It's used to get verbose logging on specific operations.
 //
 //	client.Debug().
-//		Admin.
+//		Account.
 //		Query().
 //		Count(ctx)
 func (c *Client) Debug() *Client {
@@ -119,7 +174,244 @@ func (c *Client) Close() error {
 // Use adds the mutation hooks to all the entity clients.
 // In order to add hooks to a specific client, call: `client.Node.Use(...)`.
 func (c *Client) Use(hooks ...Hook) {
+	c.Account.Use(hooks...)
+	c.AccountDetail.Use(hooks...)
 	c.Admin.Use(hooks...)
+	c.Cart.Use(hooks...)
+	c.CartDetail.Use(hooks...)
+	c.Categories.Use(hooks...)
+	c.Images.Use(hooks...)
+	c.Item.Use(hooks...)
+	c.Journals.Use(hooks...)
+	c.Visitor.Use(hooks...)
+}
+
+// AccountClient is a client for the Account schema.
+type AccountClient struct {
+	config
+}
+
+// NewAccountClient returns a client for the Account from the given config.
+func NewAccountClient(c config) *AccountClient {
+	return &AccountClient{config: c}
+}
+
+// Use adds a list of mutation hooks to the hooks stack.
+// A call to `Use(f, g, h)` equals to `account.Hooks(f(g(h())))`.
+func (c *AccountClient) Use(hooks ...Hook) {
+	c.hooks.Account = append(c.hooks.Account, hooks...)
+}
+
+// Create returns a builder for creating a Account entity.
+func (c *AccountClient) Create() *AccountCreate {
+	mutation := newAccountMutation(c.config, OpCreate)
+	return &AccountCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// CreateBulk returns a builder for creating a bulk of Account entities.
+func (c *AccountClient) CreateBulk(builders ...*AccountCreate) *AccountCreateBulk {
+	return &AccountCreateBulk{config: c.config, builders: builders}
+}
+
+// Update returns an update builder for Account.
+func (c *AccountClient) Update() *AccountUpdate {
+	mutation := newAccountMutation(c.config, OpUpdate)
+	return &AccountUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOne returns an update builder for the given entity.
+func (c *AccountClient) UpdateOne(a *Account) *AccountUpdateOne {
+	mutation := newAccountMutation(c.config, OpUpdateOne, withAccount(a))
+	return &AccountUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOneID returns an update builder for the given id.
+func (c *AccountClient) UpdateOneID(id int) *AccountUpdateOne {
+	mutation := newAccountMutation(c.config, OpUpdateOne, withAccountID(id))
+	return &AccountUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// Delete returns a delete builder for Account.
+func (c *AccountClient) Delete() *AccountDelete {
+	mutation := newAccountMutation(c.config, OpDelete)
+	return &AccountDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// DeleteOne returns a builder for deleting the given entity.
+func (c *AccountClient) DeleteOne(a *Account) *AccountDeleteOne {
+	return c.DeleteOneID(a.ID)
+}
+
+// DeleteOneID returns a builder for deleting the given entity by its id.
+func (c *AccountClient) DeleteOneID(id int) *AccountDeleteOne {
+	builder := c.Delete().Where(account.ID(id))
+	builder.mutation.id = &id
+	builder.mutation.op = OpDeleteOne
+	return &AccountDeleteOne{builder}
+}
+
+// Query returns a query builder for Account.
+func (c *AccountClient) Query() *AccountQuery {
+	return &AccountQuery{
+		config: c.config,
+	}
+}
+
+// Get returns a Account entity by its id.
+func (c *AccountClient) Get(ctx context.Context, id int) (*Account, error) {
+	return c.Query().Where(account.ID(id)).Only(ctx)
+}
+
+// GetX is like Get, but panics if an error occurs.
+func (c *AccountClient) GetX(ctx context.Context, id int) *Account {
+	obj, err := c.Get(ctx, id)
+	if err != nil {
+		panic(err)
+	}
+	return obj
+}
+
+// QueryManagedAccountDetails queries the managed_account_details edge of a Account.
+func (c *AccountClient) QueryManagedAccountDetails(a *Account) *AccountDetailQuery {
+	query := &AccountDetailQuery{config: c.config}
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := a.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(account.Table, account.FieldID, id),
+			sqlgraph.To(accountdetail.Table, accountdetail.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, account.ManagedAccountDetailsTable, account.ManagedAccountDetailsColumn),
+		)
+		fromV = sqlgraph.Neighbors(a.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// QueryOwner queries the owner edge of a Account.
+func (c *AccountClient) QueryOwner(a *Account) *VisitorQuery {
+	query := &VisitorQuery{config: c.config}
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := a.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(account.Table, account.FieldID, id),
+			sqlgraph.To(visitor.Table, visitor.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, account.OwnerTable, account.OwnerColumn),
+		)
+		fromV = sqlgraph.Neighbors(a.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// Hooks returns the client hooks.
+func (c *AccountClient) Hooks() []Hook {
+	return c.hooks.Account
+}
+
+// AccountDetailClient is a client for the AccountDetail schema.
+type AccountDetailClient struct {
+	config
+}
+
+// NewAccountDetailClient returns a client for the AccountDetail from the given config.
+func NewAccountDetailClient(c config) *AccountDetailClient {
+	return &AccountDetailClient{config: c}
+}
+
+// Use adds a list of mutation hooks to the hooks stack.
+// A call to `Use(f, g, h)` equals to `accountdetail.Hooks(f(g(h())))`.
+func (c *AccountDetailClient) Use(hooks ...Hook) {
+	c.hooks.AccountDetail = append(c.hooks.AccountDetail, hooks...)
+}
+
+// Create returns a builder for creating a AccountDetail entity.
+func (c *AccountDetailClient) Create() *AccountDetailCreate {
+	mutation := newAccountDetailMutation(c.config, OpCreate)
+	return &AccountDetailCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// CreateBulk returns a builder for creating a bulk of AccountDetail entities.
+func (c *AccountDetailClient) CreateBulk(builders ...*AccountDetailCreate) *AccountDetailCreateBulk {
+	return &AccountDetailCreateBulk{config: c.config, builders: builders}
+}
+
+// Update returns an update builder for AccountDetail.
+func (c *AccountDetailClient) Update() *AccountDetailUpdate {
+	mutation := newAccountDetailMutation(c.config, OpUpdate)
+	return &AccountDetailUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOne returns an update builder for the given entity.
+func (c *AccountDetailClient) UpdateOne(ad *AccountDetail) *AccountDetailUpdateOne {
+	mutation := newAccountDetailMutation(c.config, OpUpdateOne, withAccountDetail(ad))
+	return &AccountDetailUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOneID returns an update builder for the given id.
+func (c *AccountDetailClient) UpdateOneID(id int) *AccountDetailUpdateOne {
+	mutation := newAccountDetailMutation(c.config, OpUpdateOne, withAccountDetailID(id))
+	return &AccountDetailUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// Delete returns a delete builder for AccountDetail.
+func (c *AccountDetailClient) Delete() *AccountDetailDelete {
+	mutation := newAccountDetailMutation(c.config, OpDelete)
+	return &AccountDetailDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// DeleteOne returns a builder for deleting the given entity.
+func (c *AccountDetailClient) DeleteOne(ad *AccountDetail) *AccountDetailDeleteOne {
+	return c.DeleteOneID(ad.ID)
+}
+
+// DeleteOneID returns a builder for deleting the given entity by its id.
+func (c *AccountDetailClient) DeleteOneID(id int) *AccountDetailDeleteOne {
+	builder := c.Delete().Where(accountdetail.ID(id))
+	builder.mutation.id = &id
+	builder.mutation.op = OpDeleteOne
+	return &AccountDetailDeleteOne{builder}
+}
+
+// Query returns a query builder for AccountDetail.
+func (c *AccountDetailClient) Query() *AccountDetailQuery {
+	return &AccountDetailQuery{
+		config: c.config,
+	}
+}
+
+// Get returns a AccountDetail entity by its id.
+func (c *AccountDetailClient) Get(ctx context.Context, id int) (*AccountDetail, error) {
+	return c.Query().Where(accountdetail.ID(id)).Only(ctx)
+}
+
+// GetX is like Get, but panics if an error occurs.
+func (c *AccountDetailClient) GetX(ctx context.Context, id int) *AccountDetail {
+	obj, err := c.Get(ctx, id)
+	if err != nil {
+		panic(err)
+	}
+	return obj
+}
+
+// QueryManagedAccount queries the managed_account edge of a AccountDetail.
+func (c *AccountDetailClient) QueryManagedAccount(ad *AccountDetail) *AccountQuery {
+	query := &AccountQuery{config: c.config}
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := ad.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(accountdetail.Table, accountdetail.FieldID, id),
+			sqlgraph.To(account.Table, account.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, accountdetail.ManagedAccountTable, accountdetail.ManagedAccountColumn),
+		)
+		fromV = sqlgraph.Neighbors(ad.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// Hooks returns the client hooks.
+func (c *AccountDetailClient) Hooks() []Hook {
+	return c.hooks.AccountDetail
 }
 
 // AdminClient is a client for the Admin schema.
@@ -210,4 +502,778 @@ func (c *AdminClient) GetX(ctx context.Context, id int) *Admin {
 // Hooks returns the client hooks.
 func (c *AdminClient) Hooks() []Hook {
 	return c.hooks.Admin
+}
+
+// CartClient is a client for the Cart schema.
+type CartClient struct {
+	config
+}
+
+// NewCartClient returns a client for the Cart from the given config.
+func NewCartClient(c config) *CartClient {
+	return &CartClient{config: c}
+}
+
+// Use adds a list of mutation hooks to the hooks stack.
+// A call to `Use(f, g, h)` equals to `cart.Hooks(f(g(h())))`.
+func (c *CartClient) Use(hooks ...Hook) {
+	c.hooks.Cart = append(c.hooks.Cart, hooks...)
+}
+
+// Create returns a builder for creating a Cart entity.
+func (c *CartClient) Create() *CartCreate {
+	mutation := newCartMutation(c.config, OpCreate)
+	return &CartCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// CreateBulk returns a builder for creating a bulk of Cart entities.
+func (c *CartClient) CreateBulk(builders ...*CartCreate) *CartCreateBulk {
+	return &CartCreateBulk{config: c.config, builders: builders}
+}
+
+// Update returns an update builder for Cart.
+func (c *CartClient) Update() *CartUpdate {
+	mutation := newCartMutation(c.config, OpUpdate)
+	return &CartUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOne returns an update builder for the given entity.
+func (c *CartClient) UpdateOne(ca *Cart) *CartUpdateOne {
+	mutation := newCartMutation(c.config, OpUpdateOne, withCart(ca))
+	return &CartUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOneID returns an update builder for the given id.
+func (c *CartClient) UpdateOneID(id int) *CartUpdateOne {
+	mutation := newCartMutation(c.config, OpUpdateOne, withCartID(id))
+	return &CartUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// Delete returns a delete builder for Cart.
+func (c *CartClient) Delete() *CartDelete {
+	mutation := newCartMutation(c.config, OpDelete)
+	return &CartDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// DeleteOne returns a builder for deleting the given entity.
+func (c *CartClient) DeleteOne(ca *Cart) *CartDeleteOne {
+	return c.DeleteOneID(ca.ID)
+}
+
+// DeleteOneID returns a builder for deleting the given entity by its id.
+func (c *CartClient) DeleteOneID(id int) *CartDeleteOne {
+	builder := c.Delete().Where(cart.ID(id))
+	builder.mutation.id = &id
+	builder.mutation.op = OpDeleteOne
+	return &CartDeleteOne{builder}
+}
+
+// Query returns a query builder for Cart.
+func (c *CartClient) Query() *CartQuery {
+	return &CartQuery{
+		config: c.config,
+	}
+}
+
+// Get returns a Cart entity by its id.
+func (c *CartClient) Get(ctx context.Context, id int) (*Cart, error) {
+	return c.Query().Where(cart.ID(id)).Only(ctx)
+}
+
+// GetX is like Get, but panics if an error occurs.
+func (c *CartClient) GetX(ctx context.Context, id int) *Cart {
+	obj, err := c.Get(ctx, id)
+	if err != nil {
+		panic(err)
+	}
+	return obj
+}
+
+// QueryCartDetails queries the cart_details edge of a Cart.
+func (c *CartClient) QueryCartDetails(ca *Cart) *CartDetailQuery {
+	query := &CartDetailQuery{config: c.config}
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := ca.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(cart.Table, cart.FieldID, id),
+			sqlgraph.To(cartdetail.Table, cartdetail.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, cart.CartDetailsTable, cart.CartDetailsColumn),
+		)
+		fromV = sqlgraph.Neighbors(ca.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// QueryOwner queries the owner edge of a Cart.
+func (c *CartClient) QueryOwner(ca *Cart) *VisitorQuery {
+	query := &VisitorQuery{config: c.config}
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := ca.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(cart.Table, cart.FieldID, id),
+			sqlgraph.To(visitor.Table, visitor.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, cart.OwnerTable, cart.OwnerColumn),
+		)
+		fromV = sqlgraph.Neighbors(ca.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// Hooks returns the client hooks.
+func (c *CartClient) Hooks() []Hook {
+	return c.hooks.Cart
+}
+
+// CartDetailClient is a client for the CartDetail schema.
+type CartDetailClient struct {
+	config
+}
+
+// NewCartDetailClient returns a client for the CartDetail from the given config.
+func NewCartDetailClient(c config) *CartDetailClient {
+	return &CartDetailClient{config: c}
+}
+
+// Use adds a list of mutation hooks to the hooks stack.
+// A call to `Use(f, g, h)` equals to `cartdetail.Hooks(f(g(h())))`.
+func (c *CartDetailClient) Use(hooks ...Hook) {
+	c.hooks.CartDetail = append(c.hooks.CartDetail, hooks...)
+}
+
+// Create returns a builder for creating a CartDetail entity.
+func (c *CartDetailClient) Create() *CartDetailCreate {
+	mutation := newCartDetailMutation(c.config, OpCreate)
+	return &CartDetailCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// CreateBulk returns a builder for creating a bulk of CartDetail entities.
+func (c *CartDetailClient) CreateBulk(builders ...*CartDetailCreate) *CartDetailCreateBulk {
+	return &CartDetailCreateBulk{config: c.config, builders: builders}
+}
+
+// Update returns an update builder for CartDetail.
+func (c *CartDetailClient) Update() *CartDetailUpdate {
+	mutation := newCartDetailMutation(c.config, OpUpdate)
+	return &CartDetailUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOne returns an update builder for the given entity.
+func (c *CartDetailClient) UpdateOne(cd *CartDetail) *CartDetailUpdateOne {
+	mutation := newCartDetailMutation(c.config, OpUpdateOne, withCartDetail(cd))
+	return &CartDetailUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOneID returns an update builder for the given id.
+func (c *CartDetailClient) UpdateOneID(id int) *CartDetailUpdateOne {
+	mutation := newCartDetailMutation(c.config, OpUpdateOne, withCartDetailID(id))
+	return &CartDetailUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// Delete returns a delete builder for CartDetail.
+func (c *CartDetailClient) Delete() *CartDetailDelete {
+	mutation := newCartDetailMutation(c.config, OpDelete)
+	return &CartDetailDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// DeleteOne returns a builder for deleting the given entity.
+func (c *CartDetailClient) DeleteOne(cd *CartDetail) *CartDetailDeleteOne {
+	return c.DeleteOneID(cd.ID)
+}
+
+// DeleteOneID returns a builder for deleting the given entity by its id.
+func (c *CartDetailClient) DeleteOneID(id int) *CartDetailDeleteOne {
+	builder := c.Delete().Where(cartdetail.ID(id))
+	builder.mutation.id = &id
+	builder.mutation.op = OpDeleteOne
+	return &CartDetailDeleteOne{builder}
+}
+
+// Query returns a query builder for CartDetail.
+func (c *CartDetailClient) Query() *CartDetailQuery {
+	return &CartDetailQuery{
+		config: c.config,
+	}
+}
+
+// Get returns a CartDetail entity by its id.
+func (c *CartDetailClient) Get(ctx context.Context, id int) (*CartDetail, error) {
+	return c.Query().Where(cartdetail.ID(id)).Only(ctx)
+}
+
+// GetX is like Get, but panics if an error occurs.
+func (c *CartDetailClient) GetX(ctx context.Context, id int) *CartDetail {
+	obj, err := c.Get(ctx, id)
+	if err != nil {
+		panic(err)
+	}
+	return obj
+}
+
+// QueryCart queries the cart edge of a CartDetail.
+func (c *CartDetailClient) QueryCart(cd *CartDetail) *CartQuery {
+	query := &CartQuery{config: c.config}
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := cd.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(cartdetail.Table, cartdetail.FieldID, id),
+			sqlgraph.To(cart.Table, cart.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, cartdetail.CartTable, cartdetail.CartColumn),
+		)
+		fromV = sqlgraph.Neighbors(cd.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// Hooks returns the client hooks.
+func (c *CartDetailClient) Hooks() []Hook {
+	return c.hooks.CartDetail
+}
+
+// CategoriesClient is a client for the Categories schema.
+type CategoriesClient struct {
+	config
+}
+
+// NewCategoriesClient returns a client for the Categories from the given config.
+func NewCategoriesClient(c config) *CategoriesClient {
+	return &CategoriesClient{config: c}
+}
+
+// Use adds a list of mutation hooks to the hooks stack.
+// A call to `Use(f, g, h)` equals to `categories.Hooks(f(g(h())))`.
+func (c *CategoriesClient) Use(hooks ...Hook) {
+	c.hooks.Categories = append(c.hooks.Categories, hooks...)
+}
+
+// Create returns a builder for creating a Categories entity.
+func (c *CategoriesClient) Create() *CategoriesCreate {
+	mutation := newCategoriesMutation(c.config, OpCreate)
+	return &CategoriesCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// CreateBulk returns a builder for creating a bulk of Categories entities.
+func (c *CategoriesClient) CreateBulk(builders ...*CategoriesCreate) *CategoriesCreateBulk {
+	return &CategoriesCreateBulk{config: c.config, builders: builders}
+}
+
+// Update returns an update builder for Categories.
+func (c *CategoriesClient) Update() *CategoriesUpdate {
+	mutation := newCategoriesMutation(c.config, OpUpdate)
+	return &CategoriesUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOne returns an update builder for the given entity.
+func (c *CategoriesClient) UpdateOne(ca *Categories) *CategoriesUpdateOne {
+	mutation := newCategoriesMutation(c.config, OpUpdateOne, withCategories(ca))
+	return &CategoriesUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOneID returns an update builder for the given id.
+func (c *CategoriesClient) UpdateOneID(id int) *CategoriesUpdateOne {
+	mutation := newCategoriesMutation(c.config, OpUpdateOne, withCategoriesID(id))
+	return &CategoriesUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// Delete returns a delete builder for Categories.
+func (c *CategoriesClient) Delete() *CategoriesDelete {
+	mutation := newCategoriesMutation(c.config, OpDelete)
+	return &CategoriesDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// DeleteOne returns a builder for deleting the given entity.
+func (c *CategoriesClient) DeleteOne(ca *Categories) *CategoriesDeleteOne {
+	return c.DeleteOneID(ca.ID)
+}
+
+// DeleteOneID returns a builder for deleting the given entity by its id.
+func (c *CategoriesClient) DeleteOneID(id int) *CategoriesDeleteOne {
+	builder := c.Delete().Where(categories.ID(id))
+	builder.mutation.id = &id
+	builder.mutation.op = OpDeleteOne
+	return &CategoriesDeleteOne{builder}
+}
+
+// Query returns a query builder for Categories.
+func (c *CategoriesClient) Query() *CategoriesQuery {
+	return &CategoriesQuery{
+		config: c.config,
+	}
+}
+
+// Get returns a Categories entity by its id.
+func (c *CategoriesClient) Get(ctx context.Context, id int) (*Categories, error) {
+	return c.Query().Where(categories.ID(id)).Only(ctx)
+}
+
+// GetX is like Get, but panics if an error occurs.
+func (c *CategoriesClient) GetX(ctx context.Context, id int) *Categories {
+	obj, err := c.Get(ctx, id)
+	if err != nil {
+		panic(err)
+	}
+	return obj
+}
+
+// QueryItems queries the items edge of a Categories.
+func (c *CategoriesClient) QueryItems(ca *Categories) *ItemQuery {
+	query := &ItemQuery{config: c.config}
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := ca.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(categories.Table, categories.FieldID, id),
+			sqlgraph.To(item.Table, item.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, categories.ItemsTable, categories.ItemsColumn),
+		)
+		fromV = sqlgraph.Neighbors(ca.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// Hooks returns the client hooks.
+func (c *CategoriesClient) Hooks() []Hook {
+	return c.hooks.Categories
+}
+
+// ImagesClient is a client for the Images schema.
+type ImagesClient struct {
+	config
+}
+
+// NewImagesClient returns a client for the Images from the given config.
+func NewImagesClient(c config) *ImagesClient {
+	return &ImagesClient{config: c}
+}
+
+// Use adds a list of mutation hooks to the hooks stack.
+// A call to `Use(f, g, h)` equals to `images.Hooks(f(g(h())))`.
+func (c *ImagesClient) Use(hooks ...Hook) {
+	c.hooks.Images = append(c.hooks.Images, hooks...)
+}
+
+// Create returns a builder for creating a Images entity.
+func (c *ImagesClient) Create() *ImagesCreate {
+	mutation := newImagesMutation(c.config, OpCreate)
+	return &ImagesCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// CreateBulk returns a builder for creating a bulk of Images entities.
+func (c *ImagesClient) CreateBulk(builders ...*ImagesCreate) *ImagesCreateBulk {
+	return &ImagesCreateBulk{config: c.config, builders: builders}
+}
+
+// Update returns an update builder for Images.
+func (c *ImagesClient) Update() *ImagesUpdate {
+	mutation := newImagesMutation(c.config, OpUpdate)
+	return &ImagesUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOne returns an update builder for the given entity.
+func (c *ImagesClient) UpdateOne(i *Images) *ImagesUpdateOne {
+	mutation := newImagesMutation(c.config, OpUpdateOne, withImages(i))
+	return &ImagesUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOneID returns an update builder for the given id.
+func (c *ImagesClient) UpdateOneID(id int) *ImagesUpdateOne {
+	mutation := newImagesMutation(c.config, OpUpdateOne, withImagesID(id))
+	return &ImagesUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// Delete returns a delete builder for Images.
+func (c *ImagesClient) Delete() *ImagesDelete {
+	mutation := newImagesMutation(c.config, OpDelete)
+	return &ImagesDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// DeleteOne returns a builder for deleting the given entity.
+func (c *ImagesClient) DeleteOne(i *Images) *ImagesDeleteOne {
+	return c.DeleteOneID(i.ID)
+}
+
+// DeleteOneID returns a builder for deleting the given entity by its id.
+func (c *ImagesClient) DeleteOneID(id int) *ImagesDeleteOne {
+	builder := c.Delete().Where(images.ID(id))
+	builder.mutation.id = &id
+	builder.mutation.op = OpDeleteOne
+	return &ImagesDeleteOne{builder}
+}
+
+// Query returns a query builder for Images.
+func (c *ImagesClient) Query() *ImagesQuery {
+	return &ImagesQuery{
+		config: c.config,
+	}
+}
+
+// Get returns a Images entity by its id.
+func (c *ImagesClient) Get(ctx context.Context, id int) (*Images, error) {
+	return c.Query().Where(images.ID(id)).Only(ctx)
+}
+
+// GetX is like Get, but panics if an error occurs.
+func (c *ImagesClient) GetX(ctx context.Context, id int) *Images {
+	obj, err := c.Get(ctx, id)
+	if err != nil {
+		panic(err)
+	}
+	return obj
+}
+
+// QueryItems queries the items edge of a Images.
+func (c *ImagesClient) QueryItems(i *Images) *ItemQuery {
+	query := &ItemQuery{config: c.config}
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := i.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(images.Table, images.FieldID, id),
+			sqlgraph.To(item.Table, item.FieldID),
+			sqlgraph.Edge(sqlgraph.M2M, true, images.ItemsTable, images.ItemsPrimaryKey...),
+		)
+		fromV = sqlgraph.Neighbors(i.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// Hooks returns the client hooks.
+func (c *ImagesClient) Hooks() []Hook {
+	return c.hooks.Images
+}
+
+// ItemClient is a client for the Item schema.
+type ItemClient struct {
+	config
+}
+
+// NewItemClient returns a client for the Item from the given config.
+func NewItemClient(c config) *ItemClient {
+	return &ItemClient{config: c}
+}
+
+// Use adds a list of mutation hooks to the hooks stack.
+// A call to `Use(f, g, h)` equals to `item.Hooks(f(g(h())))`.
+func (c *ItemClient) Use(hooks ...Hook) {
+	c.hooks.Item = append(c.hooks.Item, hooks...)
+}
+
+// Create returns a builder for creating a Item entity.
+func (c *ItemClient) Create() *ItemCreate {
+	mutation := newItemMutation(c.config, OpCreate)
+	return &ItemCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// CreateBulk returns a builder for creating a bulk of Item entities.
+func (c *ItemClient) CreateBulk(builders ...*ItemCreate) *ItemCreateBulk {
+	return &ItemCreateBulk{config: c.config, builders: builders}
+}
+
+// Update returns an update builder for Item.
+func (c *ItemClient) Update() *ItemUpdate {
+	mutation := newItemMutation(c.config, OpUpdate)
+	return &ItemUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOne returns an update builder for the given entity.
+func (c *ItemClient) UpdateOne(i *Item) *ItemUpdateOne {
+	mutation := newItemMutation(c.config, OpUpdateOne, withItem(i))
+	return &ItemUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOneID returns an update builder for the given id.
+func (c *ItemClient) UpdateOneID(id int) *ItemUpdateOne {
+	mutation := newItemMutation(c.config, OpUpdateOne, withItemID(id))
+	return &ItemUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// Delete returns a delete builder for Item.
+func (c *ItemClient) Delete() *ItemDelete {
+	mutation := newItemMutation(c.config, OpDelete)
+	return &ItemDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// DeleteOne returns a builder for deleting the given entity.
+func (c *ItemClient) DeleteOne(i *Item) *ItemDeleteOne {
+	return c.DeleteOneID(i.ID)
+}
+
+// DeleteOneID returns a builder for deleting the given entity by its id.
+func (c *ItemClient) DeleteOneID(id int) *ItemDeleteOne {
+	builder := c.Delete().Where(item.ID(id))
+	builder.mutation.id = &id
+	builder.mutation.op = OpDeleteOne
+	return &ItemDeleteOne{builder}
+}
+
+// Query returns a query builder for Item.
+func (c *ItemClient) Query() *ItemQuery {
+	return &ItemQuery{
+		config: c.config,
+	}
+}
+
+// Get returns a Item entity by its id.
+func (c *ItemClient) Get(ctx context.Context, id int) (*Item, error) {
+	return c.Query().Where(item.ID(id)).Only(ctx)
+}
+
+// GetX is like Get, but panics if an error occurs.
+func (c *ItemClient) GetX(ctx context.Context, id int) *Item {
+	obj, err := c.Get(ctx, id)
+	if err != nil {
+		panic(err)
+	}
+	return obj
+}
+
+// QueryImages queries the images edge of a Item.
+func (c *ItemClient) QueryImages(i *Item) *ImagesQuery {
+	query := &ImagesQuery{config: c.config}
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := i.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(item.Table, item.FieldID, id),
+			sqlgraph.To(images.Table, images.FieldID),
+			sqlgraph.Edge(sqlgraph.M2M, false, item.ImagesTable, item.ImagesPrimaryKey...),
+		)
+		fromV = sqlgraph.Neighbors(i.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// QueryCategory queries the category edge of a Item.
+func (c *ItemClient) QueryCategory(i *Item) *CategoriesQuery {
+	query := &CategoriesQuery{config: c.config}
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := i.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(item.Table, item.FieldID, id),
+			sqlgraph.To(categories.Table, categories.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, item.CategoryTable, item.CategoryColumn),
+		)
+		fromV = sqlgraph.Neighbors(i.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// Hooks returns the client hooks.
+func (c *ItemClient) Hooks() []Hook {
+	return c.hooks.Item
+}
+
+// JournalsClient is a client for the Journals schema.
+type JournalsClient struct {
+	config
+}
+
+// NewJournalsClient returns a client for the Journals from the given config.
+func NewJournalsClient(c config) *JournalsClient {
+	return &JournalsClient{config: c}
+}
+
+// Use adds a list of mutation hooks to the hooks stack.
+// A call to `Use(f, g, h)` equals to `journals.Hooks(f(g(h())))`.
+func (c *JournalsClient) Use(hooks ...Hook) {
+	c.hooks.Journals = append(c.hooks.Journals, hooks...)
+}
+
+// Create returns a builder for creating a Journals entity.
+func (c *JournalsClient) Create() *JournalsCreate {
+	mutation := newJournalsMutation(c.config, OpCreate)
+	return &JournalsCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// CreateBulk returns a builder for creating a bulk of Journals entities.
+func (c *JournalsClient) CreateBulk(builders ...*JournalsCreate) *JournalsCreateBulk {
+	return &JournalsCreateBulk{config: c.config, builders: builders}
+}
+
+// Update returns an update builder for Journals.
+func (c *JournalsClient) Update() *JournalsUpdate {
+	mutation := newJournalsMutation(c.config, OpUpdate)
+	return &JournalsUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOne returns an update builder for the given entity.
+func (c *JournalsClient) UpdateOne(j *Journals) *JournalsUpdateOne {
+	mutation := newJournalsMutation(c.config, OpUpdateOne, withJournals(j))
+	return &JournalsUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOneID returns an update builder for the given id.
+func (c *JournalsClient) UpdateOneID(id int) *JournalsUpdateOne {
+	mutation := newJournalsMutation(c.config, OpUpdateOne, withJournalsID(id))
+	return &JournalsUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// Delete returns a delete builder for Journals.
+func (c *JournalsClient) Delete() *JournalsDelete {
+	mutation := newJournalsMutation(c.config, OpDelete)
+	return &JournalsDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// DeleteOne returns a builder for deleting the given entity.
+func (c *JournalsClient) DeleteOne(j *Journals) *JournalsDeleteOne {
+	return c.DeleteOneID(j.ID)
+}
+
+// DeleteOneID returns a builder for deleting the given entity by its id.
+func (c *JournalsClient) DeleteOneID(id int) *JournalsDeleteOne {
+	builder := c.Delete().Where(journals.ID(id))
+	builder.mutation.id = &id
+	builder.mutation.op = OpDeleteOne
+	return &JournalsDeleteOne{builder}
+}
+
+// Query returns a query builder for Journals.
+func (c *JournalsClient) Query() *JournalsQuery {
+	return &JournalsQuery{
+		config: c.config,
+	}
+}
+
+// Get returns a Journals entity by its id.
+func (c *JournalsClient) Get(ctx context.Context, id int) (*Journals, error) {
+	return c.Query().Where(journals.ID(id)).Only(ctx)
+}
+
+// GetX is like Get, but panics if an error occurs.
+func (c *JournalsClient) GetX(ctx context.Context, id int) *Journals {
+	obj, err := c.Get(ctx, id)
+	if err != nil {
+		panic(err)
+	}
+	return obj
+}
+
+// Hooks returns the client hooks.
+func (c *JournalsClient) Hooks() []Hook {
+	return c.hooks.Journals
+}
+
+// VisitorClient is a client for the Visitor schema.
+type VisitorClient struct {
+	config
+}
+
+// NewVisitorClient returns a client for the Visitor from the given config.
+func NewVisitorClient(c config) *VisitorClient {
+	return &VisitorClient{config: c}
+}
+
+// Use adds a list of mutation hooks to the hooks stack.
+// A call to `Use(f, g, h)` equals to `visitor.Hooks(f(g(h())))`.
+func (c *VisitorClient) Use(hooks ...Hook) {
+	c.hooks.Visitor = append(c.hooks.Visitor, hooks...)
+}
+
+// Create returns a builder for creating a Visitor entity.
+func (c *VisitorClient) Create() *VisitorCreate {
+	mutation := newVisitorMutation(c.config, OpCreate)
+	return &VisitorCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// CreateBulk returns a builder for creating a bulk of Visitor entities.
+func (c *VisitorClient) CreateBulk(builders ...*VisitorCreate) *VisitorCreateBulk {
+	return &VisitorCreateBulk{config: c.config, builders: builders}
+}
+
+// Update returns an update builder for Visitor.
+func (c *VisitorClient) Update() *VisitorUpdate {
+	mutation := newVisitorMutation(c.config, OpUpdate)
+	return &VisitorUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOne returns an update builder for the given entity.
+func (c *VisitorClient) UpdateOne(v *Visitor) *VisitorUpdateOne {
+	mutation := newVisitorMutation(c.config, OpUpdateOne, withVisitor(v))
+	return &VisitorUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOneID returns an update builder for the given id.
+func (c *VisitorClient) UpdateOneID(id int) *VisitorUpdateOne {
+	mutation := newVisitorMutation(c.config, OpUpdateOne, withVisitorID(id))
+	return &VisitorUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// Delete returns a delete builder for Visitor.
+func (c *VisitorClient) Delete() *VisitorDelete {
+	mutation := newVisitorMutation(c.config, OpDelete)
+	return &VisitorDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// DeleteOne returns a builder for deleting the given entity.
+func (c *VisitorClient) DeleteOne(v *Visitor) *VisitorDeleteOne {
+	return c.DeleteOneID(v.ID)
+}
+
+// DeleteOneID returns a builder for deleting the given entity by its id.
+func (c *VisitorClient) DeleteOneID(id int) *VisitorDeleteOne {
+	builder := c.Delete().Where(visitor.ID(id))
+	builder.mutation.id = &id
+	builder.mutation.op = OpDeleteOne
+	return &VisitorDeleteOne{builder}
+}
+
+// Query returns a query builder for Visitor.
+func (c *VisitorClient) Query() *VisitorQuery {
+	return &VisitorQuery{
+		config: c.config,
+	}
+}
+
+// Get returns a Visitor entity by its id.
+func (c *VisitorClient) Get(ctx context.Context, id int) (*Visitor, error) {
+	return c.Query().Where(visitor.ID(id)).Only(ctx)
+}
+
+// GetX is like Get, but panics if an error occurs.
+func (c *VisitorClient) GetX(ctx context.Context, id int) *Visitor {
+	obj, err := c.Get(ctx, id)
+	if err != nil {
+		panic(err)
+	}
+	return obj
+}
+
+// QueryManagedAccounts queries the managed_accounts edge of a Visitor.
+func (c *VisitorClient) QueryManagedAccounts(v *Visitor) *AccountQuery {
+	query := &AccountQuery{config: c.config}
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := v.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(visitor.Table, visitor.FieldID, id),
+			sqlgraph.To(account.Table, account.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, visitor.ManagedAccountsTable, visitor.ManagedAccountsColumn),
+		)
+		fromV = sqlgraph.Neighbors(v.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// QueryCarts queries the carts edge of a Visitor.
+func (c *VisitorClient) QueryCarts(v *Visitor) *CartQuery {
+	query := &CartQuery{config: c.config}
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := v.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(visitor.Table, visitor.FieldID, id),
+			sqlgraph.To(cart.Table, cart.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, visitor.CartsTable, visitor.CartsColumn),
+		)
+		fromV = sqlgraph.Neighbors(v.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// Hooks returns the client hooks.
+func (c *VisitorClient) Hooks() []Hook {
+	return c.hooks.Visitor
 }

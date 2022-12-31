@@ -6,7 +6,6 @@ import (
 	"entgo.io/ent/schema/field"
 	"github.com/shopspring/decimal"
 	"entgo.io/ent/schema/edge"
-	"time"
 )
 
 // CartDetail holds the schema definition for the CartDetail entity.
@@ -57,14 +56,6 @@ func (CartDetail) Fields() []ent.Field {
 			Nillable(),
 		field.Int("discount_price").
 			Nillable(),
-
-		field.Time("created_at").
-			Default(time.Now),
-		field.Time("updated_at").
-			Default(time.Now).
-			UpdateDefault(time.Now),
-		field.Time("deleted_at").
-			Nillable(),
 	}
 }
 
@@ -74,8 +65,11 @@ func (CartDetail) Edges() []ent.Edge {
 		edge.From("cart", Cart.Type).
 				Ref("cart_details").
 				Unique(),
-		edge.From("item", Item.Type).
-				Ref("cart_details").
-				Unique(),
+	}
+}
+
+func (CartDetail) Mixin() []ent.Mixin {
+	return []ent.Mixin{
+		TimeStamp{},
 	}
 }

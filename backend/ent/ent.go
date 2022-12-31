@@ -6,7 +6,16 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"selfregi/ent/account"
+	"selfregi/ent/accountdetail"
 	"selfregi/ent/admin"
+	"selfregi/ent/cart"
+	"selfregi/ent/cartdetail"
+	"selfregi/ent/categories"
+	"selfregi/ent/images"
+	"selfregi/ent/item"
+	"selfregi/ent/journals"
+	"selfregi/ent/visitor"
 
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
@@ -31,7 +40,16 @@ type OrderFunc func(*sql.Selector)
 // columnChecker returns a function indicates if the column exists in the given column.
 func columnChecker(table string) func(string) error {
 	checks := map[string]func(string) bool{
-		admin.Table: admin.ValidColumn,
+		account.Table:       account.ValidColumn,
+		accountdetail.Table: accountdetail.ValidColumn,
+		admin.Table:         admin.ValidColumn,
+		cart.Table:          cart.ValidColumn,
+		cartdetail.Table:    cartdetail.ValidColumn,
+		categories.Table:    categories.ValidColumn,
+		images.Table:        images.ValidColumn,
+		item.Table:          item.ValidColumn,
+		journals.Table:      journals.ValidColumn,
+		visitor.Table:       visitor.ValidColumn,
 	}
 	check, ok := checks[table]
 	if !ok {

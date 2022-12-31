@@ -8,6 +8,32 @@ import (
 	"selfregi/ent"
 )
 
+// The AccountFunc type is an adapter to allow the use of ordinary
+// function as Account mutator.
+type AccountFunc func(context.Context, *ent.AccountMutation) (ent.Value, error)
+
+// Mutate calls f(ctx, m).
+func (f AccountFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
+	mv, ok := m.(*ent.AccountMutation)
+	if !ok {
+		return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.AccountMutation", m)
+	}
+	return f(ctx, mv)
+}
+
+// The AccountDetailFunc type is an adapter to allow the use of ordinary
+// function as AccountDetail mutator.
+type AccountDetailFunc func(context.Context, *ent.AccountDetailMutation) (ent.Value, error)
+
+// Mutate calls f(ctx, m).
+func (f AccountDetailFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
+	mv, ok := m.(*ent.AccountDetailMutation)
+	if !ok {
+		return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.AccountDetailMutation", m)
+	}
+	return f(ctx, mv)
+}
+
 // The AdminFunc type is an adapter to allow the use of ordinary
 // function as Admin mutator.
 type AdminFunc func(context.Context, *ent.AdminMutation) (ent.Value, error)
@@ -17,6 +43,97 @@ func (f AdminFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error
 	mv, ok := m.(*ent.AdminMutation)
 	if !ok {
 		return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.AdminMutation", m)
+	}
+	return f(ctx, mv)
+}
+
+// The CartFunc type is an adapter to allow the use of ordinary
+// function as Cart mutator.
+type CartFunc func(context.Context, *ent.CartMutation) (ent.Value, error)
+
+// Mutate calls f(ctx, m).
+func (f CartFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
+	mv, ok := m.(*ent.CartMutation)
+	if !ok {
+		return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.CartMutation", m)
+	}
+	return f(ctx, mv)
+}
+
+// The CartDetailFunc type is an adapter to allow the use of ordinary
+// function as CartDetail mutator.
+type CartDetailFunc func(context.Context, *ent.CartDetailMutation) (ent.Value, error)
+
+// Mutate calls f(ctx, m).
+func (f CartDetailFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
+	mv, ok := m.(*ent.CartDetailMutation)
+	if !ok {
+		return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.CartDetailMutation", m)
+	}
+	return f(ctx, mv)
+}
+
+// The CategoriesFunc type is an adapter to allow the use of ordinary
+// function as Categories mutator.
+type CategoriesFunc func(context.Context, *ent.CategoriesMutation) (ent.Value, error)
+
+// Mutate calls f(ctx, m).
+func (f CategoriesFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
+	mv, ok := m.(*ent.CategoriesMutation)
+	if !ok {
+		return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.CategoriesMutation", m)
+	}
+	return f(ctx, mv)
+}
+
+// The ImagesFunc type is an adapter to allow the use of ordinary
+// function as Images mutator.
+type ImagesFunc func(context.Context, *ent.ImagesMutation) (ent.Value, error)
+
+// Mutate calls f(ctx, m).
+func (f ImagesFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
+	mv, ok := m.(*ent.ImagesMutation)
+	if !ok {
+		return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.ImagesMutation", m)
+	}
+	return f(ctx, mv)
+}
+
+// The ItemFunc type is an adapter to allow the use of ordinary
+// function as Item mutator.
+type ItemFunc func(context.Context, *ent.ItemMutation) (ent.Value, error)
+
+// Mutate calls f(ctx, m).
+func (f ItemFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
+	mv, ok := m.(*ent.ItemMutation)
+	if !ok {
+		return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.ItemMutation", m)
+	}
+	return f(ctx, mv)
+}
+
+// The JournalsFunc type is an adapter to allow the use of ordinary
+// function as Journals mutator.
+type JournalsFunc func(context.Context, *ent.JournalsMutation) (ent.Value, error)
+
+// Mutate calls f(ctx, m).
+func (f JournalsFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
+	mv, ok := m.(*ent.JournalsMutation)
+	if !ok {
+		return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.JournalsMutation", m)
+	}
+	return f(ctx, mv)
+}
+
+// The VisitorFunc type is an adapter to allow the use of ordinary
+// function as Visitor mutator.
+type VisitorFunc func(context.Context, *ent.VisitorMutation) (ent.Value, error)
+
+// Mutate calls f(ctx, m).
+func (f VisitorFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
+	mv, ok := m.(*ent.VisitorMutation)
+	if !ok {
+		return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.VisitorMutation", m)
 	}
 	return f(ctx, mv)
 }

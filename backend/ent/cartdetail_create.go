@@ -22,6 +22,48 @@ type CartDetailCreate struct {
 	hooks    []Hook
 }
 
+// SetCreatedAt sets the "created_at" field.
+func (cdc *CartDetailCreate) SetCreatedAt(t time.Time) *CartDetailCreate {
+	cdc.mutation.SetCreatedAt(t)
+	return cdc
+}
+
+// SetNillableCreatedAt sets the "created_at" field if the given value is not nil.
+func (cdc *CartDetailCreate) SetNillableCreatedAt(t *time.Time) *CartDetailCreate {
+	if t != nil {
+		cdc.SetCreatedAt(*t)
+	}
+	return cdc
+}
+
+// SetUpdatedAt sets the "updated_at" field.
+func (cdc *CartDetailCreate) SetUpdatedAt(t time.Time) *CartDetailCreate {
+	cdc.mutation.SetUpdatedAt(t)
+	return cdc
+}
+
+// SetNillableUpdatedAt sets the "updated_at" field if the given value is not nil.
+func (cdc *CartDetailCreate) SetNillableUpdatedAt(t *time.Time) *CartDetailCreate {
+	if t != nil {
+		cdc.SetUpdatedAt(*t)
+	}
+	return cdc
+}
+
+// SetDeletedAt sets the "deleted_at" field.
+func (cdc *CartDetailCreate) SetDeletedAt(t time.Time) *CartDetailCreate {
+	cdc.mutation.SetDeletedAt(t)
+	return cdc
+}
+
+// SetNillableDeletedAt sets the "deleted_at" field if the given value is not nil.
+func (cdc *CartDetailCreate) SetNillableDeletedAt(t *time.Time) *CartDetailCreate {
+	if t != nil {
+		cdc.SetDeletedAt(*t)
+	}
+	return cdc
+}
+
 // SetAccountID sets the "account_id" field.
 func (cdc *CartDetailCreate) SetAccountID(i int) *CartDetailCreate {
 	cdc.mutation.SetAccountID(i)
@@ -152,40 +194,6 @@ func (cdc *CartDetailCreate) SetDiscountPrice(i int) *CartDetailCreate {
 	return cdc
 }
 
-// SetCreatedAt sets the "created_at" field.
-func (cdc *CartDetailCreate) SetCreatedAt(t time.Time) *CartDetailCreate {
-	cdc.mutation.SetCreatedAt(t)
-	return cdc
-}
-
-// SetNillableCreatedAt sets the "created_at" field if the given value is not nil.
-func (cdc *CartDetailCreate) SetNillableCreatedAt(t *time.Time) *CartDetailCreate {
-	if t != nil {
-		cdc.SetCreatedAt(*t)
-	}
-	return cdc
-}
-
-// SetUpdatedAt sets the "updated_at" field.
-func (cdc *CartDetailCreate) SetUpdatedAt(t time.Time) *CartDetailCreate {
-	cdc.mutation.SetUpdatedAt(t)
-	return cdc
-}
-
-// SetNillableUpdatedAt sets the "updated_at" field if the given value is not nil.
-func (cdc *CartDetailCreate) SetNillableUpdatedAt(t *time.Time) *CartDetailCreate {
-	if t != nil {
-		cdc.SetUpdatedAt(*t)
-	}
-	return cdc
-}
-
-// SetDeletedAt sets the "deleted_at" field.
-func (cdc *CartDetailCreate) SetDeletedAt(t time.Time) *CartDetailCreate {
-	cdc.mutation.SetDeletedAt(t)
-	return cdc
-}
-
 // SetCartID sets the "cart" edge to the Cart entity by ID.
 func (cdc *CartDetailCreate) SetCartID(id int) *CartDetailCreate {
 	cdc.mutation.SetCartID(id)
@@ -294,6 +302,12 @@ func (cdc *CartDetailCreate) defaults() {
 
 // check runs all checks and user-defined validators on the builder.
 func (cdc *CartDetailCreate) check() error {
+	if _, ok := cdc.mutation.CreatedAt(); !ok {
+		return &ValidationError{Name: "created_at", err: errors.New(`ent: missing required field "CartDetail.created_at"`)}
+	}
+	if _, ok := cdc.mutation.UpdatedAt(); !ok {
+		return &ValidationError{Name: "updated_at", err: errors.New(`ent: missing required field "CartDetail.updated_at"`)}
+	}
 	if v, ok := cdc.mutation.AccountID(); ok {
 		if err := cartdetail.AccountIDValidator(v); err != nil {
 			return &ValidationError{Name: "account_id", err: fmt.Errorf(`ent: validator failed for field "CartDetail.account_id": %w`, err)}
@@ -348,15 +362,6 @@ func (cdc *CartDetailCreate) check() error {
 	if _, ok := cdc.mutation.DiscountPrice(); !ok {
 		return &ValidationError{Name: "discount_price", err: errors.New(`ent: missing required field "CartDetail.discount_price"`)}
 	}
-	if _, ok := cdc.mutation.CreatedAt(); !ok {
-		return &ValidationError{Name: "created_at", err: errors.New(`ent: missing required field "CartDetail.created_at"`)}
-	}
-	if _, ok := cdc.mutation.UpdatedAt(); !ok {
-		return &ValidationError{Name: "updated_at", err: errors.New(`ent: missing required field "CartDetail.updated_at"`)}
-	}
-	if _, ok := cdc.mutation.DeletedAt(); !ok {
-		return &ValidationError{Name: "deleted_at", err: errors.New(`ent: missing required field "CartDetail.deleted_at"`)}
-	}
 	return nil
 }
 
@@ -384,6 +389,18 @@ func (cdc *CartDetailCreate) createSpec() (*CartDetail, *sqlgraph.CreateSpec) {
 			},
 		}
 	)
+	if value, ok := cdc.mutation.CreatedAt(); ok {
+		_spec.SetField(cartdetail.FieldCreatedAt, field.TypeTime, value)
+		_node.CreatedAt = value
+	}
+	if value, ok := cdc.mutation.UpdatedAt(); ok {
+		_spec.SetField(cartdetail.FieldUpdatedAt, field.TypeTime, value)
+		_node.UpdatedAt = value
+	}
+	if value, ok := cdc.mutation.DeletedAt(); ok {
+		_spec.SetField(cartdetail.FieldDeletedAt, field.TypeTime, value)
+		_node.DeletedAt = &value
+	}
 	if value, ok := cdc.mutation.AccountID(); ok {
 		_spec.SetField(cartdetail.FieldAccountID, field.TypeInt, value)
 		_node.AccountID = value
@@ -443,18 +460,6 @@ func (cdc *CartDetailCreate) createSpec() (*CartDetail, *sqlgraph.CreateSpec) {
 	if value, ok := cdc.mutation.DiscountPrice(); ok {
 		_spec.SetField(cartdetail.FieldDiscountPrice, field.TypeInt, value)
 		_node.DiscountPrice = &value
-	}
-	if value, ok := cdc.mutation.CreatedAt(); ok {
-		_spec.SetField(cartdetail.FieldCreatedAt, field.TypeTime, value)
-		_node.CreatedAt = value
-	}
-	if value, ok := cdc.mutation.UpdatedAt(); ok {
-		_spec.SetField(cartdetail.FieldUpdatedAt, field.TypeTime, value)
-		_node.UpdatedAt = value
-	}
-	if value, ok := cdc.mutation.DeletedAt(); ok {
-		_spec.SetField(cartdetail.FieldDeletedAt, field.TypeTime, value)
-		_node.DeletedAt = &value
 	}
 	if nodes := cdc.mutation.CartIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{

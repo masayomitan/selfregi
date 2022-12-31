@@ -6,5 +6,32 @@ import (
 	"entgo.io/ent/dialect/sql"
 )
 
+// Account is the predicate function for account builders.
+type Account func(*sql.Selector)
+
+// AccountDetail is the predicate function for accountdetail builders.
+type AccountDetail func(*sql.Selector)
+
 // Admin is the predicate function for admin builders.
 type Admin func(*sql.Selector)
+
+// Cart is the predicate function for cart builders.
+type Cart func(*sql.Selector)
+
+// CartDetail is the predicate function for cartdetail builders.
+type CartDetail func(*sql.Selector)
+
+// Categories is the predicate function for categories builders.
+type Categories func(*sql.Selector)
+
+// Images is the predicate function for images builders.
+type Images func(*sql.Selector)
+
+// Item is the predicate function for item builders.
+type Item func(*sql.Selector)
+
+// Journals is the predicate function for journals builders.
+type Journals func(*sql.Selector)
+
+// Visitor is the predicate function for visitor builders.
+type Visitor func(*sql.Selector)

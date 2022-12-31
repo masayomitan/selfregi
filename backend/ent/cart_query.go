@@ -327,12 +327,12 @@ func (cq *CartQuery) WithOwner(opts ...func(*VisitorQuery)) *CartQuery {
 // Example:
 //
 //	var v []struct {
-//		VisitorID int `json:"visitor_id,omitempty"`
+//		CreatedAt time.Time `json:"created_at,omitempty"`
 //		Count int `json:"count,omitempty"`
 //	}
 //
 //	client.Cart.Query().
-//		GroupBy(cart.FieldVisitorID).
+//		GroupBy(cart.FieldCreatedAt).
 //		Aggregate(ent.Count()).
 //		Scan(ctx, &v)
 func (cq *CartQuery) GroupBy(field string, fields ...string) *CartGroupBy {
@@ -355,11 +355,11 @@ func (cq *CartQuery) GroupBy(field string, fields ...string) *CartGroupBy {
 // Example:
 //
 //	var v []struct {
-//		VisitorID int `json:"visitor_id,omitempty"`
+//		CreatedAt time.Time `json:"created_at,omitempty"`
 //	}
 //
 //	client.Cart.Query().
-//		Select(cart.FieldVisitorID).
+//		Select(cart.FieldCreatedAt).
 //		Scan(ctx, &v)
 func (cq *CartQuery) Select(fields ...string) *CartSelect {
 	cq.fields = append(cq.fields, fields...)

@@ -15,10 +15,17 @@ type Admin struct {
 func (Admin) Fields() []ent.Field {
 	return []ent.Field{
 		field.String("name").Default("unknown"),
+		field.String("password").Nillable(),
 	}
 }
 
 // Edges of the Admin.
 func (Admin) Edges() []ent.Edge {
 	return nil
+}
+
+func (Admin) Mixin() []ent.Mixin {
+	return []ent.Mixin{
+		TimeStamp{},
+	}
 }

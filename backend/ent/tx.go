@@ -12,8 +12,26 @@ import (
 // Tx is a transactional client that is created by calling Client.Tx().
 type Tx struct {
 	config
+	// Account is the client for interacting with the Account builders.
+	Account *AccountClient
+	// AccountDetail is the client for interacting with the AccountDetail builders.
+	AccountDetail *AccountDetailClient
 	// Admin is the client for interacting with the Admin builders.
 	Admin *AdminClient
+	// Cart is the client for interacting with the Cart builders.
+	Cart *CartClient
+	// CartDetail is the client for interacting with the CartDetail builders.
+	CartDetail *CartDetailClient
+	// Categories is the client for interacting with the Categories builders.
+	Categories *CategoriesClient
+	// Images is the client for interacting with the Images builders.
+	Images *ImagesClient
+	// Item is the client for interacting with the Item builders.
+	Item *ItemClient
+	// Journals is the client for interacting with the Journals builders.
+	Journals *JournalsClient
+	// Visitor is the client for interacting with the Visitor builders.
+	Visitor *VisitorClient
 
 	// lazily loaded.
 	client     *Client
@@ -145,7 +163,16 @@ func (tx *Tx) Client() *Client {
 }
 
 func (tx *Tx) init() {
+	tx.Account = NewAccountClient(tx.config)
+	tx.AccountDetail = NewAccountDetailClient(tx.config)
 	tx.Admin = NewAdminClient(tx.config)
+	tx.Cart = NewCartClient(tx.config)
+	tx.CartDetail = NewCartDetailClient(tx.config)
+	tx.Categories = NewCategoriesClient(tx.config)
+	tx.Images = NewImagesClient(tx.config)
+	tx.Item = NewItemClient(tx.config)
+	tx.Journals = NewJournalsClient(tx.config)
+	tx.Visitor = NewVisitorClient(tx.config)
 }
 
 // txDriver wraps the given dialect.Tx with a nop dialect.Driver implementation.
@@ -155,7 +182,7 @@ func (tx *Tx) init() {
 // of them in order to commit or rollback the transaction.
 //
 // If a closed transaction is embedded in one of the generated entities, and the entity
-// applies a query, for example: Admin.QueryXXX(), the query will be executed
+// applies a query, for example: Account.QueryXXX(), the query will be executed
 // through the driver which created this transaction.
 //
 // Note that txDriver is not goroutine safe.

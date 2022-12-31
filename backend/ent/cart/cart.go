@@ -11,16 +11,16 @@ const (
 	Label = "cart"
 	// FieldID holds the string denoting the id field in the database.
 	FieldID = "id"
-	// FieldVisitorID holds the string denoting the visitor_id field in the database.
-	FieldVisitorID = "visitor_id"
-	// FieldStatus holds the string denoting the status field in the database.
-	FieldStatus = "status"
 	// FieldCreatedAt holds the string denoting the created_at field in the database.
 	FieldCreatedAt = "created_at"
 	// FieldUpdatedAt holds the string denoting the updated_at field in the database.
 	FieldUpdatedAt = "updated_at"
 	// FieldDeletedAt holds the string denoting the deleted_at field in the database.
 	FieldDeletedAt = "deleted_at"
+	// FieldVisitorID holds the string denoting the visitor_id field in the database.
+	FieldVisitorID = "visitor_id"
+	// FieldStatus holds the string denoting the status field in the database.
+	FieldStatus = "status"
 	// EdgeCartDetails holds the string denoting the cart_details edge name in mutations.
 	EdgeCartDetails = "cart_details"
 	// EdgeOwner holds the string denoting the owner edge name in mutations.
@@ -46,11 +46,11 @@ const (
 // Columns holds all SQL columns for cart fields.
 var Columns = []string{
 	FieldID,
-	FieldVisitorID,
-	FieldStatus,
 	FieldCreatedAt,
 	FieldUpdatedAt,
 	FieldDeletedAt,
+	FieldVisitorID,
+	FieldStatus,
 }
 
 // ForeignKeys holds the SQL foreign-keys that are owned by the "carts"
@@ -75,12 +75,12 @@ func ValidColumn(column string) bool {
 }
 
 var (
-	// VisitorIDValidator is a validator for the "visitor_id" field. It is called by the builders before save.
-	VisitorIDValidator func(int) error
 	// DefaultCreatedAt holds the default value on creation for the "created_at" field.
 	DefaultCreatedAt func() time.Time
 	// DefaultUpdatedAt holds the default value on creation for the "updated_at" field.
 	DefaultUpdatedAt func() time.Time
 	// UpdateDefaultUpdatedAt holds the default value on update for the "updated_at" field.
 	UpdateDefaultUpdatedAt func() time.Time
+	// VisitorIDValidator is a validator for the "visitor_id" field. It is called by the builders before save.
+	VisitorIDValidator func(int) error
 )

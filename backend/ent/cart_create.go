@@ -22,26 +22,6 @@ type CartCreate struct {
 	hooks    []Hook
 }
 
-// SetVisitorID sets the "visitor_id" field.
-func (cc *CartCreate) SetVisitorID(i int) *CartCreate {
-	cc.mutation.SetVisitorID(i)
-	return cc
-}
-
-// SetNillableVisitorID sets the "visitor_id" field if the given value is not nil.
-func (cc *CartCreate) SetNillableVisitorID(i *int) *CartCreate {
-	if i != nil {
-		cc.SetVisitorID(*i)
-	}
-	return cc
-}
-
-// SetStatus sets the "status" field.
-func (cc *CartCreate) SetStatus(u uint) *CartCreate {
-	cc.mutation.SetStatus(u)
-	return cc
-}
-
 // SetCreatedAt sets the "created_at" field.
 func (cc *CartCreate) SetCreatedAt(t time.Time) *CartCreate {
 	cc.mutation.SetCreatedAt(t)
@@ -73,6 +53,34 @@ func (cc *CartCreate) SetNillableUpdatedAt(t *time.Time) *CartCreate {
 // SetDeletedAt sets the "deleted_at" field.
 func (cc *CartCreate) SetDeletedAt(t time.Time) *CartCreate {
 	cc.mutation.SetDeletedAt(t)
+	return cc
+}
+
+// SetNillableDeletedAt sets the "deleted_at" field if the given value is not nil.
+func (cc *CartCreate) SetNillableDeletedAt(t *time.Time) *CartCreate {
+	if t != nil {
+		cc.SetDeletedAt(*t)
+	}
+	return cc
+}
+
+// SetVisitorID sets the "visitor_id" field.
+func (cc *CartCreate) SetVisitorID(i int) *CartCreate {
+	cc.mutation.SetVisitorID(i)
+	return cc
+}
+
+// SetNillableVisitorID sets the "visitor_id" field if the given value is not nil.
+func (cc *CartCreate) SetNillableVisitorID(i *int) *CartCreate {
+	if i != nil {
+		cc.SetVisitorID(*i)
+	}
+	return cc
+}
+
+// SetStatus sets the "status" field.
+func (cc *CartCreate) SetStatus(u uint) *CartCreate {
+	cc.mutation.SetStatus(u)
 	return cc
 }
 
@@ -191,6 +199,12 @@ func (cc *CartCreate) defaults() {
 
 // check runs all checks and user-defined validators on the builder.
 func (cc *CartCreate) check() error {
+	if _, ok := cc.mutation.CreatedAt(); !ok {
+		return &ValidationError{Name: "created_at", err: errors.New(`ent: missing required field "Cart.created_at"`)}
+	}
+	if _, ok := cc.mutation.UpdatedAt(); !ok {
+		return &ValidationError{Name: "updated_at", err: errors.New(`ent: missing required field "Cart.updated_at"`)}
+	}
 	if v, ok := cc.mutation.VisitorID(); ok {
 		if err := cart.VisitorIDValidator(v); err != nil {
 			return &ValidationError{Name: "visitor_id", err: fmt.Errorf(`ent: validator failed for field "Cart.visitor_id": %w`, err)}
@@ -198,15 +212,6 @@ func (cc *CartCreate) check() error {
 	}
 	if _, ok := cc.mutation.Status(); !ok {
 		return &ValidationError{Name: "status", err: errors.New(`ent: missing required field "Cart.status"`)}
-	}
-	if _, ok := cc.mutation.CreatedAt(); !ok {
-		return &ValidationError{Name: "created_at", err: errors.New(`ent: missing required field "Cart.created_at"`)}
-	}
-	if _, ok := cc.mutation.UpdatedAt(); !ok {
-		return &ValidationError{Name: "updated_at", err: errors.New(`ent: missing required field "Cart.updated_at"`)}
-	}
-	if _, ok := cc.mutation.DeletedAt(); !ok {
-		return &ValidationError{Name: "deleted_at", err: errors.New(`ent: missing required field "Cart.deleted_at"`)}
 	}
 	if _, ok := cc.mutation.OwnerID(); !ok {
 		return &ValidationError{Name: "owner", err: errors.New(`ent: missing required edge "Cart.owner"`)}
@@ -238,14 +243,6 @@ func (cc *CartCreate) createSpec() (*Cart, *sqlgraph.CreateSpec) {
 			},
 		}
 	)
-	if value, ok := cc.mutation.VisitorID(); ok {
-		_spec.SetField(cart.FieldVisitorID, field.TypeInt, value)
-		_node.VisitorID = value
-	}
-	if value, ok := cc.mutation.Status(); ok {
-		_spec.SetField(cart.FieldStatus, field.TypeUint, value)
-		_node.Status = &value
-	}
 	if value, ok := cc.mutation.CreatedAt(); ok {
 		_spec.SetField(cart.FieldCreatedAt, field.TypeTime, value)
 		_node.CreatedAt = value
@@ -257,6 +254,14 @@ func (cc *CartCreate) createSpec() (*Cart, *sqlgraph.CreateSpec) {
 	if value, ok := cc.mutation.DeletedAt(); ok {
 		_spec.SetField(cart.FieldDeletedAt, field.TypeTime, value)
 		_node.DeletedAt = &value
+	}
+	if value, ok := cc.mutation.VisitorID(); ok {
+		_spec.SetField(cart.FieldVisitorID, field.TypeInt, value)
+		_node.VisitorID = value
+	}
+	if value, ok := cc.mutation.Status(); ok {
+		_spec.SetField(cart.FieldStatus, field.TypeUint, value)
+		_node.Status = &value
 	}
 	if nodes := cc.mutation.CartDetailsIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{

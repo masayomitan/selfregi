@@ -21,3 +21,9 @@ func (Journals) Fields() []ent.Field {
 func (Journals) Edges() []ent.Edge {
 	return nil
 }
+
+func (Journals) Mixin() []ent.Mixin {
+	return []ent.Mixin{
+		TimeStamp{},
+	}
+}

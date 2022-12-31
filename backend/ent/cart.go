@@ -17,16 +17,16 @@ type Cart struct {
 	config `json:"-"`
 	// ID of the ent.
 	ID int `json:"id,omitempty"`
-	// VisitorID holds the value of the "visitor_id" field.
-	VisitorID int `json:"visitor_id,omitempty"`
-	// Status holds the value of the "status" field.
-	Status *uint `json:"status,omitempty"`
 	// CreatedAt holds the value of the "created_at" field.
 	CreatedAt time.Time `json:"created_at,omitempty"`
 	// UpdatedAt holds the value of the "updated_at" field.
 	UpdatedAt time.Time `json:"updated_at,omitempty"`
 	// DeletedAt holds the value of the "deleted_at" field.
 	DeletedAt *time.Time `json:"deleted_at,omitempty"`
+	// VisitorID holds the value of the "visitor_id" field.
+	VisitorID int `json:"visitor_id,omitempty"`
+	// Status holds the value of the "status" field.
+	Status *uint `json:"status,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the CartQuery when eager-loading is set.
 	Edges         CartEdges `json:"edges"`
@@ -98,19 +98,6 @@ func (c *Cart) assignValues(columns []string, values []any) error {
 				return fmt.Errorf("unexpected type %T for field id", value)
 			}
 			c.ID = int(value.Int64)
-		case cart.FieldVisitorID:
-			if value, ok := values[i].(*sql.NullInt64); !ok {
-				return fmt.Errorf("unexpected type %T for field visitor_id", values[i])
-			} else if value.Valid {
-				c.VisitorID = int(value.Int64)
-			}
-		case cart.FieldStatus:
-			if value, ok := values[i].(*sql.NullInt64); !ok {
-				return fmt.Errorf("unexpected type %T for field status", values[i])
-			} else if value.Valid {
-				c.Status = new(uint)
-				*c.Status = uint(value.Int64)
-			}
 		case cart.FieldCreatedAt:
 			if value, ok := values[i].(*sql.NullTime); !ok {
 				return fmt.Errorf("unexpected type %T for field created_at", values[i])
@@ -129,6 +116,19 @@ func (c *Cart) assignValues(columns []string, values []any) error {
 			} else if value.Valid {
 				c.DeletedAt = new(time.Time)
 				*c.DeletedAt = value.Time
+			}
+		case cart.FieldVisitorID:
+			if value, ok := values[i].(*sql.NullInt64); !ok {
+				return fmt.Errorf("unexpected type %T for field visitor_id", values[i])
+			} else if value.Valid {
+				c.VisitorID = int(value.Int64)
+			}
+		case cart.FieldStatus:
+			if value, ok := values[i].(*sql.NullInt64); !ok {
+				return fmt.Errorf("unexpected type %T for field status", values[i])
+			} else if value.Valid {
+				c.Status = new(uint)
+				*c.Status = uint(value.Int64)
 			}
 		case cart.ForeignKeys[0]:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
@@ -175,14 +175,6 @@ func (c *Cart) String() string {
 	var builder strings.Builder
 	builder.WriteString("Cart(")
 	builder.WriteString(fmt.Sprintf("id=%v, ", c.ID))
-	builder.WriteString("visitor_id=")
-	builder.WriteString(fmt.Sprintf("%v", c.VisitorID))
-	builder.WriteString(", ")
-	if v := c.Status; v != nil {
-		builder.WriteString("status=")
-		builder.WriteString(fmt.Sprintf("%v", *v))
-	}
-	builder.WriteString(", ")
 	builder.WriteString("created_at=")
 	builder.WriteString(c.CreatedAt.Format(time.ANSIC))
 	builder.WriteString(", ")
@@ -192,6 +184,14 @@ func (c *Cart) String() string {
 	if v := c.DeletedAt; v != nil {
 		builder.WriteString("deleted_at=")
 		builder.WriteString(v.Format(time.ANSIC))
+	}
+	builder.WriteString(", ")
+	builder.WriteString("visitor_id=")
+	builder.WriteString(fmt.Sprintf("%v", c.VisitorID))
+	builder.WriteString(", ")
+	if v := c.Status; v != nil {
+		builder.WriteString("status=")
+		builder.WriteString(fmt.Sprintf("%v", *v))
 	}
 	builder.WriteByte(')')
 	return builder.String()
