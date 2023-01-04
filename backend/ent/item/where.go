@@ -116,6 +116,13 @@ func CategoryID(v int) predicate.Item {
 	})
 }
 
+// IsDisplay applies equality check predicate on the "is_display" field. It's identical to IsDisplayEQ.
+func IsDisplay(v int) predicate.Item {
+	return predicate.Item(func(s *sql.Selector) {
+		s.Where(sql.EQ(s.C(FieldIsDisplay), v))
+	})
+}
+
 // CreatedAtEQ applies the EQ predicate on the "created_at" field.
 func CreatedAtEQ(v time.Time) predicate.Item {
 	return predicate.Item(func(s *sql.Selector) {
@@ -454,6 +461,70 @@ func CategoryIDNotIn(vs ...int) predicate.Item {
 	}
 	return predicate.Item(func(s *sql.Selector) {
 		s.Where(sql.NotIn(s.C(FieldCategoryID), v...))
+	})
+}
+
+// IsDisplayEQ applies the EQ predicate on the "is_display" field.
+func IsDisplayEQ(v int) predicate.Item {
+	return predicate.Item(func(s *sql.Selector) {
+		s.Where(sql.EQ(s.C(FieldIsDisplay), v))
+	})
+}
+
+// IsDisplayNEQ applies the NEQ predicate on the "is_display" field.
+func IsDisplayNEQ(v int) predicate.Item {
+	return predicate.Item(func(s *sql.Selector) {
+		s.Where(sql.NEQ(s.C(FieldIsDisplay), v))
+	})
+}
+
+// IsDisplayIn applies the In predicate on the "is_display" field.
+func IsDisplayIn(vs ...int) predicate.Item {
+	v := make([]any, len(vs))
+	for i := range v {
+		v[i] = vs[i]
+	}
+	return predicate.Item(func(s *sql.Selector) {
+		s.Where(sql.In(s.C(FieldIsDisplay), v...))
+	})
+}
+
+// IsDisplayNotIn applies the NotIn predicate on the "is_display" field.
+func IsDisplayNotIn(vs ...int) predicate.Item {
+	v := make([]any, len(vs))
+	for i := range v {
+		v[i] = vs[i]
+	}
+	return predicate.Item(func(s *sql.Selector) {
+		s.Where(sql.NotIn(s.C(FieldIsDisplay), v...))
+	})
+}
+
+// IsDisplayGT applies the GT predicate on the "is_display" field.
+func IsDisplayGT(v int) predicate.Item {
+	return predicate.Item(func(s *sql.Selector) {
+		s.Where(sql.GT(s.C(FieldIsDisplay), v))
+	})
+}
+
+// IsDisplayGTE applies the GTE predicate on the "is_display" field.
+func IsDisplayGTE(v int) predicate.Item {
+	return predicate.Item(func(s *sql.Selector) {
+		s.Where(sql.GTE(s.C(FieldIsDisplay), v))
+	})
+}
+
+// IsDisplayLT applies the LT predicate on the "is_display" field.
+func IsDisplayLT(v int) predicate.Item {
+	return predicate.Item(func(s *sql.Selector) {
+		s.Where(sql.LT(s.C(FieldIsDisplay), v))
+	})
+}
+
+// IsDisplayLTE applies the LTE predicate on the "is_display" field.
+func IsDisplayLTE(v int) predicate.Item {
+	return predicate.Item(func(s *sql.Selector) {
+		s.Where(sql.LTE(s.C(FieldIsDisplay), v))
 	})
 }
 

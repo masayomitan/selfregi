@@ -21,6 +21,8 @@ const (
 	FieldName = "name"
 	// FieldCategoryID holds the string denoting the category_id field in the database.
 	FieldCategoryID = "category_id"
+	// FieldIsDisplay holds the string denoting the is_display field in the database.
+	FieldIsDisplay = "is_display"
 	// EdgeImages holds the string denoting the images edge name in mutations.
 	EdgeImages = "images"
 	// EdgeCategory holds the string denoting the category edge name in mutations.
@@ -49,6 +51,7 @@ var Columns = []string{
 	FieldDeletedAt,
 	FieldName,
 	FieldCategoryID,
+	FieldIsDisplay,
 }
 
 var (

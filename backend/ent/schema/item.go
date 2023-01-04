@@ -18,6 +18,7 @@ func (Item) Fields() []ent.Field {
 	return []ent.Field{
 		field.String("name").Default("unknown"),
 		field.Int("category_id"),
+		field.Int("is_display"),
 	}
 }
 

@@ -76,6 +76,19 @@ func (iu *ItemUpdate) SetCategoryID(i int) *ItemUpdate {
 	return iu
 }
 
+// SetIsDisplay sets the "is_display" field.
+func (iu *ItemUpdate) SetIsDisplay(i int) *ItemUpdate {
+	iu.mutation.ResetIsDisplay()
+	iu.mutation.SetIsDisplay(i)
+	return iu
+}
+
+// AddIsDisplay adds i to the "is_display" field.
+func (iu *ItemUpdate) AddIsDisplay(i int) *ItemUpdate {
+	iu.mutation.AddIsDisplay(i)
+	return iu
+}
+
 // AddImageIDs adds the "images" edge to the Images entity by IDs.
 func (iu *ItemUpdate) AddImageIDs(ids ...int) *ItemUpdate {
 	iu.mutation.AddImageIDs(ids...)
@@ -235,6 +248,12 @@ func (iu *ItemUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	if value, ok := iu.mutation.Name(); ok {
 		_spec.SetField(item.FieldName, field.TypeString, value)
 	}
+	if value, ok := iu.mutation.IsDisplay(); ok {
+		_spec.SetField(item.FieldIsDisplay, field.TypeInt, value)
+	}
+	if value, ok := iu.mutation.AddedIsDisplay(); ok {
+		_spec.AddField(item.FieldIsDisplay, field.TypeInt, value)
+	}
 	if iu.mutation.ImagesCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2M,
@@ -386,6 +405,19 @@ func (iuo *ItemUpdateOne) SetNillableName(s *string) *ItemUpdateOne {
 // SetCategoryID sets the "category_id" field.
 func (iuo *ItemUpdateOne) SetCategoryID(i int) *ItemUpdateOne {
 	iuo.mutation.SetCategoryID(i)
+	return iuo
+}
+
+// SetIsDisplay sets the "is_display" field.
+func (iuo *ItemUpdateOne) SetIsDisplay(i int) *ItemUpdateOne {
+	iuo.mutation.ResetIsDisplay()
+	iuo.mutation.SetIsDisplay(i)
+	return iuo
+}
+
+// AddIsDisplay adds i to the "is_display" field.
+func (iuo *ItemUpdateOne) AddIsDisplay(i int) *ItemUpdateOne {
+	iuo.mutation.AddIsDisplay(i)
 	return iuo
 }
 
@@ -577,6 +609,12 @@ func (iuo *ItemUpdateOne) sqlSave(ctx context.Context) (_node *Item, err error) 
 	}
 	if value, ok := iuo.mutation.Name(); ok {
 		_spec.SetField(item.FieldName, field.TypeString, value)
+	}
+	if value, ok := iuo.mutation.IsDisplay(); ok {
+		_spec.SetField(item.FieldIsDisplay, field.TypeInt, value)
+	}
+	if value, ok := iuo.mutation.AddedIsDisplay(); ok {
+		_spec.AddField(item.FieldIsDisplay, field.TypeInt, value)
 	}
 	if iuo.mutation.ImagesCleared() {
 		edge := &sqlgraph.EdgeSpec{

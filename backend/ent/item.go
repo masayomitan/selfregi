@@ -27,6 +27,8 @@ type Item struct {
 	Name string `json:"name,omitempty"`
 	// CategoryID holds the value of the "category_id" field.
 	CategoryID int `json:"category_id,omitempty"`
+	// IsDisplay holds the value of the "is_display" field.
+	IsDisplay int `json:"is_display,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the ItemQuery when eager-loading is set.
 	Edges ItemEdges `json:"edges"`
@@ -70,7 +72,7 @@ func (*Item) scanValues(columns []string) ([]any, error) {
 	values := make([]any, len(columns))
 	for i := range columns {
 		switch columns[i] {
-		case item.FieldID, item.FieldCategoryID:
+		case item.FieldID, item.FieldCategoryID, item.FieldIsDisplay:
 			values[i] = new(sql.NullInt64)
 		case item.FieldName:
 			values[i] = new(sql.NullString)
@@ -128,6 +130,12 @@ func (i *Item) assignValues(columns []string, values []any) error {
 			} else if value.Valid {
 				i.CategoryID = int(value.Int64)
 			}
+		case item.FieldIsDisplay:
+			if value, ok := values[j].(*sql.NullInt64); !ok {
+				return fmt.Errorf("unexpected type %T for field is_display", values[j])
+			} else if value.Valid {
+				i.IsDisplay = int(value.Int64)
+			}
 		}
 	}
 	return nil
@@ -182,6 +190,9 @@ func (i *Item) String() string {
 	builder.WriteString(", ")
 	builder.WriteString("category_id=")
 	builder.WriteString(fmt.Sprintf("%v", i.CategoryID))
+	builder.WriteString(", ")
+	builder.WriteString("is_display=")
+	builder.WriteString(fmt.Sprintf("%v", i.IsDisplay))
 	builder.WriteByte(')')
 	return builder.String()
 }

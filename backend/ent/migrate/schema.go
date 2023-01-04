@@ -191,6 +191,7 @@ var (
 		{Name: "updated_at", Type: field.TypeTime},
 		{Name: "deleted_at", Type: field.TypeTime, Nullable: true},
 		{Name: "name", Type: field.TypeString, Default: "unknown"},
+		{Name: "is_display", Type: field.TypeInt},
 		{Name: "category_id", Type: field.TypeInt},
 	}
 	// ItemsTable holds the schema information for the "items" table.
@@ -201,7 +202,7 @@ var (
 		ForeignKeys: []*schema.ForeignKey{
 			{
 				Symbol:     "items_categories_items",
-				Columns:    []*schema.Column{ItemsColumns[5]},
+				Columns:    []*schema.Column{ItemsColumns[6]},
 				RefColumns: []*schema.Column{CategoriesColumns[0]},
 				OnDelete:   schema.NoAction,
 			},

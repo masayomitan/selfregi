@@ -84,6 +84,12 @@ func (ic *ItemCreate) SetCategoryID(i int) *ItemCreate {
 	return ic
 }
 
+// SetIsDisplay sets the "is_display" field.
+func (ic *ItemCreate) SetIsDisplay(i int) *ItemCreate {
+	ic.mutation.SetIsDisplay(i)
+	return ic
+}
+
 // AddImageIDs adds the "images" edge to the Images entity by IDs.
 func (ic *ItemCreate) AddImageIDs(ids ...int) *ItemCreate {
 	ic.mutation.AddImageIDs(ids...)
@@ -209,6 +215,9 @@ func (ic *ItemCreate) check() error {
 	if _, ok := ic.mutation.CategoryID(); !ok {
 		return &ValidationError{Name: "category_id", err: errors.New(`ent: missing required field "Item.category_id"`)}
 	}
+	if _, ok := ic.mutation.IsDisplay(); !ok {
+		return &ValidationError{Name: "is_display", err: errors.New(`ent: missing required field "Item.is_display"`)}
+	}
 	if _, ok := ic.mutation.CategoryID(); !ok {
 		return &ValidationError{Name: "category", err: errors.New(`ent: missing required edge "Item.category"`)}
 	}
@@ -254,6 +263,10 @@ func (ic *ItemCreate) createSpec() (*Item, *sqlgraph.CreateSpec) {
 	if value, ok := ic.mutation.Name(); ok {
 		_spec.SetField(item.FieldName, field.TypeString, value)
 		_node.Name = value
+	}
+	if value, ok := ic.mutation.IsDisplay(); ok {
+		_spec.SetField(item.FieldIsDisplay, field.TypeInt, value)
+		_node.IsDisplay = value
 	}
 	if nodes := ic.mutation.ImagesIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{

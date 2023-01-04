@@ -8066,6 +8066,8 @@ type ItemMutation struct {
 	updated_at      *time.Time
 	deleted_at      *time.Time
 	name            *string
+	is_display      *int
+	addis_display   *int
 	clearedFields   map[string]struct{}
 	images          map[int]struct{}
 	removedimages   map[int]struct{}
@@ -8368,6 +8370,62 @@ func (m *ItemMutation) ResetCategoryID() {
 	m.category = nil
 }
 
+// SetIsDisplay sets the "is_display" field.
+func (m *ItemMutation) SetIsDisplay(i int) {
+	m.is_display = &i
+	m.addis_display = nil
+}
+
+// IsDisplay returns the value of the "is_display" field in the mutation.
+func (m *ItemMutation) IsDisplay() (r int, exists bool) {
+	v := m.is_display
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldIsDisplay returns the old "is_display" field's value of the Item entity.
+// If the Item object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *ItemMutation) OldIsDisplay(ctx context.Context) (v int, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldIsDisplay is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldIsDisplay requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldIsDisplay: %w", err)
+	}
+	return oldValue.IsDisplay, nil
+}
+
+// AddIsDisplay adds i to the "is_display" field.
+func (m *ItemMutation) AddIsDisplay(i int) {
+	if m.addis_display != nil {
+		*m.addis_display += i
+	} else {
+		m.addis_display = &i
+	}
+}
+
+// AddedIsDisplay returns the value that was added to the "is_display" field in this mutation.
+func (m *ItemMutation) AddedIsDisplay() (r int, exists bool) {
+	v := m.addis_display
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ResetIsDisplay resets all changes to the "is_display" field.
+func (m *ItemMutation) ResetIsDisplay() {
+	m.is_display = nil
+	m.addis_display = nil
+}
+
 // AddImageIDs adds the "images" edge to the Images entity by ids.
 func (m *ItemMutation) AddImageIDs(ids ...int) {
 	if m.images == nil {
@@ -8467,7 +8525,7 @@ func (m *ItemMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *ItemMutation) Fields() []string {
-	fields := make([]string, 0, 5)
+	fields := make([]string, 0, 6)
 	if m.created_at != nil {
 		fields = append(fields, item.FieldCreatedAt)
 	}
@@ -8482,6 +8540,9 @@ func (m *ItemMutation) Fields() []string {
 	}
 	if m.category != nil {
 		fields = append(fields, item.FieldCategoryID)
+	}
+	if m.is_display != nil {
+		fields = append(fields, item.FieldIsDisplay)
 	}
 	return fields
 }
@@ -8501,6 +8562,8 @@ func (m *ItemMutation) Field(name string) (ent.Value, bool) {
 		return m.Name()
 	case item.FieldCategoryID:
 		return m.CategoryID()
+	case item.FieldIsDisplay:
+		return m.IsDisplay()
 	}
 	return nil, false
 }
@@ -8520,6 +8583,8 @@ func (m *ItemMutation) OldField(ctx context.Context, name string) (ent.Value, er
 		return m.OldName(ctx)
 	case item.FieldCategoryID:
 		return m.OldCategoryID(ctx)
+	case item.FieldIsDisplay:
+		return m.OldIsDisplay(ctx)
 	}
 	return nil, fmt.Errorf("unknown Item field %s", name)
 }
@@ -8564,6 +8629,13 @@ func (m *ItemMutation) SetField(name string, value ent.Value) error {
 		}
 		m.SetCategoryID(v)
 		return nil
+	case item.FieldIsDisplay:
+		v, ok := value.(int)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetIsDisplay(v)
+		return nil
 	}
 	return fmt.Errorf("unknown Item field %s", name)
 }
@@ -8572,6 +8644,9 @@ func (m *ItemMutation) SetField(name string, value ent.Value) error {
 // this mutation.
 func (m *ItemMutation) AddedFields() []string {
 	var fields []string
+	if m.addis_display != nil {
+		fields = append(fields, item.FieldIsDisplay)
+	}
 	return fields
 }
 
@@ -8580,6 +8655,8 @@ func (m *ItemMutation) AddedFields() []string {
 // was not set, or was not defined in the schema.
 func (m *ItemMutation) AddedField(name string) (ent.Value, bool) {
 	switch name {
+	case item.FieldIsDisplay:
+		return m.AddedIsDisplay()
 	}
 	return nil, false
 }
@@ -8589,6 +8666,13 @@ func (m *ItemMutation) AddedField(name string) (ent.Value, bool) {
 // type.
 func (m *ItemMutation) AddField(name string, value ent.Value) error {
 	switch name {
+	case item.FieldIsDisplay:
+		v, ok := value.(int)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddIsDisplay(v)
+		return nil
 	}
 	return fmt.Errorf("unknown Item numeric field %s", name)
 }
@@ -8639,6 +8723,9 @@ func (m *ItemMutation) ResetField(name string) error {
 		return nil
 	case item.FieldCategoryID:
 		m.ResetCategoryID()
+		return nil
+	case item.FieldIsDisplay:
+		m.ResetIsDisplay()
 		return nil
 	}
 	return fmt.Errorf("unknown Item field %s", name)
