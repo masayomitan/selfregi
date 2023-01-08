@@ -90,6 +90,30 @@ func (ic *ItemCreate) SetIsDisplay(i int) *ItemCreate {
 	return ic
 }
 
+// SetTax sets the "tax" field.
+func (ic *ItemCreate) SetTax(i int) *ItemCreate {
+	ic.mutation.SetTax(i)
+	return ic
+}
+
+// SetTaxRate sets the "tax_rate" field.
+func (ic *ItemCreate) SetTaxRate(i int) *ItemCreate {
+	ic.mutation.SetTaxRate(i)
+	return ic
+}
+
+// SetPrice sets the "price" field.
+func (ic *ItemCreate) SetPrice(i int) *ItemCreate {
+	ic.mutation.SetPrice(i)
+	return ic
+}
+
+// SetTemporaryStock sets the "temporary_stock" field.
+func (ic *ItemCreate) SetTemporaryStock(i int) *ItemCreate {
+	ic.mutation.SetTemporaryStock(i)
+	return ic
+}
+
 // AddImageIDs adds the "images" edge to the Images entity by IDs.
 func (ic *ItemCreate) AddImageIDs(ids ...int) *ItemCreate {
 	ic.mutation.AddImageIDs(ids...)
@@ -218,6 +242,18 @@ func (ic *ItemCreate) check() error {
 	if _, ok := ic.mutation.IsDisplay(); !ok {
 		return &ValidationError{Name: "is_display", err: errors.New(`ent: missing required field "Item.is_display"`)}
 	}
+	if _, ok := ic.mutation.Tax(); !ok {
+		return &ValidationError{Name: "tax", err: errors.New(`ent: missing required field "Item.tax"`)}
+	}
+	if _, ok := ic.mutation.TaxRate(); !ok {
+		return &ValidationError{Name: "tax_rate", err: errors.New(`ent: missing required field "Item.tax_rate"`)}
+	}
+	if _, ok := ic.mutation.Price(); !ok {
+		return &ValidationError{Name: "price", err: errors.New(`ent: missing required field "Item.price"`)}
+	}
+	if _, ok := ic.mutation.TemporaryStock(); !ok {
+		return &ValidationError{Name: "temporary_stock", err: errors.New(`ent: missing required field "Item.temporary_stock"`)}
+	}
 	if _, ok := ic.mutation.CategoryID(); !ok {
 		return &ValidationError{Name: "category", err: errors.New(`ent: missing required edge "Item.category"`)}
 	}
@@ -267,6 +303,22 @@ func (ic *ItemCreate) createSpec() (*Item, *sqlgraph.CreateSpec) {
 	if value, ok := ic.mutation.IsDisplay(); ok {
 		_spec.SetField(item.FieldIsDisplay, field.TypeInt, value)
 		_node.IsDisplay = value
+	}
+	if value, ok := ic.mutation.Tax(); ok {
+		_spec.SetField(item.FieldTax, field.TypeInt, value)
+		_node.Tax = value
+	}
+	if value, ok := ic.mutation.TaxRate(); ok {
+		_spec.SetField(item.FieldTaxRate, field.TypeInt, value)
+		_node.TaxRate = value
+	}
+	if value, ok := ic.mutation.Price(); ok {
+		_spec.SetField(item.FieldPrice, field.TypeInt, value)
+		_node.Price = value
+	}
+	if value, ok := ic.mutation.TemporaryStock(); ok {
+		_spec.SetField(item.FieldTemporaryStock, field.TypeInt, value)
+		_node.TemporaryStock = value
 	}
 	if nodes := ic.mutation.ImagesIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{

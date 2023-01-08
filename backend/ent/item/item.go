@@ -23,6 +23,14 @@ const (
 	FieldCategoryID = "category_id"
 	// FieldIsDisplay holds the string denoting the is_display field in the database.
 	FieldIsDisplay = "is_display"
+	// FieldTax holds the string denoting the tax field in the database.
+	FieldTax = "tax"
+	// FieldTaxRate holds the string denoting the tax_rate field in the database.
+	FieldTaxRate = "tax_rate"
+	// FieldPrice holds the string denoting the price field in the database.
+	FieldPrice = "price"
+	// FieldTemporaryStock holds the string denoting the temporary_stock field in the database.
+	FieldTemporaryStock = "temporary_stock"
 	// EdgeImages holds the string denoting the images edge name in mutations.
 	EdgeImages = "images"
 	// EdgeCategory holds the string denoting the category edge name in mutations.
@@ -52,6 +60,10 @@ var Columns = []string{
 	FieldName,
 	FieldCategoryID,
 	FieldIsDisplay,
+	FieldTax,
+	FieldTaxRate,
+	FieldPrice,
+	FieldTemporaryStock,
 }
 
 var (

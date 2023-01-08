@@ -89,6 +89,58 @@ func (iu *ItemUpdate) AddIsDisplay(i int) *ItemUpdate {
 	return iu
 }
 
+// SetTax sets the "tax" field.
+func (iu *ItemUpdate) SetTax(i int) *ItemUpdate {
+	iu.mutation.ResetTax()
+	iu.mutation.SetTax(i)
+	return iu
+}
+
+// AddTax adds i to the "tax" field.
+func (iu *ItemUpdate) AddTax(i int) *ItemUpdate {
+	iu.mutation.AddTax(i)
+	return iu
+}
+
+// SetTaxRate sets the "tax_rate" field.
+func (iu *ItemUpdate) SetTaxRate(i int) *ItemUpdate {
+	iu.mutation.ResetTaxRate()
+	iu.mutation.SetTaxRate(i)
+	return iu
+}
+
+// AddTaxRate adds i to the "tax_rate" field.
+func (iu *ItemUpdate) AddTaxRate(i int) *ItemUpdate {
+	iu.mutation.AddTaxRate(i)
+	return iu
+}
+
+// SetPrice sets the "price" field.
+func (iu *ItemUpdate) SetPrice(i int) *ItemUpdate {
+	iu.mutation.ResetPrice()
+	iu.mutation.SetPrice(i)
+	return iu
+}
+
+// AddPrice adds i to the "price" field.
+func (iu *ItemUpdate) AddPrice(i int) *ItemUpdate {
+	iu.mutation.AddPrice(i)
+	return iu
+}
+
+// SetTemporaryStock sets the "temporary_stock" field.
+func (iu *ItemUpdate) SetTemporaryStock(i int) *ItemUpdate {
+	iu.mutation.ResetTemporaryStock()
+	iu.mutation.SetTemporaryStock(i)
+	return iu
+}
+
+// AddTemporaryStock adds i to the "temporary_stock" field.
+func (iu *ItemUpdate) AddTemporaryStock(i int) *ItemUpdate {
+	iu.mutation.AddTemporaryStock(i)
+	return iu
+}
+
 // AddImageIDs adds the "images" edge to the Images entity by IDs.
 func (iu *ItemUpdate) AddImageIDs(ids ...int) *ItemUpdate {
 	iu.mutation.AddImageIDs(ids...)
@@ -254,6 +306,30 @@ func (iu *ItemUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	if value, ok := iu.mutation.AddedIsDisplay(); ok {
 		_spec.AddField(item.FieldIsDisplay, field.TypeInt, value)
 	}
+	if value, ok := iu.mutation.Tax(); ok {
+		_spec.SetField(item.FieldTax, field.TypeInt, value)
+	}
+	if value, ok := iu.mutation.AddedTax(); ok {
+		_spec.AddField(item.FieldTax, field.TypeInt, value)
+	}
+	if value, ok := iu.mutation.TaxRate(); ok {
+		_spec.SetField(item.FieldTaxRate, field.TypeInt, value)
+	}
+	if value, ok := iu.mutation.AddedTaxRate(); ok {
+		_spec.AddField(item.FieldTaxRate, field.TypeInt, value)
+	}
+	if value, ok := iu.mutation.Price(); ok {
+		_spec.SetField(item.FieldPrice, field.TypeInt, value)
+	}
+	if value, ok := iu.mutation.AddedPrice(); ok {
+		_spec.AddField(item.FieldPrice, field.TypeInt, value)
+	}
+	if value, ok := iu.mutation.TemporaryStock(); ok {
+		_spec.SetField(item.FieldTemporaryStock, field.TypeInt, value)
+	}
+	if value, ok := iu.mutation.AddedTemporaryStock(); ok {
+		_spec.AddField(item.FieldTemporaryStock, field.TypeInt, value)
+	}
 	if iu.mutation.ImagesCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2M,
@@ -418,6 +494,58 @@ func (iuo *ItemUpdateOne) SetIsDisplay(i int) *ItemUpdateOne {
 // AddIsDisplay adds i to the "is_display" field.
 func (iuo *ItemUpdateOne) AddIsDisplay(i int) *ItemUpdateOne {
 	iuo.mutation.AddIsDisplay(i)
+	return iuo
+}
+
+// SetTax sets the "tax" field.
+func (iuo *ItemUpdateOne) SetTax(i int) *ItemUpdateOne {
+	iuo.mutation.ResetTax()
+	iuo.mutation.SetTax(i)
+	return iuo
+}
+
+// AddTax adds i to the "tax" field.
+func (iuo *ItemUpdateOne) AddTax(i int) *ItemUpdateOne {
+	iuo.mutation.AddTax(i)
+	return iuo
+}
+
+// SetTaxRate sets the "tax_rate" field.
+func (iuo *ItemUpdateOne) SetTaxRate(i int) *ItemUpdateOne {
+	iuo.mutation.ResetTaxRate()
+	iuo.mutation.SetTaxRate(i)
+	return iuo
+}
+
+// AddTaxRate adds i to the "tax_rate" field.
+func (iuo *ItemUpdateOne) AddTaxRate(i int) *ItemUpdateOne {
+	iuo.mutation.AddTaxRate(i)
+	return iuo
+}
+
+// SetPrice sets the "price" field.
+func (iuo *ItemUpdateOne) SetPrice(i int) *ItemUpdateOne {
+	iuo.mutation.ResetPrice()
+	iuo.mutation.SetPrice(i)
+	return iuo
+}
+
+// AddPrice adds i to the "price" field.
+func (iuo *ItemUpdateOne) AddPrice(i int) *ItemUpdateOne {
+	iuo.mutation.AddPrice(i)
+	return iuo
+}
+
+// SetTemporaryStock sets the "temporary_stock" field.
+func (iuo *ItemUpdateOne) SetTemporaryStock(i int) *ItemUpdateOne {
+	iuo.mutation.ResetTemporaryStock()
+	iuo.mutation.SetTemporaryStock(i)
+	return iuo
+}
+
+// AddTemporaryStock adds i to the "temporary_stock" field.
+func (iuo *ItemUpdateOne) AddTemporaryStock(i int) *ItemUpdateOne {
+	iuo.mutation.AddTemporaryStock(i)
 	return iuo
 }
 
@@ -615,6 +743,30 @@ func (iuo *ItemUpdateOne) sqlSave(ctx context.Context) (_node *Item, err error) 
 	}
 	if value, ok := iuo.mutation.AddedIsDisplay(); ok {
 		_spec.AddField(item.FieldIsDisplay, field.TypeInt, value)
+	}
+	if value, ok := iuo.mutation.Tax(); ok {
+		_spec.SetField(item.FieldTax, field.TypeInt, value)
+	}
+	if value, ok := iuo.mutation.AddedTax(); ok {
+		_spec.AddField(item.FieldTax, field.TypeInt, value)
+	}
+	if value, ok := iuo.mutation.TaxRate(); ok {
+		_spec.SetField(item.FieldTaxRate, field.TypeInt, value)
+	}
+	if value, ok := iuo.mutation.AddedTaxRate(); ok {
+		_spec.AddField(item.FieldTaxRate, field.TypeInt, value)
+	}
+	if value, ok := iuo.mutation.Price(); ok {
+		_spec.SetField(item.FieldPrice, field.TypeInt, value)
+	}
+	if value, ok := iuo.mutation.AddedPrice(); ok {
+		_spec.AddField(item.FieldPrice, field.TypeInt, value)
+	}
+	if value, ok := iuo.mutation.TemporaryStock(); ok {
+		_spec.SetField(item.FieldTemporaryStock, field.TypeInt, value)
+	}
+	if value, ok := iuo.mutation.AddedTemporaryStock(); ok {
+		_spec.AddField(item.FieldTemporaryStock, field.TypeInt, value)
 	}
 	if iuo.mutation.ImagesCleared() {
 		edge := &sqlgraph.EdgeSpec{

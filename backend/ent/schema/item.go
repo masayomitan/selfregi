@@ -19,6 +19,10 @@ func (Item) Fields() []ent.Field {
 		field.String("name").Default("unknown"),
 		field.Int("category_id"),
 		field.Int("is_display"),
+		field.Int("tax"),
+		field.Int("tax_rate"),
+		field.Int("price"),
+		field.Int("temporary_stock"),
 	}
 }
 

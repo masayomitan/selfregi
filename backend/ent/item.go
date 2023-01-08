@@ -29,6 +29,14 @@ type Item struct {
 	CategoryID int `json:"category_id,omitempty"`
 	// IsDisplay holds the value of the "is_display" field.
 	IsDisplay int `json:"is_display,omitempty"`
+	// Tax holds the value of the "tax" field.
+	Tax int `json:"tax,omitempty"`
+	// TaxRate holds the value of the "tax_rate" field.
+	TaxRate int `json:"tax_rate,omitempty"`
+	// Price holds the value of the "price" field.
+	Price int `json:"price,omitempty"`
+	// TemporaryStock holds the value of the "temporary_stock" field.
+	TemporaryStock int `json:"temporary_stock,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the ItemQuery when eager-loading is set.
 	Edges ItemEdges `json:"edges"`
@@ -72,7 +80,7 @@ func (*Item) scanValues(columns []string) ([]any, error) {
 	values := make([]any, len(columns))
 	for i := range columns {
 		switch columns[i] {
-		case item.FieldID, item.FieldCategoryID, item.FieldIsDisplay:
+		case item.FieldID, item.FieldCategoryID, item.FieldIsDisplay, item.FieldTax, item.FieldTaxRate, item.FieldPrice, item.FieldTemporaryStock:
 			values[i] = new(sql.NullInt64)
 		case item.FieldName:
 			values[i] = new(sql.NullString)
@@ -136,6 +144,30 @@ func (i *Item) assignValues(columns []string, values []any) error {
 			} else if value.Valid {
 				i.IsDisplay = int(value.Int64)
 			}
+		case item.FieldTax:
+			if value, ok := values[j].(*sql.NullInt64); !ok {
+				return fmt.Errorf("unexpected type %T for field tax", values[j])
+			} else if value.Valid {
+				i.Tax = int(value.Int64)
+			}
+		case item.FieldTaxRate:
+			if value, ok := values[j].(*sql.NullInt64); !ok {
+				return fmt.Errorf("unexpected type %T for field tax_rate", values[j])
+			} else if value.Valid {
+				i.TaxRate = int(value.Int64)
+			}
+		case item.FieldPrice:
+			if value, ok := values[j].(*sql.NullInt64); !ok {
+				return fmt.Errorf("unexpected type %T for field price", values[j])
+			} else if value.Valid {
+				i.Price = int(value.Int64)
+			}
+		case item.FieldTemporaryStock:
+			if value, ok := values[j].(*sql.NullInt64); !ok {
+				return fmt.Errorf("unexpected type %T for field temporary_stock", values[j])
+			} else if value.Valid {
+				i.TemporaryStock = int(value.Int64)
+			}
 		}
 	}
 	return nil
@@ -193,6 +225,18 @@ func (i *Item) String() string {
 	builder.WriteString(", ")
 	builder.WriteString("is_display=")
 	builder.WriteString(fmt.Sprintf("%v", i.IsDisplay))
+	builder.WriteString(", ")
+	builder.WriteString("tax=")
+	builder.WriteString(fmt.Sprintf("%v", i.Tax))
+	builder.WriteString(", ")
+	builder.WriteString("tax_rate=")
+	builder.WriteString(fmt.Sprintf("%v", i.TaxRate))
+	builder.WriteString(", ")
+	builder.WriteString("price=")
+	builder.WriteString(fmt.Sprintf("%v", i.Price))
+	builder.WriteString(", ")
+	builder.WriteString("temporary_stock=")
+	builder.WriteString(fmt.Sprintf("%v", i.TemporaryStock))
 	builder.WriteByte(')')
 	return builder.String()
 }

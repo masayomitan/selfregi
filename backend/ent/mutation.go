@@ -8059,24 +8059,32 @@ func (m *ImagesMutation) ResetEdge(name string) error {
 // ItemMutation represents an operation that mutates the Item nodes in the graph.
 type ItemMutation struct {
 	config
-	op              Op
-	typ             string
-	id              *int
-	created_at      *time.Time
-	updated_at      *time.Time
-	deleted_at      *time.Time
-	name            *string
-	is_display      *int
-	addis_display   *int
-	clearedFields   map[string]struct{}
-	images          map[int]struct{}
-	removedimages   map[int]struct{}
-	clearedimages   bool
-	category        *int
-	clearedcategory bool
-	done            bool
-	oldValue        func(context.Context) (*Item, error)
-	predicates      []predicate.Item
+	op                 Op
+	typ                string
+	id                 *int
+	created_at         *time.Time
+	updated_at         *time.Time
+	deleted_at         *time.Time
+	name               *string
+	is_display         *int
+	addis_display      *int
+	tax                *int
+	addtax             *int
+	tax_rate           *int
+	addtax_rate        *int
+	price              *int
+	addprice           *int
+	temporary_stock    *int
+	addtemporary_stock *int
+	clearedFields      map[string]struct{}
+	images             map[int]struct{}
+	removedimages      map[int]struct{}
+	clearedimages      bool
+	category           *int
+	clearedcategory    bool
+	done               bool
+	oldValue           func(context.Context) (*Item, error)
+	predicates         []predicate.Item
 }
 
 var _ ent.Mutation = (*ItemMutation)(nil)
@@ -8426,6 +8434,230 @@ func (m *ItemMutation) ResetIsDisplay() {
 	m.addis_display = nil
 }
 
+// SetTax sets the "tax" field.
+func (m *ItemMutation) SetTax(i int) {
+	m.tax = &i
+	m.addtax = nil
+}
+
+// Tax returns the value of the "tax" field in the mutation.
+func (m *ItemMutation) Tax() (r int, exists bool) {
+	v := m.tax
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldTax returns the old "tax" field's value of the Item entity.
+// If the Item object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *ItemMutation) OldTax(ctx context.Context) (v int, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldTax is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldTax requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldTax: %w", err)
+	}
+	return oldValue.Tax, nil
+}
+
+// AddTax adds i to the "tax" field.
+func (m *ItemMutation) AddTax(i int) {
+	if m.addtax != nil {
+		*m.addtax += i
+	} else {
+		m.addtax = &i
+	}
+}
+
+// AddedTax returns the value that was added to the "tax" field in this mutation.
+func (m *ItemMutation) AddedTax() (r int, exists bool) {
+	v := m.addtax
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ResetTax resets all changes to the "tax" field.
+func (m *ItemMutation) ResetTax() {
+	m.tax = nil
+	m.addtax = nil
+}
+
+// SetTaxRate sets the "tax_rate" field.
+func (m *ItemMutation) SetTaxRate(i int) {
+	m.tax_rate = &i
+	m.addtax_rate = nil
+}
+
+// TaxRate returns the value of the "tax_rate" field in the mutation.
+func (m *ItemMutation) TaxRate() (r int, exists bool) {
+	v := m.tax_rate
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldTaxRate returns the old "tax_rate" field's value of the Item entity.
+// If the Item object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *ItemMutation) OldTaxRate(ctx context.Context) (v int, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldTaxRate is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldTaxRate requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldTaxRate: %w", err)
+	}
+	return oldValue.TaxRate, nil
+}
+
+// AddTaxRate adds i to the "tax_rate" field.
+func (m *ItemMutation) AddTaxRate(i int) {
+	if m.addtax_rate != nil {
+		*m.addtax_rate += i
+	} else {
+		m.addtax_rate = &i
+	}
+}
+
+// AddedTaxRate returns the value that was added to the "tax_rate" field in this mutation.
+func (m *ItemMutation) AddedTaxRate() (r int, exists bool) {
+	v := m.addtax_rate
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ResetTaxRate resets all changes to the "tax_rate" field.
+func (m *ItemMutation) ResetTaxRate() {
+	m.tax_rate = nil
+	m.addtax_rate = nil
+}
+
+// SetPrice sets the "price" field.
+func (m *ItemMutation) SetPrice(i int) {
+	m.price = &i
+	m.addprice = nil
+}
+
+// Price returns the value of the "price" field in the mutation.
+func (m *ItemMutation) Price() (r int, exists bool) {
+	v := m.price
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldPrice returns the old "price" field's value of the Item entity.
+// If the Item object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *ItemMutation) OldPrice(ctx context.Context) (v int, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldPrice is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldPrice requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldPrice: %w", err)
+	}
+	return oldValue.Price, nil
+}
+
+// AddPrice adds i to the "price" field.
+func (m *ItemMutation) AddPrice(i int) {
+	if m.addprice != nil {
+		*m.addprice += i
+	} else {
+		m.addprice = &i
+	}
+}
+
+// AddedPrice returns the value that was added to the "price" field in this mutation.
+func (m *ItemMutation) AddedPrice() (r int, exists bool) {
+	v := m.addprice
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ResetPrice resets all changes to the "price" field.
+func (m *ItemMutation) ResetPrice() {
+	m.price = nil
+	m.addprice = nil
+}
+
+// SetTemporaryStock sets the "temporary_stock" field.
+func (m *ItemMutation) SetTemporaryStock(i int) {
+	m.temporary_stock = &i
+	m.addtemporary_stock = nil
+}
+
+// TemporaryStock returns the value of the "temporary_stock" field in the mutation.
+func (m *ItemMutation) TemporaryStock() (r int, exists bool) {
+	v := m.temporary_stock
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldTemporaryStock returns the old "temporary_stock" field's value of the Item entity.
+// If the Item object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *ItemMutation) OldTemporaryStock(ctx context.Context) (v int, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldTemporaryStock is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldTemporaryStock requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldTemporaryStock: %w", err)
+	}
+	return oldValue.TemporaryStock, nil
+}
+
+// AddTemporaryStock adds i to the "temporary_stock" field.
+func (m *ItemMutation) AddTemporaryStock(i int) {
+	if m.addtemporary_stock != nil {
+		*m.addtemporary_stock += i
+	} else {
+		m.addtemporary_stock = &i
+	}
+}
+
+// AddedTemporaryStock returns the value that was added to the "temporary_stock" field in this mutation.
+func (m *ItemMutation) AddedTemporaryStock() (r int, exists bool) {
+	v := m.addtemporary_stock
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ResetTemporaryStock resets all changes to the "temporary_stock" field.
+func (m *ItemMutation) ResetTemporaryStock() {
+	m.temporary_stock = nil
+	m.addtemporary_stock = nil
+}
+
 // AddImageIDs adds the "images" edge to the Images entity by ids.
 func (m *ItemMutation) AddImageIDs(ids ...int) {
 	if m.images == nil {
@@ -8525,7 +8757,7 @@ func (m *ItemMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *ItemMutation) Fields() []string {
-	fields := make([]string, 0, 6)
+	fields := make([]string, 0, 10)
 	if m.created_at != nil {
 		fields = append(fields, item.FieldCreatedAt)
 	}
@@ -8543,6 +8775,18 @@ func (m *ItemMutation) Fields() []string {
 	}
 	if m.is_display != nil {
 		fields = append(fields, item.FieldIsDisplay)
+	}
+	if m.tax != nil {
+		fields = append(fields, item.FieldTax)
+	}
+	if m.tax_rate != nil {
+		fields = append(fields, item.FieldTaxRate)
+	}
+	if m.price != nil {
+		fields = append(fields, item.FieldPrice)
+	}
+	if m.temporary_stock != nil {
+		fields = append(fields, item.FieldTemporaryStock)
 	}
 	return fields
 }
@@ -8564,6 +8808,14 @@ func (m *ItemMutation) Field(name string) (ent.Value, bool) {
 		return m.CategoryID()
 	case item.FieldIsDisplay:
 		return m.IsDisplay()
+	case item.FieldTax:
+		return m.Tax()
+	case item.FieldTaxRate:
+		return m.TaxRate()
+	case item.FieldPrice:
+		return m.Price()
+	case item.FieldTemporaryStock:
+		return m.TemporaryStock()
 	}
 	return nil, false
 }
@@ -8585,6 +8837,14 @@ func (m *ItemMutation) OldField(ctx context.Context, name string) (ent.Value, er
 		return m.OldCategoryID(ctx)
 	case item.FieldIsDisplay:
 		return m.OldIsDisplay(ctx)
+	case item.FieldTax:
+		return m.OldTax(ctx)
+	case item.FieldTaxRate:
+		return m.OldTaxRate(ctx)
+	case item.FieldPrice:
+		return m.OldPrice(ctx)
+	case item.FieldTemporaryStock:
+		return m.OldTemporaryStock(ctx)
 	}
 	return nil, fmt.Errorf("unknown Item field %s", name)
 }
@@ -8636,6 +8896,34 @@ func (m *ItemMutation) SetField(name string, value ent.Value) error {
 		}
 		m.SetIsDisplay(v)
 		return nil
+	case item.FieldTax:
+		v, ok := value.(int)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetTax(v)
+		return nil
+	case item.FieldTaxRate:
+		v, ok := value.(int)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetTaxRate(v)
+		return nil
+	case item.FieldPrice:
+		v, ok := value.(int)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetPrice(v)
+		return nil
+	case item.FieldTemporaryStock:
+		v, ok := value.(int)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetTemporaryStock(v)
+		return nil
 	}
 	return fmt.Errorf("unknown Item field %s", name)
 }
@@ -8647,6 +8935,18 @@ func (m *ItemMutation) AddedFields() []string {
 	if m.addis_display != nil {
 		fields = append(fields, item.FieldIsDisplay)
 	}
+	if m.addtax != nil {
+		fields = append(fields, item.FieldTax)
+	}
+	if m.addtax_rate != nil {
+		fields = append(fields, item.FieldTaxRate)
+	}
+	if m.addprice != nil {
+		fields = append(fields, item.FieldPrice)
+	}
+	if m.addtemporary_stock != nil {
+		fields = append(fields, item.FieldTemporaryStock)
+	}
 	return fields
 }
 
@@ -8657,6 +8957,14 @@ func (m *ItemMutation) AddedField(name string) (ent.Value, bool) {
 	switch name {
 	case item.FieldIsDisplay:
 		return m.AddedIsDisplay()
+	case item.FieldTax:
+		return m.AddedTax()
+	case item.FieldTaxRate:
+		return m.AddedTaxRate()
+	case item.FieldPrice:
+		return m.AddedPrice()
+	case item.FieldTemporaryStock:
+		return m.AddedTemporaryStock()
 	}
 	return nil, false
 }
@@ -8672,6 +8980,34 @@ func (m *ItemMutation) AddField(name string, value ent.Value) error {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.AddIsDisplay(v)
+		return nil
+	case item.FieldTax:
+		v, ok := value.(int)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddTax(v)
+		return nil
+	case item.FieldTaxRate:
+		v, ok := value.(int)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddTaxRate(v)
+		return nil
+	case item.FieldPrice:
+		v, ok := value.(int)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddPrice(v)
+		return nil
+	case item.FieldTemporaryStock:
+		v, ok := value.(int)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddTemporaryStock(v)
 		return nil
 	}
 	return fmt.Errorf("unknown Item numeric field %s", name)
@@ -8726,6 +9062,18 @@ func (m *ItemMutation) ResetField(name string) error {
 		return nil
 	case item.FieldIsDisplay:
 		m.ResetIsDisplay()
+		return nil
+	case item.FieldTax:
+		m.ResetTax()
+		return nil
+	case item.FieldTaxRate:
+		m.ResetTaxRate()
+		return nil
+	case item.FieldPrice:
+		m.ResetPrice()
+		return nil
+	case item.FieldTemporaryStock:
+		m.ResetTemporaryStock()
 		return nil
 	}
 	return fmt.Errorf("unknown Item field %s", name)
