@@ -3,7 +3,7 @@ import { useRouter } from 'next/router'
 import axios from 'axios';
 import Link from 'next/link';
 import Image from 'next/image'
-// import Category from '../../models/category'
+import Item from '../../models/item'
 import { getItemsDisplayOn } from "../../apiClient/item"
 
 
@@ -14,13 +14,14 @@ const Category = () => {
     // 'X-Requested-With': 'XMLHttpRequest',
     // "X-CSRF-Token": csrfToken
   }
-  // const [categories, setCategories] = useState<Category[]>([])
+  const [items, setItems] = useState<Item[]>([])
   const router = useRouter()
   const pathId = router.query.id
   const getItems = useCallback(async (pathId: any) => {
+    if (pathId === undefined) return 
     await getItemsDisplayOn(pathId)
-      .then((res) => {
-        console.log(res)
+      .then((res: any) => {
+          setItems(res.data)
       })
   }, [])
   
@@ -35,16 +36,16 @@ const Category = () => {
         Hello world!
       </h1>
       <ul>
-        {/* {categories.map((v, i) =>
+        {items.map((v, i) =>
           <li key={i}>
             <Link href={{
-              pathname: "/categories/[category_id]",
-              query: {category_id: v.id}
+              pathname: "/items/[item_id]",
+              query: {item_id: v.id}
             }}>
-              <a>{v.name}</a>
+              <p>{v.name}</p>
             </Link>
           </li>
-        )} */}
+        )}
       </ul>
     </>
   )

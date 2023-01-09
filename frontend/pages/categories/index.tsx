@@ -18,10 +18,7 @@ const CategoryIndex = () => {
   const getAllCategories = useCallback(async () => {
     await getCategories()
       .then((res: any) => {
-        console.log(res.data)
-        if (res.data !== undefined) {
           setCategories(res.data)
-        }
       })
   }, [])
   
