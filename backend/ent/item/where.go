@@ -117,7 +117,7 @@ func CategoryID(v int) predicate.Item {
 }
 
 // IsDisplay applies equality check predicate on the "is_display" field. It's identical to IsDisplayEQ.
-func IsDisplay(v int) predicate.Item {
+func IsDisplay(v bool) predicate.Item {
 	return predicate.Item(func(s *sql.Selector) {
 		s.Where(sql.EQ(s.C(FieldIsDisplay), v))
 	})
@@ -493,66 +493,16 @@ func CategoryIDNotIn(vs ...int) predicate.Item {
 }
 
 // IsDisplayEQ applies the EQ predicate on the "is_display" field.
-func IsDisplayEQ(v int) predicate.Item {
+func IsDisplayEQ(v bool) predicate.Item {
 	return predicate.Item(func(s *sql.Selector) {
 		s.Where(sql.EQ(s.C(FieldIsDisplay), v))
 	})
 }
 
 // IsDisplayNEQ applies the NEQ predicate on the "is_display" field.
-func IsDisplayNEQ(v int) predicate.Item {
+func IsDisplayNEQ(v bool) predicate.Item {
 	return predicate.Item(func(s *sql.Selector) {
 		s.Where(sql.NEQ(s.C(FieldIsDisplay), v))
-	})
-}
-
-// IsDisplayIn applies the In predicate on the "is_display" field.
-func IsDisplayIn(vs ...int) predicate.Item {
-	v := make([]any, len(vs))
-	for i := range v {
-		v[i] = vs[i]
-	}
-	return predicate.Item(func(s *sql.Selector) {
-		s.Where(sql.In(s.C(FieldIsDisplay), v...))
-	})
-}
-
-// IsDisplayNotIn applies the NotIn predicate on the "is_display" field.
-func IsDisplayNotIn(vs ...int) predicate.Item {
-	v := make([]any, len(vs))
-	for i := range v {
-		v[i] = vs[i]
-	}
-	return predicate.Item(func(s *sql.Selector) {
-		s.Where(sql.NotIn(s.C(FieldIsDisplay), v...))
-	})
-}
-
-// IsDisplayGT applies the GT predicate on the "is_display" field.
-func IsDisplayGT(v int) predicate.Item {
-	return predicate.Item(func(s *sql.Selector) {
-		s.Where(sql.GT(s.C(FieldIsDisplay), v))
-	})
-}
-
-// IsDisplayGTE applies the GTE predicate on the "is_display" field.
-func IsDisplayGTE(v int) predicate.Item {
-	return predicate.Item(func(s *sql.Selector) {
-		s.Where(sql.GTE(s.C(FieldIsDisplay), v))
-	})
-}
-
-// IsDisplayLT applies the LT predicate on the "is_display" field.
-func IsDisplayLT(v int) predicate.Item {
-	return predicate.Item(func(s *sql.Selector) {
-		s.Where(sql.LT(s.C(FieldIsDisplay), v))
-	})
-}
-
-// IsDisplayLTE applies the LTE predicate on the "is_display" field.
-func IsDisplayLTE(v int) predicate.Item {
-	return predicate.Item(func(s *sql.Selector) {
-		s.Where(sql.LTE(s.C(FieldIsDisplay), v))
 	})
 }
 
@@ -620,6 +570,20 @@ func TaxLTE(v int) predicate.Item {
 	})
 }
 
+// TaxIsNil applies the IsNil predicate on the "tax" field.
+func TaxIsNil() predicate.Item {
+	return predicate.Item(func(s *sql.Selector) {
+		s.Where(sql.IsNull(s.C(FieldTax)))
+	})
+}
+
+// TaxNotNil applies the NotNil predicate on the "tax" field.
+func TaxNotNil() predicate.Item {
+	return predicate.Item(func(s *sql.Selector) {
+		s.Where(sql.NotNull(s.C(FieldTax)))
+	})
+}
+
 // TaxRateEQ applies the EQ predicate on the "tax_rate" field.
 func TaxRateEQ(v int) predicate.Item {
 	return predicate.Item(func(s *sql.Selector) {
@@ -681,6 +645,20 @@ func TaxRateLT(v int) predicate.Item {
 func TaxRateLTE(v int) predicate.Item {
 	return predicate.Item(func(s *sql.Selector) {
 		s.Where(sql.LTE(s.C(FieldTaxRate), v))
+	})
+}
+
+// TaxRateIsNil applies the IsNil predicate on the "tax_rate" field.
+func TaxRateIsNil() predicate.Item {
+	return predicate.Item(func(s *sql.Selector) {
+		s.Where(sql.IsNull(s.C(FieldTaxRate)))
+	})
+}
+
+// TaxRateNotNil applies the NotNil predicate on the "tax_rate" field.
+func TaxRateNotNil() predicate.Item {
+	return predicate.Item(func(s *sql.Selector) {
+		s.Where(sql.NotNull(s.C(FieldTaxRate)))
 	})
 }
 
@@ -748,6 +726,20 @@ func PriceLTE(v int) predicate.Item {
 	})
 }
 
+// PriceIsNil applies the IsNil predicate on the "price" field.
+func PriceIsNil() predicate.Item {
+	return predicate.Item(func(s *sql.Selector) {
+		s.Where(sql.IsNull(s.C(FieldPrice)))
+	})
+}
+
+// PriceNotNil applies the NotNil predicate on the "price" field.
+func PriceNotNil() predicate.Item {
+	return predicate.Item(func(s *sql.Selector) {
+		s.Where(sql.NotNull(s.C(FieldPrice)))
+	})
+}
+
 // TemporaryStockEQ applies the EQ predicate on the "temporary_stock" field.
 func TemporaryStockEQ(v int) predicate.Item {
 	return predicate.Item(func(s *sql.Selector) {
@@ -812,6 +804,20 @@ func TemporaryStockLTE(v int) predicate.Item {
 	})
 }
 
+// TemporaryStockIsNil applies the IsNil predicate on the "temporary_stock" field.
+func TemporaryStockIsNil() predicate.Item {
+	return predicate.Item(func(s *sql.Selector) {
+		s.Where(sql.IsNull(s.C(FieldTemporaryStock)))
+	})
+}
+
+// TemporaryStockNotNil applies the NotNil predicate on the "temporary_stock" field.
+func TemporaryStockNotNil() predicate.Item {
+	return predicate.Item(func(s *sql.Selector) {
+		s.Where(sql.NotNull(s.C(FieldTemporaryStock)))
+	})
+}
+
 // HasImages applies the HasEdge predicate on the "images" edge.
 func HasImages() predicate.Item {
 	return predicate.Item(func(s *sql.Selector) {
@@ -853,7 +859,7 @@ func HasCategory() predicate.Item {
 }
 
 // HasCategoryWith applies the HasEdge predicate on the "category" edge with a given conditions (other predicates).
-func HasCategoryWith(preds ...predicate.Categories) predicate.Item {
+func HasCategoryWith(preds ...predicate.Category) predicate.Item {
 	return predicate.Item(func(s *sql.Selector) {
 		step := sqlgraph.NewStep(
 			sqlgraph.From(Table, FieldID),

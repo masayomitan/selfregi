@@ -6,7 +6,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"selfregi/ent/categories"
+	"selfregi/ent/category"
 	"selfregi/ent/images"
 	"selfregi/ent/item"
 	"selfregi/ent/predicate"
@@ -77,15 +77,16 @@ func (iu *ItemUpdate) SetCategoryID(i int) *ItemUpdate {
 }
 
 // SetIsDisplay sets the "is_display" field.
-func (iu *ItemUpdate) SetIsDisplay(i int) *ItemUpdate {
-	iu.mutation.ResetIsDisplay()
-	iu.mutation.SetIsDisplay(i)
+func (iu *ItemUpdate) SetIsDisplay(b bool) *ItemUpdate {
+	iu.mutation.SetIsDisplay(b)
 	return iu
 }
 
-// AddIsDisplay adds i to the "is_display" field.
-func (iu *ItemUpdate) AddIsDisplay(i int) *ItemUpdate {
-	iu.mutation.AddIsDisplay(i)
+// SetNillableIsDisplay sets the "is_display" field if the given value is not nil.
+func (iu *ItemUpdate) SetNillableIsDisplay(b *bool) *ItemUpdate {
+	if b != nil {
+		iu.SetIsDisplay(*b)
+	}
 	return iu
 }
 
@@ -96,9 +97,23 @@ func (iu *ItemUpdate) SetTax(i int) *ItemUpdate {
 	return iu
 }
 
+// SetNillableTax sets the "tax" field if the given value is not nil.
+func (iu *ItemUpdate) SetNillableTax(i *int) *ItemUpdate {
+	if i != nil {
+		iu.SetTax(*i)
+	}
+	return iu
+}
+
 // AddTax adds i to the "tax" field.
 func (iu *ItemUpdate) AddTax(i int) *ItemUpdate {
 	iu.mutation.AddTax(i)
+	return iu
+}
+
+// ClearTax clears the value of the "tax" field.
+func (iu *ItemUpdate) ClearTax() *ItemUpdate {
+	iu.mutation.ClearTax()
 	return iu
 }
 
@@ -109,9 +124,23 @@ func (iu *ItemUpdate) SetTaxRate(i int) *ItemUpdate {
 	return iu
 }
 
+// SetNillableTaxRate sets the "tax_rate" field if the given value is not nil.
+func (iu *ItemUpdate) SetNillableTaxRate(i *int) *ItemUpdate {
+	if i != nil {
+		iu.SetTaxRate(*i)
+	}
+	return iu
+}
+
 // AddTaxRate adds i to the "tax_rate" field.
 func (iu *ItemUpdate) AddTaxRate(i int) *ItemUpdate {
 	iu.mutation.AddTaxRate(i)
+	return iu
+}
+
+// ClearTaxRate clears the value of the "tax_rate" field.
+func (iu *ItemUpdate) ClearTaxRate() *ItemUpdate {
+	iu.mutation.ClearTaxRate()
 	return iu
 }
 
@@ -122,9 +151,23 @@ func (iu *ItemUpdate) SetPrice(i int) *ItemUpdate {
 	return iu
 }
 
+// SetNillablePrice sets the "price" field if the given value is not nil.
+func (iu *ItemUpdate) SetNillablePrice(i *int) *ItemUpdate {
+	if i != nil {
+		iu.SetPrice(*i)
+	}
+	return iu
+}
+
 // AddPrice adds i to the "price" field.
 func (iu *ItemUpdate) AddPrice(i int) *ItemUpdate {
 	iu.mutation.AddPrice(i)
+	return iu
+}
+
+// ClearPrice clears the value of the "price" field.
+func (iu *ItemUpdate) ClearPrice() *ItemUpdate {
+	iu.mutation.ClearPrice()
 	return iu
 }
 
@@ -135,9 +178,23 @@ func (iu *ItemUpdate) SetTemporaryStock(i int) *ItemUpdate {
 	return iu
 }
 
+// SetNillableTemporaryStock sets the "temporary_stock" field if the given value is not nil.
+func (iu *ItemUpdate) SetNillableTemporaryStock(i *int) *ItemUpdate {
+	if i != nil {
+		iu.SetTemporaryStock(*i)
+	}
+	return iu
+}
+
 // AddTemporaryStock adds i to the "temporary_stock" field.
 func (iu *ItemUpdate) AddTemporaryStock(i int) *ItemUpdate {
 	iu.mutation.AddTemporaryStock(i)
+	return iu
+}
+
+// ClearTemporaryStock clears the value of the "temporary_stock" field.
+func (iu *ItemUpdate) ClearTemporaryStock() *ItemUpdate {
+	iu.mutation.ClearTemporaryStock()
 	return iu
 }
 
@@ -156,8 +213,8 @@ func (iu *ItemUpdate) AddImages(i ...*Images) *ItemUpdate {
 	return iu.AddImageIDs(ids...)
 }
 
-// SetCategory sets the "category" edge to the Categories entity.
-func (iu *ItemUpdate) SetCategory(c *Categories) *ItemUpdate {
+// SetCategory sets the "category" edge to the Category entity.
+func (iu *ItemUpdate) SetCategory(c *Category) *ItemUpdate {
 	return iu.SetCategoryID(c.ID)
 }
 
@@ -187,7 +244,7 @@ func (iu *ItemUpdate) RemoveImages(i ...*Images) *ItemUpdate {
 	return iu.RemoveImageIDs(ids...)
 }
 
-// ClearCategory clears the "category" edge to the Categories entity.
+// ClearCategory clears the "category" edge to the Category entity.
 func (iu *ItemUpdate) ClearCategory() *ItemUpdate {
 	iu.mutation.ClearCategory()
 	return iu
@@ -301,10 +358,7 @@ func (iu *ItemUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		_spec.SetField(item.FieldName, field.TypeString, value)
 	}
 	if value, ok := iu.mutation.IsDisplay(); ok {
-		_spec.SetField(item.FieldIsDisplay, field.TypeInt, value)
-	}
-	if value, ok := iu.mutation.AddedIsDisplay(); ok {
-		_spec.AddField(item.FieldIsDisplay, field.TypeInt, value)
+		_spec.SetField(item.FieldIsDisplay, field.TypeBool, value)
 	}
 	if value, ok := iu.mutation.Tax(); ok {
 		_spec.SetField(item.FieldTax, field.TypeInt, value)
@@ -312,11 +366,17 @@ func (iu *ItemUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	if value, ok := iu.mutation.AddedTax(); ok {
 		_spec.AddField(item.FieldTax, field.TypeInt, value)
 	}
+	if iu.mutation.TaxCleared() {
+		_spec.ClearField(item.FieldTax, field.TypeInt)
+	}
 	if value, ok := iu.mutation.TaxRate(); ok {
 		_spec.SetField(item.FieldTaxRate, field.TypeInt, value)
 	}
 	if value, ok := iu.mutation.AddedTaxRate(); ok {
 		_spec.AddField(item.FieldTaxRate, field.TypeInt, value)
+	}
+	if iu.mutation.TaxRateCleared() {
+		_spec.ClearField(item.FieldTaxRate, field.TypeInt)
 	}
 	if value, ok := iu.mutation.Price(); ok {
 		_spec.SetField(item.FieldPrice, field.TypeInt, value)
@@ -324,11 +384,17 @@ func (iu *ItemUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	if value, ok := iu.mutation.AddedPrice(); ok {
 		_spec.AddField(item.FieldPrice, field.TypeInt, value)
 	}
+	if iu.mutation.PriceCleared() {
+		_spec.ClearField(item.FieldPrice, field.TypeInt)
+	}
 	if value, ok := iu.mutation.TemporaryStock(); ok {
 		_spec.SetField(item.FieldTemporaryStock, field.TypeInt, value)
 	}
 	if value, ok := iu.mutation.AddedTemporaryStock(); ok {
 		_spec.AddField(item.FieldTemporaryStock, field.TypeInt, value)
+	}
+	if iu.mutation.TemporaryStockCleared() {
+		_spec.ClearField(item.FieldTemporaryStock, field.TypeInt)
 	}
 	if iu.mutation.ImagesCleared() {
 		edge := &sqlgraph.EdgeSpec{
@@ -394,7 +460,7 @@ func (iu *ItemUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: &sqlgraph.FieldSpec{
 					Type:   field.TypeInt,
-					Column: categories.FieldID,
+					Column: category.FieldID,
 				},
 			},
 		}
@@ -410,7 +476,7 @@ func (iu *ItemUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: &sqlgraph.FieldSpec{
 					Type:   field.TypeInt,
-					Column: categories.FieldID,
+					Column: category.FieldID,
 				},
 			},
 		}
@@ -485,15 +551,16 @@ func (iuo *ItemUpdateOne) SetCategoryID(i int) *ItemUpdateOne {
 }
 
 // SetIsDisplay sets the "is_display" field.
-func (iuo *ItemUpdateOne) SetIsDisplay(i int) *ItemUpdateOne {
-	iuo.mutation.ResetIsDisplay()
-	iuo.mutation.SetIsDisplay(i)
+func (iuo *ItemUpdateOne) SetIsDisplay(b bool) *ItemUpdateOne {
+	iuo.mutation.SetIsDisplay(b)
 	return iuo
 }
 
-// AddIsDisplay adds i to the "is_display" field.
-func (iuo *ItemUpdateOne) AddIsDisplay(i int) *ItemUpdateOne {
-	iuo.mutation.AddIsDisplay(i)
+// SetNillableIsDisplay sets the "is_display" field if the given value is not nil.
+func (iuo *ItemUpdateOne) SetNillableIsDisplay(b *bool) *ItemUpdateOne {
+	if b != nil {
+		iuo.SetIsDisplay(*b)
+	}
 	return iuo
 }
 
@@ -504,9 +571,23 @@ func (iuo *ItemUpdateOne) SetTax(i int) *ItemUpdateOne {
 	return iuo
 }
 
+// SetNillableTax sets the "tax" field if the given value is not nil.
+func (iuo *ItemUpdateOne) SetNillableTax(i *int) *ItemUpdateOne {
+	if i != nil {
+		iuo.SetTax(*i)
+	}
+	return iuo
+}
+
 // AddTax adds i to the "tax" field.
 func (iuo *ItemUpdateOne) AddTax(i int) *ItemUpdateOne {
 	iuo.mutation.AddTax(i)
+	return iuo
+}
+
+// ClearTax clears the value of the "tax" field.
+func (iuo *ItemUpdateOne) ClearTax() *ItemUpdateOne {
+	iuo.mutation.ClearTax()
 	return iuo
 }
 
@@ -517,9 +598,23 @@ func (iuo *ItemUpdateOne) SetTaxRate(i int) *ItemUpdateOne {
 	return iuo
 }
 
+// SetNillableTaxRate sets the "tax_rate" field if the given value is not nil.
+func (iuo *ItemUpdateOne) SetNillableTaxRate(i *int) *ItemUpdateOne {
+	if i != nil {
+		iuo.SetTaxRate(*i)
+	}
+	return iuo
+}
+
 // AddTaxRate adds i to the "tax_rate" field.
 func (iuo *ItemUpdateOne) AddTaxRate(i int) *ItemUpdateOne {
 	iuo.mutation.AddTaxRate(i)
+	return iuo
+}
+
+// ClearTaxRate clears the value of the "tax_rate" field.
+func (iuo *ItemUpdateOne) ClearTaxRate() *ItemUpdateOne {
+	iuo.mutation.ClearTaxRate()
 	return iuo
 }
 
@@ -530,9 +625,23 @@ func (iuo *ItemUpdateOne) SetPrice(i int) *ItemUpdateOne {
 	return iuo
 }
 
+// SetNillablePrice sets the "price" field if the given value is not nil.
+func (iuo *ItemUpdateOne) SetNillablePrice(i *int) *ItemUpdateOne {
+	if i != nil {
+		iuo.SetPrice(*i)
+	}
+	return iuo
+}
+
 // AddPrice adds i to the "price" field.
 func (iuo *ItemUpdateOne) AddPrice(i int) *ItemUpdateOne {
 	iuo.mutation.AddPrice(i)
+	return iuo
+}
+
+// ClearPrice clears the value of the "price" field.
+func (iuo *ItemUpdateOne) ClearPrice() *ItemUpdateOne {
+	iuo.mutation.ClearPrice()
 	return iuo
 }
 
@@ -543,9 +652,23 @@ func (iuo *ItemUpdateOne) SetTemporaryStock(i int) *ItemUpdateOne {
 	return iuo
 }
 
+// SetNillableTemporaryStock sets the "temporary_stock" field if the given value is not nil.
+func (iuo *ItemUpdateOne) SetNillableTemporaryStock(i *int) *ItemUpdateOne {
+	if i != nil {
+		iuo.SetTemporaryStock(*i)
+	}
+	return iuo
+}
+
 // AddTemporaryStock adds i to the "temporary_stock" field.
 func (iuo *ItemUpdateOne) AddTemporaryStock(i int) *ItemUpdateOne {
 	iuo.mutation.AddTemporaryStock(i)
+	return iuo
+}
+
+// ClearTemporaryStock clears the value of the "temporary_stock" field.
+func (iuo *ItemUpdateOne) ClearTemporaryStock() *ItemUpdateOne {
+	iuo.mutation.ClearTemporaryStock()
 	return iuo
 }
 
@@ -564,8 +687,8 @@ func (iuo *ItemUpdateOne) AddImages(i ...*Images) *ItemUpdateOne {
 	return iuo.AddImageIDs(ids...)
 }
 
-// SetCategory sets the "category" edge to the Categories entity.
-func (iuo *ItemUpdateOne) SetCategory(c *Categories) *ItemUpdateOne {
+// SetCategory sets the "category" edge to the Category entity.
+func (iuo *ItemUpdateOne) SetCategory(c *Category) *ItemUpdateOne {
 	return iuo.SetCategoryID(c.ID)
 }
 
@@ -595,7 +718,7 @@ func (iuo *ItemUpdateOne) RemoveImages(i ...*Images) *ItemUpdateOne {
 	return iuo.RemoveImageIDs(ids...)
 }
 
-// ClearCategory clears the "category" edge to the Categories entity.
+// ClearCategory clears the "category" edge to the Category entity.
 func (iuo *ItemUpdateOne) ClearCategory() *ItemUpdateOne {
 	iuo.mutation.ClearCategory()
 	return iuo
@@ -739,10 +862,7 @@ func (iuo *ItemUpdateOne) sqlSave(ctx context.Context) (_node *Item, err error) 
 		_spec.SetField(item.FieldName, field.TypeString, value)
 	}
 	if value, ok := iuo.mutation.IsDisplay(); ok {
-		_spec.SetField(item.FieldIsDisplay, field.TypeInt, value)
-	}
-	if value, ok := iuo.mutation.AddedIsDisplay(); ok {
-		_spec.AddField(item.FieldIsDisplay, field.TypeInt, value)
+		_spec.SetField(item.FieldIsDisplay, field.TypeBool, value)
 	}
 	if value, ok := iuo.mutation.Tax(); ok {
 		_spec.SetField(item.FieldTax, field.TypeInt, value)
@@ -750,11 +870,17 @@ func (iuo *ItemUpdateOne) sqlSave(ctx context.Context) (_node *Item, err error) 
 	if value, ok := iuo.mutation.AddedTax(); ok {
 		_spec.AddField(item.FieldTax, field.TypeInt, value)
 	}
+	if iuo.mutation.TaxCleared() {
+		_spec.ClearField(item.FieldTax, field.TypeInt)
+	}
 	if value, ok := iuo.mutation.TaxRate(); ok {
 		_spec.SetField(item.FieldTaxRate, field.TypeInt, value)
 	}
 	if value, ok := iuo.mutation.AddedTaxRate(); ok {
 		_spec.AddField(item.FieldTaxRate, field.TypeInt, value)
+	}
+	if iuo.mutation.TaxRateCleared() {
+		_spec.ClearField(item.FieldTaxRate, field.TypeInt)
 	}
 	if value, ok := iuo.mutation.Price(); ok {
 		_spec.SetField(item.FieldPrice, field.TypeInt, value)
@@ -762,11 +888,17 @@ func (iuo *ItemUpdateOne) sqlSave(ctx context.Context) (_node *Item, err error) 
 	if value, ok := iuo.mutation.AddedPrice(); ok {
 		_spec.AddField(item.FieldPrice, field.TypeInt, value)
 	}
+	if iuo.mutation.PriceCleared() {
+		_spec.ClearField(item.FieldPrice, field.TypeInt)
+	}
 	if value, ok := iuo.mutation.TemporaryStock(); ok {
 		_spec.SetField(item.FieldTemporaryStock, field.TypeInt, value)
 	}
 	if value, ok := iuo.mutation.AddedTemporaryStock(); ok {
 		_spec.AddField(item.FieldTemporaryStock, field.TypeInt, value)
+	}
+	if iuo.mutation.TemporaryStockCleared() {
+		_spec.ClearField(item.FieldTemporaryStock, field.TypeInt)
 	}
 	if iuo.mutation.ImagesCleared() {
 		edge := &sqlgraph.EdgeSpec{
@@ -832,7 +964,7 @@ func (iuo *ItemUpdateOne) sqlSave(ctx context.Context) (_node *Item, err error) 
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: &sqlgraph.FieldSpec{
 					Type:   field.TypeInt,
-					Column: categories.FieldID,
+					Column: category.FieldID,
 				},
 			},
 		}
@@ -848,7 +980,7 @@ func (iuo *ItemUpdateOne) sqlSave(ctx context.Context) (_node *Item, err error) 
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: &sqlgraph.FieldSpec{
 					Type:   field.TypeInt,
-					Column: categories.FieldID,
+					Column: category.FieldID,
 				},
 			},
 		}

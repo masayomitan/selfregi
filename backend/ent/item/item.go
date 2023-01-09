@@ -44,8 +44,8 @@ const (
 	ImagesInverseTable = "images"
 	// CategoryTable is the table that holds the category relation/edge.
 	CategoryTable = "items"
-	// CategoryInverseTable is the table name for the Categories entity.
-	// It exists in this package in order to avoid circular dependency with the "categories" package.
+	// CategoryInverseTable is the table name for the Category entity.
+	// It exists in this package in order to avoid circular dependency with the "category" package.
 	CategoryInverseTable = "categories"
 	// CategoryColumn is the table column denoting the category relation/edge.
 	CategoryColumn = "category_id"
@@ -91,4 +91,6 @@ var (
 	UpdateDefaultUpdatedAt func() time.Time
 	// DefaultName holds the default value on creation for the "name" field.
 	DefaultName string
+	// DefaultIsDisplay holds the default value on creation for the "is_display" field.
+	DefaultIsDisplay bool
 )

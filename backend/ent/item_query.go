@@ -7,7 +7,7 @@ import (
 	"database/sql/driver"
 	"fmt"
 	"math"
-	"selfregi/ent/categories"
+	"selfregi/ent/category"
 	"selfregi/ent/images"
 	"selfregi/ent/item"
 	"selfregi/ent/predicate"
@@ -27,7 +27,7 @@ type ItemQuery struct {
 	fields       []string
 	predicates   []predicate.Item
 	withImages   *ImagesQuery
-	withCategory *CategoriesQuery
+	withCategory *CategoryQuery
 	// intermediate query (i.e. traversal path).
 	sql  *sql.Selector
 	path func(context.Context) (*sql.Selector, error)
@@ -87,8 +87,8 @@ func (iq *ItemQuery) QueryImages() *ImagesQuery {
 }
 
 // QueryCategory chains the current query on the "category" edge.
-func (iq *ItemQuery) QueryCategory() *CategoriesQuery {
-	query := &CategoriesQuery{config: iq.config}
+func (iq *ItemQuery) QueryCategory() *CategoryQuery {
+	query := &CategoryQuery{config: iq.config}
 	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
 		if err := iq.prepareQuery(ctx); err != nil {
 			return nil, err
@@ -99,7 +99,7 @@ func (iq *ItemQuery) QueryCategory() *CategoriesQuery {
 		}
 		step := sqlgraph.NewStep(
 			sqlgraph.From(item.Table, item.FieldID, selector),
-			sqlgraph.To(categories.Table, categories.FieldID),
+			sqlgraph.To(category.Table, category.FieldID),
 			sqlgraph.Edge(sqlgraph.M2O, true, item.CategoryTable, item.CategoryColumn),
 		)
 		fromU = sqlgraph.SetNeighbors(iq.driver.Dialect(), step)
@@ -311,8 +311,8 @@ func (iq *ItemQuery) WithImages(opts ...func(*ImagesQuery)) *ItemQuery {
 
 // WithCategory tells the query-builder to eager-load the nodes that are connected to
 // the "category" edge. The optional arguments are used to configure the query builder of the edge.
-func (iq *ItemQuery) WithCategory(opts ...func(*CategoriesQuery)) *ItemQuery {
-	query := &CategoriesQuery{config: iq.config}
+func (iq *ItemQuery) WithCategory(opts ...func(*CategoryQuery)) *ItemQuery {
+	query := &CategoryQuery{config: iq.config}
 	for _, opt := range opts {
 		opt(query)
 	}
@@ -425,7 +425,7 @@ func (iq *ItemQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*Item, e
 	}
 	if query := iq.withCategory; query != nil {
 		if err := iq.loadCategory(ctx, query, nodes, nil,
-			func(n *Item, e *Categories) { n.Edges.Category = e }); err != nil {
+			func(n *Item, e *Category) { n.Edges.Category = e }); err != nil {
 			return nil, err
 		}
 	}
@@ -490,7 +490,7 @@ func (iq *ItemQuery) loadImages(ctx context.Context, query *ImagesQuery, nodes [
 	}
 	return nil
 }
-func (iq *ItemQuery) loadCategory(ctx context.Context, query *CategoriesQuery, nodes []*Item, init func(*Item), assign func(*Item, *Categories)) error {
+func (iq *ItemQuery) loadCategory(ctx context.Context, query *CategoryQuery, nodes []*Item, init func(*Item), assign func(*Item, *Category)) error {
 	ids := make([]int, 0, len(nodes))
 	nodeids := make(map[int][]*Item)
 	for i := range nodes {
@@ -500,7 +500,7 @@ func (iq *ItemQuery) loadCategory(ctx context.Context, query *CategoriesQuery, n
 		}
 		nodeids[fk] = append(nodeids[fk], nodes[i])
 	}
-	query.Where(categories.IDIn(ids...))
+	query.Where(category.IDIn(ids...))
 	neighbors, err := query.All(ctx)
 	if err != nil {
 		return err

@@ -29,7 +29,7 @@ type hooks struct {
 	Admin         []ent.Hook
 	Cart          []ent.Hook
 	CartDetail    []ent.Hook
-	Categories    []ent.Hook
+	Category      []ent.Hook
 	Images        []ent.Hook
 	Item          []ent.Hook
 	Journals      []ent.Hook

@@ -18,11 +18,12 @@ func (Item) Fields() []ent.Field {
 	return []ent.Field{
 		field.String("name").Default("unknown"),
 		field.Int("category_id"),
-		field.Int("is_display"),
-		field.Int("tax"),
-		field.Int("tax_rate"),
-		field.Int("price"),
-		field.Int("temporary_stock"),
+		field.Bool("is_display").
+			Default(false),
+		field.Int("tax").Optional(),
+		field.Int("tax_rate").Optional(),
+		field.Int("price").Optional(),
+		field.Int("temporary_stock").Optional(),
 	}
 }
 
@@ -30,7 +31,7 @@ func (Item) Fields() []ent.Field {
 func (Item) Edges() []ent.Edge {
 	return []ent.Edge{
 		edge.To("images", Images.Type),
-		edge.From("category", Categories.Type).
+		edge.From("category", Category.Type).
 			Ref("items").
 			Field("category_id").
 			Unique().

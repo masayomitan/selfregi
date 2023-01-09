@@ -11,7 +11,7 @@ import (
 	"selfregi/ent/admin"
 	"selfregi/ent/cart"
 	"selfregi/ent/cartdetail"
-	"selfregi/ent/categories"
+	"selfregi/ent/category"
 	"selfregi/ent/images"
 	"selfregi/ent/item"
 	"selfregi/ent/journals"
@@ -45,7 +45,7 @@ func columnChecker(table string) func(string) error {
 		admin.Table:         admin.ValidColumn,
 		cart.Table:          cart.ValidColumn,
 		cartdetail.Table:    cartdetail.ValidColumn,
-		categories.Table:    categories.ValidColumn,
+		category.Table:      category.ValidColumn,
 		images.Table:        images.ValidColumn,
 		item.Table:          item.ValidColumn,
 		journals.Table:      journals.ValidColumn,

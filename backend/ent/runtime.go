@@ -8,7 +8,7 @@ import (
 	"selfregi/ent/admin"
 	"selfregi/ent/cart"
 	"selfregi/ent/cartdetail"
-	"selfregi/ent/categories"
+	"selfregi/ent/category"
 	"selfregi/ent/images"
 	"selfregi/ent/item"
 	"selfregi/ent/journals"
@@ -156,21 +156,25 @@ func init() {
 	cartdetailDescDiscountID := cartdetailFields[10].Descriptor()
 	// cartdetail.DiscountIDValidator is a validator for the "discount_id" field. It is called by the builders before save.
 	cartdetail.DiscountIDValidator = cartdetailDescDiscountID.Validators[0].(func(int) error)
-	categoriesMixin := schema.Categories{}.Mixin()
-	categoriesMixinFields0 := categoriesMixin[0].Fields()
-	_ = categoriesMixinFields0
-	categoriesFields := schema.Categories{}.Fields()
-	_ = categoriesFields
-	// categoriesDescCreatedAt is the schema descriptor for created_at field.
-	categoriesDescCreatedAt := categoriesMixinFields0[0].Descriptor()
-	// categories.DefaultCreatedAt holds the default value on creation for the created_at field.
-	categories.DefaultCreatedAt = categoriesDescCreatedAt.Default.(func() time.Time)
-	// categoriesDescUpdatedAt is the schema descriptor for updated_at field.
-	categoriesDescUpdatedAt := categoriesMixinFields0[1].Descriptor()
-	// categories.DefaultUpdatedAt holds the default value on creation for the updated_at field.
-	categories.DefaultUpdatedAt = categoriesDescUpdatedAt.Default.(func() time.Time)
-	// categories.UpdateDefaultUpdatedAt holds the default value on update for the updated_at field.
-	categories.UpdateDefaultUpdatedAt = categoriesDescUpdatedAt.UpdateDefault.(func() time.Time)
+	categoryMixin := schema.Category{}.Mixin()
+	categoryMixinFields0 := categoryMixin[0].Fields()
+	_ = categoryMixinFields0
+	categoryFields := schema.Category{}.Fields()
+	_ = categoryFields
+	// categoryDescCreatedAt is the schema descriptor for created_at field.
+	categoryDescCreatedAt := categoryMixinFields0[0].Descriptor()
+	// category.DefaultCreatedAt holds the default value on creation for the created_at field.
+	category.DefaultCreatedAt = categoryDescCreatedAt.Default.(func() time.Time)
+	// categoryDescUpdatedAt is the schema descriptor for updated_at field.
+	categoryDescUpdatedAt := categoryMixinFields0[1].Descriptor()
+	// category.DefaultUpdatedAt holds the default value on creation for the updated_at field.
+	category.DefaultUpdatedAt = categoryDescUpdatedAt.Default.(func() time.Time)
+	// category.UpdateDefaultUpdatedAt holds the default value on update for the updated_at field.
+	category.UpdateDefaultUpdatedAt = categoryDescUpdatedAt.UpdateDefault.(func() time.Time)
+	// categoryDescIsDisplay is the schema descriptor for is_display field.
+	categoryDescIsDisplay := categoryFields[1].Descriptor()
+	// category.DefaultIsDisplay holds the default value on creation for the is_display field.
+	category.DefaultIsDisplay = categoryDescIsDisplay.Default.(bool)
 	imagesMixin := schema.Images{}.Mixin()
 	imagesMixinFields0 := imagesMixin[0].Fields()
 	_ = imagesMixinFields0
@@ -205,6 +209,10 @@ func init() {
 	itemDescName := itemFields[0].Descriptor()
 	// item.DefaultName holds the default value on creation for the name field.
 	item.DefaultName = itemDescName.Default.(string)
+	// itemDescIsDisplay is the schema descriptor for is_display field.
+	itemDescIsDisplay := itemFields[2].Descriptor()
+	// item.DefaultIsDisplay holds the default value on creation for the is_display field.
+	item.DefaultIsDisplay = itemDescIsDisplay.Default.(bool)
 	journalsMixin := schema.Journals{}.Mixin()
 	journalsMixinFields0 := journalsMixin[0].Fields()
 	_ = journalsMixinFields0

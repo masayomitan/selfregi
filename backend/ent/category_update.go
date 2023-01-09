@@ -6,7 +6,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"selfregi/ent/categories"
+	"selfregi/ent/category"
 	"selfregi/ent/item"
 	"selfregi/ent/predicate"
 	"time"
@@ -16,33 +16,33 @@ import (
 	"entgo.io/ent/schema/field"
 )
 
-// CategoriesUpdate is the builder for updating Categories entities.
-type CategoriesUpdate struct {
+// CategoryUpdate is the builder for updating Category entities.
+type CategoryUpdate struct {
 	config
 	hooks    []Hook
-	mutation *CategoriesMutation
+	mutation *CategoryMutation
 }
 
-// Where appends a list predicates to the CategoriesUpdate builder.
-func (cu *CategoriesUpdate) Where(ps ...predicate.Categories) *CategoriesUpdate {
+// Where appends a list predicates to the CategoryUpdate builder.
+func (cu *CategoryUpdate) Where(ps ...predicate.Category) *CategoryUpdate {
 	cu.mutation.Where(ps...)
 	return cu
 }
 
 // SetUpdatedAt sets the "updated_at" field.
-func (cu *CategoriesUpdate) SetUpdatedAt(t time.Time) *CategoriesUpdate {
+func (cu *CategoryUpdate) SetUpdatedAt(t time.Time) *CategoryUpdate {
 	cu.mutation.SetUpdatedAt(t)
 	return cu
 }
 
 // SetDeletedAt sets the "deleted_at" field.
-func (cu *CategoriesUpdate) SetDeletedAt(t time.Time) *CategoriesUpdate {
+func (cu *CategoryUpdate) SetDeletedAt(t time.Time) *CategoryUpdate {
 	cu.mutation.SetDeletedAt(t)
 	return cu
 }
 
 // SetNillableDeletedAt sets the "deleted_at" field if the given value is not nil.
-func (cu *CategoriesUpdate) SetNillableDeletedAt(t *time.Time) *CategoriesUpdate {
+func (cu *CategoryUpdate) SetNillableDeletedAt(t *time.Time) *CategoryUpdate {
 	if t != nil {
 		cu.SetDeletedAt(*t)
 	}
@@ -50,38 +50,39 @@ func (cu *CategoriesUpdate) SetNillableDeletedAt(t *time.Time) *CategoriesUpdate
 }
 
 // ClearDeletedAt clears the value of the "deleted_at" field.
-func (cu *CategoriesUpdate) ClearDeletedAt() *CategoriesUpdate {
+func (cu *CategoryUpdate) ClearDeletedAt() *CategoryUpdate {
 	cu.mutation.ClearDeletedAt()
 	return cu
 }
 
 // SetName sets the "name" field.
-func (cu *CategoriesUpdate) SetName(s string) *CategoriesUpdate {
+func (cu *CategoryUpdate) SetName(s string) *CategoryUpdate {
 	cu.mutation.SetName(s)
 	return cu
 }
 
 // SetIsDisplay sets the "is_display" field.
-func (cu *CategoriesUpdate) SetIsDisplay(i int) *CategoriesUpdate {
-	cu.mutation.ResetIsDisplay()
-	cu.mutation.SetIsDisplay(i)
+func (cu *CategoryUpdate) SetIsDisplay(b bool) *CategoryUpdate {
+	cu.mutation.SetIsDisplay(b)
 	return cu
 }
 
-// AddIsDisplay adds i to the "is_display" field.
-func (cu *CategoriesUpdate) AddIsDisplay(i int) *CategoriesUpdate {
-	cu.mutation.AddIsDisplay(i)
+// SetNillableIsDisplay sets the "is_display" field if the given value is not nil.
+func (cu *CategoryUpdate) SetNillableIsDisplay(b *bool) *CategoryUpdate {
+	if b != nil {
+		cu.SetIsDisplay(*b)
+	}
 	return cu
 }
 
 // AddItemIDs adds the "items" edge to the Item entity by IDs.
-func (cu *CategoriesUpdate) AddItemIDs(ids ...int) *CategoriesUpdate {
+func (cu *CategoryUpdate) AddItemIDs(ids ...int) *CategoryUpdate {
 	cu.mutation.AddItemIDs(ids...)
 	return cu
 }
 
 // AddItems adds the "items" edges to the Item entity.
-func (cu *CategoriesUpdate) AddItems(i ...*Item) *CategoriesUpdate {
+func (cu *CategoryUpdate) AddItems(i ...*Item) *CategoryUpdate {
 	ids := make([]int, len(i))
 	for j := range i {
 		ids[j] = i[j].ID
@@ -89,25 +90,25 @@ func (cu *CategoriesUpdate) AddItems(i ...*Item) *CategoriesUpdate {
 	return cu.AddItemIDs(ids...)
 }
 
-// Mutation returns the CategoriesMutation object of the builder.
-func (cu *CategoriesUpdate) Mutation() *CategoriesMutation {
+// Mutation returns the CategoryMutation object of the builder.
+func (cu *CategoryUpdate) Mutation() *CategoryMutation {
 	return cu.mutation
 }
 
 // ClearItems clears all "items" edges to the Item entity.
-func (cu *CategoriesUpdate) ClearItems() *CategoriesUpdate {
+func (cu *CategoryUpdate) ClearItems() *CategoryUpdate {
 	cu.mutation.ClearItems()
 	return cu
 }
 
 // RemoveItemIDs removes the "items" edge to Item entities by IDs.
-func (cu *CategoriesUpdate) RemoveItemIDs(ids ...int) *CategoriesUpdate {
+func (cu *CategoryUpdate) RemoveItemIDs(ids ...int) *CategoryUpdate {
 	cu.mutation.RemoveItemIDs(ids...)
 	return cu
 }
 
 // RemoveItems removes "items" edges to Item entities.
-func (cu *CategoriesUpdate) RemoveItems(i ...*Item) *CategoriesUpdate {
+func (cu *CategoryUpdate) RemoveItems(i ...*Item) *CategoryUpdate {
 	ids := make([]int, len(i))
 	for j := range i {
 		ids[j] = i[j].ID
@@ -116,7 +117,7 @@ func (cu *CategoriesUpdate) RemoveItems(i ...*Item) *CategoriesUpdate {
 }
 
 // Save executes the query and returns the number of nodes affected by the update operation.
-func (cu *CategoriesUpdate) Save(ctx context.Context) (int, error) {
+func (cu *CategoryUpdate) Save(ctx context.Context) (int, error) {
 	var (
 		err      error
 		affected int
@@ -126,7 +127,7 @@ func (cu *CategoriesUpdate) Save(ctx context.Context) (int, error) {
 		affected, err = cu.sqlSave(ctx)
 	} else {
 		var mut Mutator = MutateFunc(func(ctx context.Context, m Mutation) (Value, error) {
-			mutation, ok := m.(*CategoriesMutation)
+			mutation, ok := m.(*CategoryMutation)
 			if !ok {
 				return nil, fmt.Errorf("unexpected mutation type %T", m)
 			}
@@ -149,7 +150,7 @@ func (cu *CategoriesUpdate) Save(ctx context.Context) (int, error) {
 }
 
 // SaveX is like Save, but panics if an error occurs.
-func (cu *CategoriesUpdate) SaveX(ctx context.Context) int {
+func (cu *CategoryUpdate) SaveX(ctx context.Context) int {
 	affected, err := cu.Save(ctx)
 	if err != nil {
 		panic(err)
@@ -158,34 +159,34 @@ func (cu *CategoriesUpdate) SaveX(ctx context.Context) int {
 }
 
 // Exec executes the query.
-func (cu *CategoriesUpdate) Exec(ctx context.Context) error {
+func (cu *CategoryUpdate) Exec(ctx context.Context) error {
 	_, err := cu.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (cu *CategoriesUpdate) ExecX(ctx context.Context) {
+func (cu *CategoryUpdate) ExecX(ctx context.Context) {
 	if err := cu.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
 
 // defaults sets the default values of the builder before save.
-func (cu *CategoriesUpdate) defaults() {
+func (cu *CategoryUpdate) defaults() {
 	if _, ok := cu.mutation.UpdatedAt(); !ok {
-		v := categories.UpdateDefaultUpdatedAt()
+		v := category.UpdateDefaultUpdatedAt()
 		cu.mutation.SetUpdatedAt(v)
 	}
 }
 
-func (cu *CategoriesUpdate) sqlSave(ctx context.Context) (n int, err error) {
+func (cu *CategoryUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	_spec := &sqlgraph.UpdateSpec{
 		Node: &sqlgraph.NodeSpec{
-			Table:   categories.Table,
-			Columns: categories.Columns,
+			Table:   category.Table,
+			Columns: category.Columns,
 			ID: &sqlgraph.FieldSpec{
 				Type:   field.TypeInt,
-				Column: categories.FieldID,
+				Column: category.FieldID,
 			},
 		},
 	}
@@ -197,29 +198,26 @@ func (cu *CategoriesUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 	}
 	if value, ok := cu.mutation.UpdatedAt(); ok {
-		_spec.SetField(categories.FieldUpdatedAt, field.TypeTime, value)
+		_spec.SetField(category.FieldUpdatedAt, field.TypeTime, value)
 	}
 	if value, ok := cu.mutation.DeletedAt(); ok {
-		_spec.SetField(categories.FieldDeletedAt, field.TypeTime, value)
+		_spec.SetField(category.FieldDeletedAt, field.TypeTime, value)
 	}
 	if cu.mutation.DeletedAtCleared() {
-		_spec.ClearField(categories.FieldDeletedAt, field.TypeTime)
+		_spec.ClearField(category.FieldDeletedAt, field.TypeTime)
 	}
 	if value, ok := cu.mutation.Name(); ok {
-		_spec.SetField(categories.FieldName, field.TypeString, value)
+		_spec.SetField(category.FieldName, field.TypeString, value)
 	}
 	if value, ok := cu.mutation.IsDisplay(); ok {
-		_spec.SetField(categories.FieldIsDisplay, field.TypeInt, value)
-	}
-	if value, ok := cu.mutation.AddedIsDisplay(); ok {
-		_spec.AddField(categories.FieldIsDisplay, field.TypeInt, value)
+		_spec.SetField(category.FieldIsDisplay, field.TypeBool, value)
 	}
 	if cu.mutation.ItemsCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
-			Table:   categories.ItemsTable,
-			Columns: []string{categories.ItemsColumn},
+			Table:   category.ItemsTable,
+			Columns: []string{category.ItemsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: &sqlgraph.FieldSpec{
@@ -234,8 +232,8 @@ func (cu *CategoriesUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
-			Table:   categories.ItemsTable,
-			Columns: []string{categories.ItemsColumn},
+			Table:   category.ItemsTable,
+			Columns: []string{category.ItemsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: &sqlgraph.FieldSpec{
@@ -253,8 +251,8 @@ func (cu *CategoriesUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
-			Table:   categories.ItemsTable,
-			Columns: []string{categories.ItemsColumn},
+			Table:   category.ItemsTable,
+			Columns: []string{category.ItemsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: &sqlgraph.FieldSpec{
@@ -270,7 +268,7 @@ func (cu *CategoriesUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	}
 	if n, err = sqlgraph.UpdateNodes(ctx, cu.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
-			err = &NotFoundError{categories.Label}
+			err = &NotFoundError{category.Label}
 		} else if sqlgraph.IsConstraintError(err) {
 			err = &ConstraintError{msg: err.Error(), wrap: err}
 		}
@@ -279,28 +277,28 @@ func (cu *CategoriesUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	return n, nil
 }
 
-// CategoriesUpdateOne is the builder for updating a single Categories entity.
-type CategoriesUpdateOne struct {
+// CategoryUpdateOne is the builder for updating a single Category entity.
+type CategoryUpdateOne struct {
 	config
 	fields   []string
 	hooks    []Hook
-	mutation *CategoriesMutation
+	mutation *CategoryMutation
 }
 
 // SetUpdatedAt sets the "updated_at" field.
-func (cuo *CategoriesUpdateOne) SetUpdatedAt(t time.Time) *CategoriesUpdateOne {
+func (cuo *CategoryUpdateOne) SetUpdatedAt(t time.Time) *CategoryUpdateOne {
 	cuo.mutation.SetUpdatedAt(t)
 	return cuo
 }
 
 // SetDeletedAt sets the "deleted_at" field.
-func (cuo *CategoriesUpdateOne) SetDeletedAt(t time.Time) *CategoriesUpdateOne {
+func (cuo *CategoryUpdateOne) SetDeletedAt(t time.Time) *CategoryUpdateOne {
 	cuo.mutation.SetDeletedAt(t)
 	return cuo
 }
 
 // SetNillableDeletedAt sets the "deleted_at" field if the given value is not nil.
-func (cuo *CategoriesUpdateOne) SetNillableDeletedAt(t *time.Time) *CategoriesUpdateOne {
+func (cuo *CategoryUpdateOne) SetNillableDeletedAt(t *time.Time) *CategoryUpdateOne {
 	if t != nil {
 		cuo.SetDeletedAt(*t)
 	}
@@ -308,38 +306,39 @@ func (cuo *CategoriesUpdateOne) SetNillableDeletedAt(t *time.Time) *CategoriesUp
 }
 
 // ClearDeletedAt clears the value of the "deleted_at" field.
-func (cuo *CategoriesUpdateOne) ClearDeletedAt() *CategoriesUpdateOne {
+func (cuo *CategoryUpdateOne) ClearDeletedAt() *CategoryUpdateOne {
 	cuo.mutation.ClearDeletedAt()
 	return cuo
 }
 
 // SetName sets the "name" field.
-func (cuo *CategoriesUpdateOne) SetName(s string) *CategoriesUpdateOne {
+func (cuo *CategoryUpdateOne) SetName(s string) *CategoryUpdateOne {
 	cuo.mutation.SetName(s)
 	return cuo
 }
 
 // SetIsDisplay sets the "is_display" field.
-func (cuo *CategoriesUpdateOne) SetIsDisplay(i int) *CategoriesUpdateOne {
-	cuo.mutation.ResetIsDisplay()
-	cuo.mutation.SetIsDisplay(i)
+func (cuo *CategoryUpdateOne) SetIsDisplay(b bool) *CategoryUpdateOne {
+	cuo.mutation.SetIsDisplay(b)
 	return cuo
 }
 
-// AddIsDisplay adds i to the "is_display" field.
-func (cuo *CategoriesUpdateOne) AddIsDisplay(i int) *CategoriesUpdateOne {
-	cuo.mutation.AddIsDisplay(i)
+// SetNillableIsDisplay sets the "is_display" field if the given value is not nil.
+func (cuo *CategoryUpdateOne) SetNillableIsDisplay(b *bool) *CategoryUpdateOne {
+	if b != nil {
+		cuo.SetIsDisplay(*b)
+	}
 	return cuo
 }
 
 // AddItemIDs adds the "items" edge to the Item entity by IDs.
-func (cuo *CategoriesUpdateOne) AddItemIDs(ids ...int) *CategoriesUpdateOne {
+func (cuo *CategoryUpdateOne) AddItemIDs(ids ...int) *CategoryUpdateOne {
 	cuo.mutation.AddItemIDs(ids...)
 	return cuo
 }
 
 // AddItems adds the "items" edges to the Item entity.
-func (cuo *CategoriesUpdateOne) AddItems(i ...*Item) *CategoriesUpdateOne {
+func (cuo *CategoryUpdateOne) AddItems(i ...*Item) *CategoryUpdateOne {
 	ids := make([]int, len(i))
 	for j := range i {
 		ids[j] = i[j].ID
@@ -347,25 +346,25 @@ func (cuo *CategoriesUpdateOne) AddItems(i ...*Item) *CategoriesUpdateOne {
 	return cuo.AddItemIDs(ids...)
 }
 
-// Mutation returns the CategoriesMutation object of the builder.
-func (cuo *CategoriesUpdateOne) Mutation() *CategoriesMutation {
+// Mutation returns the CategoryMutation object of the builder.
+func (cuo *CategoryUpdateOne) Mutation() *CategoryMutation {
 	return cuo.mutation
 }
 
 // ClearItems clears all "items" edges to the Item entity.
-func (cuo *CategoriesUpdateOne) ClearItems() *CategoriesUpdateOne {
+func (cuo *CategoryUpdateOne) ClearItems() *CategoryUpdateOne {
 	cuo.mutation.ClearItems()
 	return cuo
 }
 
 // RemoveItemIDs removes the "items" edge to Item entities by IDs.
-func (cuo *CategoriesUpdateOne) RemoveItemIDs(ids ...int) *CategoriesUpdateOne {
+func (cuo *CategoryUpdateOne) RemoveItemIDs(ids ...int) *CategoryUpdateOne {
 	cuo.mutation.RemoveItemIDs(ids...)
 	return cuo
 }
 
 // RemoveItems removes "items" edges to Item entities.
-func (cuo *CategoriesUpdateOne) RemoveItems(i ...*Item) *CategoriesUpdateOne {
+func (cuo *CategoryUpdateOne) RemoveItems(i ...*Item) *CategoryUpdateOne {
 	ids := make([]int, len(i))
 	for j := range i {
 		ids[j] = i[j].ID
@@ -375,23 +374,23 @@ func (cuo *CategoriesUpdateOne) RemoveItems(i ...*Item) *CategoriesUpdateOne {
 
 // Select allows selecting one or more fields (columns) of the returned entity.
 // The default is selecting all fields defined in the entity schema.
-func (cuo *CategoriesUpdateOne) Select(field string, fields ...string) *CategoriesUpdateOne {
+func (cuo *CategoryUpdateOne) Select(field string, fields ...string) *CategoryUpdateOne {
 	cuo.fields = append([]string{field}, fields...)
 	return cuo
 }
 
-// Save executes the query and returns the updated Categories entity.
-func (cuo *CategoriesUpdateOne) Save(ctx context.Context) (*Categories, error) {
+// Save executes the query and returns the updated Category entity.
+func (cuo *CategoryUpdateOne) Save(ctx context.Context) (*Category, error) {
 	var (
 		err  error
-		node *Categories
+		node *Category
 	)
 	cuo.defaults()
 	if len(cuo.hooks) == 0 {
 		node, err = cuo.sqlSave(ctx)
 	} else {
 		var mut Mutator = MutateFunc(func(ctx context.Context, m Mutation) (Value, error) {
-			mutation, ok := m.(*CategoriesMutation)
+			mutation, ok := m.(*CategoryMutation)
 			if !ok {
 				return nil, fmt.Errorf("unexpected mutation type %T", m)
 			}
@@ -410,9 +409,9 @@ func (cuo *CategoriesUpdateOne) Save(ctx context.Context) (*Categories, error) {
 		if err != nil {
 			return nil, err
 		}
-		nv, ok := v.(*Categories)
+		nv, ok := v.(*Category)
 		if !ok {
-			return nil, fmt.Errorf("unexpected node type %T returned from CategoriesMutation", v)
+			return nil, fmt.Errorf("unexpected node type %T returned from CategoryMutation", v)
 		}
 		node = nv
 	}
@@ -420,7 +419,7 @@ func (cuo *CategoriesUpdateOne) Save(ctx context.Context) (*Categories, error) {
 }
 
 // SaveX is like Save, but panics if an error occurs.
-func (cuo *CategoriesUpdateOne) SaveX(ctx context.Context) *Categories {
+func (cuo *CategoryUpdateOne) SaveX(ctx context.Context) *Category {
 	node, err := cuo.Save(ctx)
 	if err != nil {
 		panic(err)
@@ -429,50 +428,50 @@ func (cuo *CategoriesUpdateOne) SaveX(ctx context.Context) *Categories {
 }
 
 // Exec executes the query on the entity.
-func (cuo *CategoriesUpdateOne) Exec(ctx context.Context) error {
+func (cuo *CategoryUpdateOne) Exec(ctx context.Context) error {
 	_, err := cuo.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (cuo *CategoriesUpdateOne) ExecX(ctx context.Context) {
+func (cuo *CategoryUpdateOne) ExecX(ctx context.Context) {
 	if err := cuo.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
 
 // defaults sets the default values of the builder before save.
-func (cuo *CategoriesUpdateOne) defaults() {
+func (cuo *CategoryUpdateOne) defaults() {
 	if _, ok := cuo.mutation.UpdatedAt(); !ok {
-		v := categories.UpdateDefaultUpdatedAt()
+		v := category.UpdateDefaultUpdatedAt()
 		cuo.mutation.SetUpdatedAt(v)
 	}
 }
 
-func (cuo *CategoriesUpdateOne) sqlSave(ctx context.Context) (_node *Categories, err error) {
+func (cuo *CategoryUpdateOne) sqlSave(ctx context.Context) (_node *Category, err error) {
 	_spec := &sqlgraph.UpdateSpec{
 		Node: &sqlgraph.NodeSpec{
-			Table:   categories.Table,
-			Columns: categories.Columns,
+			Table:   category.Table,
+			Columns: category.Columns,
 			ID: &sqlgraph.FieldSpec{
 				Type:   field.TypeInt,
-				Column: categories.FieldID,
+				Column: category.FieldID,
 			},
 		},
 	}
 	id, ok := cuo.mutation.ID()
 	if !ok {
-		return nil, &ValidationError{Name: "id", err: errors.New(`ent: missing "Categories.id" for update`)}
+		return nil, &ValidationError{Name: "id", err: errors.New(`ent: missing "Category.id" for update`)}
 	}
 	_spec.Node.ID.Value = id
 	if fields := cuo.fields; len(fields) > 0 {
 		_spec.Node.Columns = make([]string, 0, len(fields))
-		_spec.Node.Columns = append(_spec.Node.Columns, categories.FieldID)
+		_spec.Node.Columns = append(_spec.Node.Columns, category.FieldID)
 		for _, f := range fields {
-			if !categories.ValidColumn(f) {
+			if !category.ValidColumn(f) {
 				return nil, &ValidationError{Name: f, err: fmt.Errorf("ent: invalid field %q for query", f)}
 			}
-			if f != categories.FieldID {
+			if f != category.FieldID {
 				_spec.Node.Columns = append(_spec.Node.Columns, f)
 			}
 		}
@@ -485,29 +484,26 @@ func (cuo *CategoriesUpdateOne) sqlSave(ctx context.Context) (_node *Categories,
 		}
 	}
 	if value, ok := cuo.mutation.UpdatedAt(); ok {
-		_spec.SetField(categories.FieldUpdatedAt, field.TypeTime, value)
+		_spec.SetField(category.FieldUpdatedAt, field.TypeTime, value)
 	}
 	if value, ok := cuo.mutation.DeletedAt(); ok {
-		_spec.SetField(categories.FieldDeletedAt, field.TypeTime, value)
+		_spec.SetField(category.FieldDeletedAt, field.TypeTime, value)
 	}
 	if cuo.mutation.DeletedAtCleared() {
-		_spec.ClearField(categories.FieldDeletedAt, field.TypeTime)
+		_spec.ClearField(category.FieldDeletedAt, field.TypeTime)
 	}
 	if value, ok := cuo.mutation.Name(); ok {
-		_spec.SetField(categories.FieldName, field.TypeString, value)
+		_spec.SetField(category.FieldName, field.TypeString, value)
 	}
 	if value, ok := cuo.mutation.IsDisplay(); ok {
-		_spec.SetField(categories.FieldIsDisplay, field.TypeInt, value)
-	}
-	if value, ok := cuo.mutation.AddedIsDisplay(); ok {
-		_spec.AddField(categories.FieldIsDisplay, field.TypeInt, value)
+		_spec.SetField(category.FieldIsDisplay, field.TypeBool, value)
 	}
 	if cuo.mutation.ItemsCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
-			Table:   categories.ItemsTable,
-			Columns: []string{categories.ItemsColumn},
+			Table:   category.ItemsTable,
+			Columns: []string{category.ItemsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: &sqlgraph.FieldSpec{
@@ -522,8 +518,8 @@ func (cuo *CategoriesUpdateOne) sqlSave(ctx context.Context) (_node *Categories,
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
-			Table:   categories.ItemsTable,
-			Columns: []string{categories.ItemsColumn},
+			Table:   category.ItemsTable,
+			Columns: []string{category.ItemsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: &sqlgraph.FieldSpec{
@@ -541,8 +537,8 @@ func (cuo *CategoriesUpdateOne) sqlSave(ctx context.Context) (_node *Categories,
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
-			Table:   categories.ItemsTable,
-			Columns: []string{categories.ItemsColumn},
+			Table:   category.ItemsTable,
+			Columns: []string{category.ItemsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: &sqlgraph.FieldSpec{
@@ -556,12 +552,12 @@ func (cuo *CategoriesUpdateOne) sqlSave(ctx context.Context) (_node *Categories,
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	_node = &Categories{config: cuo.config}
+	_node = &Category{config: cuo.config}
 	_spec.Assign = _node.assignValues
 	_spec.ScanValues = _node.scanValues
 	if err = sqlgraph.UpdateNode(ctx, cuo.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
-			err = &NotFoundError{categories.Label}
+			err = &NotFoundError{category.Label}
 		} else if sqlgraph.IsConstraintError(err) {
 			err = &ConstraintError{msg: err.Error(), wrap: err}
 		}

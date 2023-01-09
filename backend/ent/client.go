@@ -15,7 +15,7 @@ import (
 	"selfregi/ent/admin"
 	"selfregi/ent/cart"
 	"selfregi/ent/cartdetail"
-	"selfregi/ent/categories"
+	"selfregi/ent/category"
 	"selfregi/ent/images"
 	"selfregi/ent/item"
 	"selfregi/ent/journals"
@@ -41,8 +41,8 @@ type Client struct {
 	Cart *CartClient
 	// CartDetail is the client for interacting with the CartDetail builders.
 	CartDetail *CartDetailClient
-	// Categories is the client for interacting with the Categories builders.
-	Categories *CategoriesClient
+	// Category is the client for interacting with the Category builders.
+	Category *CategoryClient
 	// Images is the client for interacting with the Images builders.
 	Images *ImagesClient
 	// Item is the client for interacting with the Item builders.
@@ -69,7 +69,7 @@ func (c *Client) init() {
 	c.Admin = NewAdminClient(c.config)
 	c.Cart = NewCartClient(c.config)
 	c.CartDetail = NewCartDetailClient(c.config)
-	c.Categories = NewCategoriesClient(c.config)
+	c.Category = NewCategoryClient(c.config)
 	c.Images = NewImagesClient(c.config)
 	c.Item = NewItemClient(c.config)
 	c.Journals = NewJournalsClient(c.config)
@@ -112,7 +112,7 @@ func (c *Client) Tx(ctx context.Context) (*Tx, error) {
 		Admin:         NewAdminClient(cfg),
 		Cart:          NewCartClient(cfg),
 		CartDetail:    NewCartDetailClient(cfg),
-		Categories:    NewCategoriesClient(cfg),
+		Category:      NewCategoryClient(cfg),
 		Images:        NewImagesClient(cfg),
 		Item:          NewItemClient(cfg),
 		Journals:      NewJournalsClient(cfg),
@@ -141,7 +141,7 @@ func (c *Client) BeginTx(ctx context.Context, opts *sql.TxOptions) (*Tx, error) 
 		Admin:         NewAdminClient(cfg),
 		Cart:          NewCartClient(cfg),
 		CartDetail:    NewCartDetailClient(cfg),
-		Categories:    NewCategoriesClient(cfg),
+		Category:      NewCategoryClient(cfg),
 		Images:        NewImagesClient(cfg),
 		Item:          NewItemClient(cfg),
 		Journals:      NewJournalsClient(cfg),
@@ -179,7 +179,7 @@ func (c *Client) Use(hooks ...Hook) {
 	c.Admin.Use(hooks...)
 	c.Cart.Use(hooks...)
 	c.CartDetail.Use(hooks...)
-	c.Categories.Use(hooks...)
+	c.Category.Use(hooks...)
 	c.Images.Use(hooks...)
 	c.Item.Use(hooks...)
 	c.Journals.Use(hooks...)
@@ -732,84 +732,84 @@ func (c *CartDetailClient) Hooks() []Hook {
 	return c.hooks.CartDetail
 }
 
-// CategoriesClient is a client for the Categories schema.
-type CategoriesClient struct {
+// CategoryClient is a client for the Category schema.
+type CategoryClient struct {
 	config
 }
 
-// NewCategoriesClient returns a client for the Categories from the given config.
-func NewCategoriesClient(c config) *CategoriesClient {
-	return &CategoriesClient{config: c}
+// NewCategoryClient returns a client for the Category from the given config.
+func NewCategoryClient(c config) *CategoryClient {
+	return &CategoryClient{config: c}
 }
 
 // Use adds a list of mutation hooks to the hooks stack.
-// A call to `Use(f, g, h)` equals to `categories.Hooks(f(g(h())))`.
-func (c *CategoriesClient) Use(hooks ...Hook) {
-	c.hooks.Categories = append(c.hooks.Categories, hooks...)
+// A call to `Use(f, g, h)` equals to `category.Hooks(f(g(h())))`.
+func (c *CategoryClient) Use(hooks ...Hook) {
+	c.hooks.Category = append(c.hooks.Category, hooks...)
 }
 
-// Create returns a builder for creating a Categories entity.
-func (c *CategoriesClient) Create() *CategoriesCreate {
-	mutation := newCategoriesMutation(c.config, OpCreate)
-	return &CategoriesCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+// Create returns a builder for creating a Category entity.
+func (c *CategoryClient) Create() *CategoryCreate {
+	mutation := newCategoryMutation(c.config, OpCreate)
+	return &CategoryCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
 }
 
-// CreateBulk returns a builder for creating a bulk of Categories entities.
-func (c *CategoriesClient) CreateBulk(builders ...*CategoriesCreate) *CategoriesCreateBulk {
-	return &CategoriesCreateBulk{config: c.config, builders: builders}
+// CreateBulk returns a builder for creating a bulk of Category entities.
+func (c *CategoryClient) CreateBulk(builders ...*CategoryCreate) *CategoryCreateBulk {
+	return &CategoryCreateBulk{config: c.config, builders: builders}
 }
 
-// Update returns an update builder for Categories.
-func (c *CategoriesClient) Update() *CategoriesUpdate {
-	mutation := newCategoriesMutation(c.config, OpUpdate)
-	return &CategoriesUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+// Update returns an update builder for Category.
+func (c *CategoryClient) Update() *CategoryUpdate {
+	mutation := newCategoryMutation(c.config, OpUpdate)
+	return &CategoryUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
 }
 
 // UpdateOne returns an update builder for the given entity.
-func (c *CategoriesClient) UpdateOne(ca *Categories) *CategoriesUpdateOne {
-	mutation := newCategoriesMutation(c.config, OpUpdateOne, withCategories(ca))
-	return &CategoriesUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+func (c *CategoryClient) UpdateOne(ca *Category) *CategoryUpdateOne {
+	mutation := newCategoryMutation(c.config, OpUpdateOne, withCategory(ca))
+	return &CategoryUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
 }
 
 // UpdateOneID returns an update builder for the given id.
-func (c *CategoriesClient) UpdateOneID(id int) *CategoriesUpdateOne {
-	mutation := newCategoriesMutation(c.config, OpUpdateOne, withCategoriesID(id))
-	return &CategoriesUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+func (c *CategoryClient) UpdateOneID(id int) *CategoryUpdateOne {
+	mutation := newCategoryMutation(c.config, OpUpdateOne, withCategoryID(id))
+	return &CategoryUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
 }
 
-// Delete returns a delete builder for Categories.
-func (c *CategoriesClient) Delete() *CategoriesDelete {
-	mutation := newCategoriesMutation(c.config, OpDelete)
-	return &CategoriesDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
+// Delete returns a delete builder for Category.
+func (c *CategoryClient) Delete() *CategoryDelete {
+	mutation := newCategoryMutation(c.config, OpDelete)
+	return &CategoryDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
 }
 
 // DeleteOne returns a builder for deleting the given entity.
-func (c *CategoriesClient) DeleteOne(ca *Categories) *CategoriesDeleteOne {
+func (c *CategoryClient) DeleteOne(ca *Category) *CategoryDeleteOne {
 	return c.DeleteOneID(ca.ID)
 }
 
 // DeleteOneID returns a builder for deleting the given entity by its id.
-func (c *CategoriesClient) DeleteOneID(id int) *CategoriesDeleteOne {
-	builder := c.Delete().Where(categories.ID(id))
+func (c *CategoryClient) DeleteOneID(id int) *CategoryDeleteOne {
+	builder := c.Delete().Where(category.ID(id))
 	builder.mutation.id = &id
 	builder.mutation.op = OpDeleteOne
-	return &CategoriesDeleteOne{builder}
+	return &CategoryDeleteOne{builder}
 }
 
-// Query returns a query builder for Categories.
-func (c *CategoriesClient) Query() *CategoriesQuery {
-	return &CategoriesQuery{
+// Query returns a query builder for Category.
+func (c *CategoryClient) Query() *CategoryQuery {
+	return &CategoryQuery{
 		config: c.config,
 	}
 }
 
-// Get returns a Categories entity by its id.
-func (c *CategoriesClient) Get(ctx context.Context, id int) (*Categories, error) {
-	return c.Query().Where(categories.ID(id)).Only(ctx)
+// Get returns a Category entity by its id.
+func (c *CategoryClient) Get(ctx context.Context, id int) (*Category, error) {
+	return c.Query().Where(category.ID(id)).Only(ctx)
 }
 
 // GetX is like Get, but panics if an error occurs.
-func (c *CategoriesClient) GetX(ctx context.Context, id int) *Categories {
+func (c *CategoryClient) GetX(ctx context.Context, id int) *Category {
 	obj, err := c.Get(ctx, id)
 	if err != nil {
 		panic(err)
@@ -817,15 +817,15 @@ func (c *CategoriesClient) GetX(ctx context.Context, id int) *Categories {
 	return obj
 }
 
-// QueryItems queries the items edge of a Categories.
-func (c *CategoriesClient) QueryItems(ca *Categories) *ItemQuery {
+// QueryItems queries the items edge of a Category.
+func (c *CategoryClient) QueryItems(ca *Category) *ItemQuery {
 	query := &ItemQuery{config: c.config}
 	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
 		id := ca.ID
 		step := sqlgraph.NewStep(
-			sqlgraph.From(categories.Table, categories.FieldID, id),
+			sqlgraph.From(category.Table, category.FieldID, id),
 			sqlgraph.To(item.Table, item.FieldID),
-			sqlgraph.Edge(sqlgraph.O2M, false, categories.ItemsTable, categories.ItemsColumn),
+			sqlgraph.Edge(sqlgraph.O2M, false, category.ItemsTable, category.ItemsColumn),
 		)
 		fromV = sqlgraph.Neighbors(ca.driver.Dialect(), step)
 		return fromV, nil
@@ -834,8 +834,8 @@ func (c *CategoriesClient) QueryItems(ca *Categories) *ItemQuery {
 }
 
 // Hooks returns the client hooks.
-func (c *CategoriesClient) Hooks() []Hook {
-	return c.hooks.Categories
+func (c *CategoryClient) Hooks() []Hook {
+	return c.hooks.Category
 }
 
 // ImagesClient is a client for the Images schema.
@@ -1046,13 +1046,13 @@ func (c *ItemClient) QueryImages(i *Item) *ImagesQuery {
 }
 
 // QueryCategory queries the category edge of a Item.
-func (c *ItemClient) QueryCategory(i *Item) *CategoriesQuery {
-	query := &CategoriesQuery{config: c.config}
+func (c *ItemClient) QueryCategory(i *Item) *CategoryQuery {
+	query := &CategoryQuery{config: c.config}
 	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
 		id := i.ID
 		step := sqlgraph.NewStep(
 			sqlgraph.From(item.Table, item.FieldID, id),
-			sqlgraph.To(categories.Table, categories.FieldID),
+			sqlgraph.To(category.Table, category.FieldID),
 			sqlgraph.Edge(sqlgraph.M2O, true, item.CategoryTable, item.CategoryColumn),
 		)
 		fromV = sqlgraph.Neighbors(i.driver.Dialect(), step)

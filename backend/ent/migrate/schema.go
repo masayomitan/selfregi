@@ -161,7 +161,7 @@ var (
 		{Name: "updated_at", Type: field.TypeTime},
 		{Name: "deleted_at", Type: field.TypeTime, Nullable: true},
 		{Name: "name", Type: field.TypeString, SchemaType: map[string]string{"mysql": "varchar(255)"}},
-		{Name: "is_display", Type: field.TypeInt},
+		{Name: "is_display", Type: field.TypeBool, Default: false},
 	}
 	// CategoriesTable holds the schema information for the "categories" table.
 	CategoriesTable = &schema.Table{
@@ -191,11 +191,11 @@ var (
 		{Name: "updated_at", Type: field.TypeTime},
 		{Name: "deleted_at", Type: field.TypeTime, Nullable: true},
 		{Name: "name", Type: field.TypeString, Default: "unknown"},
-		{Name: "is_display", Type: field.TypeInt},
-		{Name: "tax", Type: field.TypeInt},
-		{Name: "tax_rate", Type: field.TypeInt},
-		{Name: "price", Type: field.TypeInt},
-		{Name: "temporary_stock", Type: field.TypeInt},
+		{Name: "is_display", Type: field.TypeBool, Default: false},
+		{Name: "tax", Type: field.TypeInt, Nullable: true},
+		{Name: "tax_rate", Type: field.TypeInt, Nullable: true},
+		{Name: "price", Type: field.TypeInt, Nullable: true},
+		{Name: "temporary_stock", Type: field.TypeInt, Nullable: true},
 		{Name: "category_id", Type: field.TypeInt},
 	}
 	// ItemsTable holds the schema information for the "items" table.

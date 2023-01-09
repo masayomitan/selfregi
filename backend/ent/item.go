@@ -4,7 +4,7 @@ package ent
 
 import (
 	"fmt"
-	"selfregi/ent/categories"
+	"selfregi/ent/category"
 	"selfregi/ent/item"
 	"strings"
 	"time"
@@ -28,7 +28,7 @@ type Item struct {
 	// CategoryID holds the value of the "category_id" field.
 	CategoryID int `json:"category_id,omitempty"`
 	// IsDisplay holds the value of the "is_display" field.
-	IsDisplay int `json:"is_display,omitempty"`
+	IsDisplay bool `json:"is_display,omitempty"`
 	// Tax holds the value of the "tax" field.
 	Tax int `json:"tax,omitempty"`
 	// TaxRate holds the value of the "tax_rate" field.
@@ -47,7 +47,7 @@ type ItemEdges struct {
 	// Images holds the value of the images edge.
 	Images []*Images `json:"images,omitempty"`
 	// Category holds the value of the category edge.
-	Category *Categories `json:"category,omitempty"`
+	Category *Category `json:"category,omitempty"`
 	// loadedTypes holds the information for reporting if a
 	// type was loaded (or requested) in eager-loading or not.
 	loadedTypes [2]bool
@@ -64,11 +64,11 @@ func (e ItemEdges) ImagesOrErr() ([]*Images, error) {
 
 // CategoryOrErr returns the Category value or an error if the edge
 // was not loaded in eager-loading, or loaded but was not found.
-func (e ItemEdges) CategoryOrErr() (*Categories, error) {
+func (e ItemEdges) CategoryOrErr() (*Category, error) {
 	if e.loadedTypes[1] {
 		if e.Category == nil {
 			// Edge was loaded but was not found.
-			return nil, &NotFoundError{label: categories.Label}
+			return nil, &NotFoundError{label: category.Label}
 		}
 		return e.Category, nil
 	}
@@ -80,7 +80,9 @@ func (*Item) scanValues(columns []string) ([]any, error) {
 	values := make([]any, len(columns))
 	for i := range columns {
 		switch columns[i] {
-		case item.FieldID, item.FieldCategoryID, item.FieldIsDisplay, item.FieldTax, item.FieldTaxRate, item.FieldPrice, item.FieldTemporaryStock:
+		case item.FieldIsDisplay:
+			values[i] = new(sql.NullBool)
+		case item.FieldID, item.FieldCategoryID, item.FieldTax, item.FieldTaxRate, item.FieldPrice, item.FieldTemporaryStock:
 			values[i] = new(sql.NullInt64)
 		case item.FieldName:
 			values[i] = new(sql.NullString)
@@ -139,10 +141,10 @@ func (i *Item) assignValues(columns []string, values []any) error {
 				i.CategoryID = int(value.Int64)
 			}
 		case item.FieldIsDisplay:
-			if value, ok := values[j].(*sql.NullInt64); !ok {
+			if value, ok := values[j].(*sql.NullBool); !ok {
 				return fmt.Errorf("unexpected type %T for field is_display", values[j])
 			} else if value.Valid {
-				i.IsDisplay = int(value.Int64)
+				i.IsDisplay = value.Bool
 			}
 		case item.FieldTax:
 			if value, ok := values[j].(*sql.NullInt64); !ok {
@@ -179,7 +181,7 @@ func (i *Item) QueryImages() *ImagesQuery {
 }
 
 // QueryCategory queries the "category" edge of the Item entity.
-func (i *Item) QueryCategory() *CategoriesQuery {
+func (i *Item) QueryCategory() *CategoryQuery {
 	return (&ItemClient{config: i.config}).QueryCategory(i)
 }
 

@@ -6,7 +6,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"selfregi/ent/categories"
+	"selfregi/ent/category"
 	"selfregi/ent/images"
 	"selfregi/ent/item"
 	"time"
@@ -85,8 +85,16 @@ func (ic *ItemCreate) SetCategoryID(i int) *ItemCreate {
 }
 
 // SetIsDisplay sets the "is_display" field.
-func (ic *ItemCreate) SetIsDisplay(i int) *ItemCreate {
-	ic.mutation.SetIsDisplay(i)
+func (ic *ItemCreate) SetIsDisplay(b bool) *ItemCreate {
+	ic.mutation.SetIsDisplay(b)
+	return ic
+}
+
+// SetNillableIsDisplay sets the "is_display" field if the given value is not nil.
+func (ic *ItemCreate) SetNillableIsDisplay(b *bool) *ItemCreate {
+	if b != nil {
+		ic.SetIsDisplay(*b)
+	}
 	return ic
 }
 
@@ -96,9 +104,25 @@ func (ic *ItemCreate) SetTax(i int) *ItemCreate {
 	return ic
 }
 
+// SetNillableTax sets the "tax" field if the given value is not nil.
+func (ic *ItemCreate) SetNillableTax(i *int) *ItemCreate {
+	if i != nil {
+		ic.SetTax(*i)
+	}
+	return ic
+}
+
 // SetTaxRate sets the "tax_rate" field.
 func (ic *ItemCreate) SetTaxRate(i int) *ItemCreate {
 	ic.mutation.SetTaxRate(i)
+	return ic
+}
+
+// SetNillableTaxRate sets the "tax_rate" field if the given value is not nil.
+func (ic *ItemCreate) SetNillableTaxRate(i *int) *ItemCreate {
+	if i != nil {
+		ic.SetTaxRate(*i)
+	}
 	return ic
 }
 
@@ -108,9 +132,25 @@ func (ic *ItemCreate) SetPrice(i int) *ItemCreate {
 	return ic
 }
 
+// SetNillablePrice sets the "price" field if the given value is not nil.
+func (ic *ItemCreate) SetNillablePrice(i *int) *ItemCreate {
+	if i != nil {
+		ic.SetPrice(*i)
+	}
+	return ic
+}
+
 // SetTemporaryStock sets the "temporary_stock" field.
 func (ic *ItemCreate) SetTemporaryStock(i int) *ItemCreate {
 	ic.mutation.SetTemporaryStock(i)
+	return ic
+}
+
+// SetNillableTemporaryStock sets the "temporary_stock" field if the given value is not nil.
+func (ic *ItemCreate) SetNillableTemporaryStock(i *int) *ItemCreate {
+	if i != nil {
+		ic.SetTemporaryStock(*i)
+	}
 	return ic
 }
 
@@ -129,8 +169,8 @@ func (ic *ItemCreate) AddImages(i ...*Images) *ItemCreate {
 	return ic.AddImageIDs(ids...)
 }
 
-// SetCategory sets the "category" edge to the Categories entity.
-func (ic *ItemCreate) SetCategory(c *Categories) *ItemCreate {
+// SetCategory sets the "category" edge to the Category entity.
+func (ic *ItemCreate) SetCategory(c *Category) *ItemCreate {
 	return ic.SetCategoryID(c.ID)
 }
 
@@ -223,6 +263,10 @@ func (ic *ItemCreate) defaults() {
 		v := item.DefaultName
 		ic.mutation.SetName(v)
 	}
+	if _, ok := ic.mutation.IsDisplay(); !ok {
+		v := item.DefaultIsDisplay
+		ic.mutation.SetIsDisplay(v)
+	}
 }
 
 // check runs all checks and user-defined validators on the builder.
@@ -241,18 +285,6 @@ func (ic *ItemCreate) check() error {
 	}
 	if _, ok := ic.mutation.IsDisplay(); !ok {
 		return &ValidationError{Name: "is_display", err: errors.New(`ent: missing required field "Item.is_display"`)}
-	}
-	if _, ok := ic.mutation.Tax(); !ok {
-		return &ValidationError{Name: "tax", err: errors.New(`ent: missing required field "Item.tax"`)}
-	}
-	if _, ok := ic.mutation.TaxRate(); !ok {
-		return &ValidationError{Name: "tax_rate", err: errors.New(`ent: missing required field "Item.tax_rate"`)}
-	}
-	if _, ok := ic.mutation.Price(); !ok {
-		return &ValidationError{Name: "price", err: errors.New(`ent: missing required field "Item.price"`)}
-	}
-	if _, ok := ic.mutation.TemporaryStock(); !ok {
-		return &ValidationError{Name: "temporary_stock", err: errors.New(`ent: missing required field "Item.temporary_stock"`)}
 	}
 	if _, ok := ic.mutation.CategoryID(); !ok {
 		return &ValidationError{Name: "category", err: errors.New(`ent: missing required edge "Item.category"`)}
@@ -301,7 +333,7 @@ func (ic *ItemCreate) createSpec() (*Item, *sqlgraph.CreateSpec) {
 		_node.Name = value
 	}
 	if value, ok := ic.mutation.IsDisplay(); ok {
-		_spec.SetField(item.FieldIsDisplay, field.TypeInt, value)
+		_spec.SetField(item.FieldIsDisplay, field.TypeBool, value)
 		_node.IsDisplay = value
 	}
 	if value, ok := ic.mutation.Tax(); ok {
@@ -349,7 +381,7 @@ func (ic *ItemCreate) createSpec() (*Item, *sqlgraph.CreateSpec) {
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: &sqlgraph.FieldSpec{
 					Type:   field.TypeInt,
-					Column: categories.FieldID,
+					Column: category.FieldID,
 				},
 			},
 		}

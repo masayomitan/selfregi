@@ -7,7 +7,7 @@ import (
 	"database/sql/driver"
 	"fmt"
 	"math"
-	"selfregi/ent/categories"
+	"selfregi/ent/category"
 	"selfregi/ent/item"
 	"selfregi/ent/predicate"
 
@@ -16,54 +16,54 @@ import (
 	"entgo.io/ent/schema/field"
 )
 
-// CategoriesQuery is the builder for querying Categories entities.
-type CategoriesQuery struct {
+// CategoryQuery is the builder for querying Category entities.
+type CategoryQuery struct {
 	config
 	limit      *int
 	offset     *int
 	unique     *bool
 	order      []OrderFunc
 	fields     []string
-	predicates []predicate.Categories
+	predicates []predicate.Category
 	withItems  *ItemQuery
 	// intermediate query (i.e. traversal path).
 	sql  *sql.Selector
 	path func(context.Context) (*sql.Selector, error)
 }
 
-// Where adds a new predicate for the CategoriesQuery builder.
-func (cq *CategoriesQuery) Where(ps ...predicate.Categories) *CategoriesQuery {
+// Where adds a new predicate for the CategoryQuery builder.
+func (cq *CategoryQuery) Where(ps ...predicate.Category) *CategoryQuery {
 	cq.predicates = append(cq.predicates, ps...)
 	return cq
 }
 
 // Limit adds a limit step to the query.
-func (cq *CategoriesQuery) Limit(limit int) *CategoriesQuery {
+func (cq *CategoryQuery) Limit(limit int) *CategoryQuery {
 	cq.limit = &limit
 	return cq
 }
 
 // Offset adds an offset step to the query.
-func (cq *CategoriesQuery) Offset(offset int) *CategoriesQuery {
+func (cq *CategoryQuery) Offset(offset int) *CategoryQuery {
 	cq.offset = &offset
 	return cq
 }
 
 // Unique configures the query builder to filter duplicate records on query.
 // By default, unique is set to true, and can be disabled using this method.
-func (cq *CategoriesQuery) Unique(unique bool) *CategoriesQuery {
+func (cq *CategoryQuery) Unique(unique bool) *CategoryQuery {
 	cq.unique = &unique
 	return cq
 }
 
 // Order adds an order step to the query.
-func (cq *CategoriesQuery) Order(o ...OrderFunc) *CategoriesQuery {
+func (cq *CategoryQuery) Order(o ...OrderFunc) *CategoryQuery {
 	cq.order = append(cq.order, o...)
 	return cq
 }
 
 // QueryItems chains the current query on the "items" edge.
-func (cq *CategoriesQuery) QueryItems() *ItemQuery {
+func (cq *CategoryQuery) QueryItems() *ItemQuery {
 	query := &ItemQuery{config: cq.config}
 	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
 		if err := cq.prepareQuery(ctx); err != nil {
@@ -74,9 +74,9 @@ func (cq *CategoriesQuery) QueryItems() *ItemQuery {
 			return nil, err
 		}
 		step := sqlgraph.NewStep(
-			sqlgraph.From(categories.Table, categories.FieldID, selector),
+			sqlgraph.From(category.Table, category.FieldID, selector),
 			sqlgraph.To(item.Table, item.FieldID),
-			sqlgraph.Edge(sqlgraph.O2M, false, categories.ItemsTable, categories.ItemsColumn),
+			sqlgraph.Edge(sqlgraph.O2M, false, category.ItemsTable, category.ItemsColumn),
 		)
 		fromU = sqlgraph.SetNeighbors(cq.driver.Dialect(), step)
 		return fromU, nil
@@ -84,21 +84,21 @@ func (cq *CategoriesQuery) QueryItems() *ItemQuery {
 	return query
 }
 
-// First returns the first Categories entity from the query.
-// Returns a *NotFoundError when no Categories was found.
-func (cq *CategoriesQuery) First(ctx context.Context) (*Categories, error) {
+// First returns the first Category entity from the query.
+// Returns a *NotFoundError when no Category was found.
+func (cq *CategoryQuery) First(ctx context.Context) (*Category, error) {
 	nodes, err := cq.Limit(1).All(ctx)
 	if err != nil {
 		return nil, err
 	}
 	if len(nodes) == 0 {
-		return nil, &NotFoundError{categories.Label}
+		return nil, &NotFoundError{category.Label}
 	}
 	return nodes[0], nil
 }
 
 // FirstX is like First, but panics if an error occurs.
-func (cq *CategoriesQuery) FirstX(ctx context.Context) *Categories {
+func (cq *CategoryQuery) FirstX(ctx context.Context) *Category {
 	node, err := cq.First(ctx)
 	if err != nil && !IsNotFound(err) {
 		panic(err)
@@ -106,22 +106,22 @@ func (cq *CategoriesQuery) FirstX(ctx context.Context) *Categories {
 	return node
 }
 
-// FirstID returns the first Categories ID from the query.
-// Returns a *NotFoundError when no Categories ID was found.
-func (cq *CategoriesQuery) FirstID(ctx context.Context) (id int, err error) {
+// FirstID returns the first Category ID from the query.
+// Returns a *NotFoundError when no Category ID was found.
+func (cq *CategoryQuery) FirstID(ctx context.Context) (id int, err error) {
 	var ids []int
 	if ids, err = cq.Limit(1).IDs(ctx); err != nil {
 		return
 	}
 	if len(ids) == 0 {
-		err = &NotFoundError{categories.Label}
+		err = &NotFoundError{category.Label}
 		return
 	}
 	return ids[0], nil
 }
 
 // FirstIDX is like FirstID, but panics if an error occurs.
-func (cq *CategoriesQuery) FirstIDX(ctx context.Context) int {
+func (cq *CategoryQuery) FirstIDX(ctx context.Context) int {
 	id, err := cq.FirstID(ctx)
 	if err != nil && !IsNotFound(err) {
 		panic(err)
@@ -129,10 +129,10 @@ func (cq *CategoriesQuery) FirstIDX(ctx context.Context) int {
 	return id
 }
 
-// Only returns a single Categories entity found by the query, ensuring it only returns one.
-// Returns a *NotSingularError when more than one Categories entity is found.
-// Returns a *NotFoundError when no Categories entities are found.
-func (cq *CategoriesQuery) Only(ctx context.Context) (*Categories, error) {
+// Only returns a single Category entity found by the query, ensuring it only returns one.
+// Returns a *NotSingularError when more than one Category entity is found.
+// Returns a *NotFoundError when no Category entities are found.
+func (cq *CategoryQuery) Only(ctx context.Context) (*Category, error) {
 	nodes, err := cq.Limit(2).All(ctx)
 	if err != nil {
 		return nil, err
@@ -141,14 +141,14 @@ func (cq *CategoriesQuery) Only(ctx context.Context) (*Categories, error) {
 	case 1:
 		return nodes[0], nil
 	case 0:
-		return nil, &NotFoundError{categories.Label}
+		return nil, &NotFoundError{category.Label}
 	default:
-		return nil, &NotSingularError{categories.Label}
+		return nil, &NotSingularError{category.Label}
 	}
 }
 
 // OnlyX is like Only, but panics if an error occurs.
-func (cq *CategoriesQuery) OnlyX(ctx context.Context) *Categories {
+func (cq *CategoryQuery) OnlyX(ctx context.Context) *Category {
 	node, err := cq.Only(ctx)
 	if err != nil {
 		panic(err)
@@ -156,10 +156,10 @@ func (cq *CategoriesQuery) OnlyX(ctx context.Context) *Categories {
 	return node
 }
 
-// OnlyID is like Only, but returns the only Categories ID in the query.
-// Returns a *NotSingularError when more than one Categories ID is found.
+// OnlyID is like Only, but returns the only Category ID in the query.
+// Returns a *NotSingularError when more than one Category ID is found.
 // Returns a *NotFoundError when no entities are found.
-func (cq *CategoriesQuery) OnlyID(ctx context.Context) (id int, err error) {
+func (cq *CategoryQuery) OnlyID(ctx context.Context) (id int, err error) {
 	var ids []int
 	if ids, err = cq.Limit(2).IDs(ctx); err != nil {
 		return
@@ -168,15 +168,15 @@ func (cq *CategoriesQuery) OnlyID(ctx context.Context) (id int, err error) {
 	case 1:
 		id = ids[0]
 	case 0:
-		err = &NotFoundError{categories.Label}
+		err = &NotFoundError{category.Label}
 	default:
-		err = &NotSingularError{categories.Label}
+		err = &NotSingularError{category.Label}
 	}
 	return
 }
 
 // OnlyIDX is like OnlyID, but panics if an error occurs.
-func (cq *CategoriesQuery) OnlyIDX(ctx context.Context) int {
+func (cq *CategoryQuery) OnlyIDX(ctx context.Context) int {
 	id, err := cq.OnlyID(ctx)
 	if err != nil {
 		panic(err)
@@ -184,8 +184,8 @@ func (cq *CategoriesQuery) OnlyIDX(ctx context.Context) int {
 	return id
 }
 
-// All executes the query and returns a list of CategoriesSlice.
-func (cq *CategoriesQuery) All(ctx context.Context) ([]*Categories, error) {
+// All executes the query and returns a list of Categories.
+func (cq *CategoryQuery) All(ctx context.Context) ([]*Category, error) {
 	if err := cq.prepareQuery(ctx); err != nil {
 		return nil, err
 	}
@@ -193,7 +193,7 @@ func (cq *CategoriesQuery) All(ctx context.Context) ([]*Categories, error) {
 }
 
 // AllX is like All, but panics if an error occurs.
-func (cq *CategoriesQuery) AllX(ctx context.Context) []*Categories {
+func (cq *CategoryQuery) AllX(ctx context.Context) []*Category {
 	nodes, err := cq.All(ctx)
 	if err != nil {
 		panic(err)
@@ -201,17 +201,17 @@ func (cq *CategoriesQuery) AllX(ctx context.Context) []*Categories {
 	return nodes
 }
 
-// IDs executes the query and returns a list of Categories IDs.
-func (cq *CategoriesQuery) IDs(ctx context.Context) ([]int, error) {
+// IDs executes the query and returns a list of Category IDs.
+func (cq *CategoryQuery) IDs(ctx context.Context) ([]int, error) {
 	var ids []int
-	if err := cq.Select(categories.FieldID).Scan(ctx, &ids); err != nil {
+	if err := cq.Select(category.FieldID).Scan(ctx, &ids); err != nil {
 		return nil, err
 	}
 	return ids, nil
 }
 
 // IDsX is like IDs, but panics if an error occurs.
-func (cq *CategoriesQuery) IDsX(ctx context.Context) []int {
+func (cq *CategoryQuery) IDsX(ctx context.Context) []int {
 	ids, err := cq.IDs(ctx)
 	if err != nil {
 		panic(err)
@@ -220,7 +220,7 @@ func (cq *CategoriesQuery) IDsX(ctx context.Context) []int {
 }
 
 // Count returns the count of the given query.
-func (cq *CategoriesQuery) Count(ctx context.Context) (int, error) {
+func (cq *CategoryQuery) Count(ctx context.Context) (int, error) {
 	if err := cq.prepareQuery(ctx); err != nil {
 		return 0, err
 	}
@@ -228,7 +228,7 @@ func (cq *CategoriesQuery) Count(ctx context.Context) (int, error) {
 }
 
 // CountX is like Count, but panics if an error occurs.
-func (cq *CategoriesQuery) CountX(ctx context.Context) int {
+func (cq *CategoryQuery) CountX(ctx context.Context) int {
 	count, err := cq.Count(ctx)
 	if err != nil {
 		panic(err)
@@ -237,7 +237,7 @@ func (cq *CategoriesQuery) CountX(ctx context.Context) int {
 }
 
 // Exist returns true if the query has elements in the graph.
-func (cq *CategoriesQuery) Exist(ctx context.Context) (bool, error) {
+func (cq *CategoryQuery) Exist(ctx context.Context) (bool, error) {
 	if err := cq.prepareQuery(ctx); err != nil {
 		return false, err
 	}
@@ -245,7 +245,7 @@ func (cq *CategoriesQuery) Exist(ctx context.Context) (bool, error) {
 }
 
 // ExistX is like Exist, but panics if an error occurs.
-func (cq *CategoriesQuery) ExistX(ctx context.Context) bool {
+func (cq *CategoryQuery) ExistX(ctx context.Context) bool {
 	exist, err := cq.Exist(ctx)
 	if err != nil {
 		panic(err)
@@ -253,18 +253,18 @@ func (cq *CategoriesQuery) ExistX(ctx context.Context) bool {
 	return exist
 }
 
-// Clone returns a duplicate of the CategoriesQuery builder, including all associated steps. It can be
+// Clone returns a duplicate of the CategoryQuery builder, including all associated steps. It can be
 // used to prepare common query builders and use them differently after the clone is made.
-func (cq *CategoriesQuery) Clone() *CategoriesQuery {
+func (cq *CategoryQuery) Clone() *CategoryQuery {
 	if cq == nil {
 		return nil
 	}
-	return &CategoriesQuery{
+	return &CategoryQuery{
 		config:     cq.config,
 		limit:      cq.limit,
 		offset:     cq.offset,
 		order:      append([]OrderFunc{}, cq.order...),
-		predicates: append([]predicate.Categories{}, cq.predicates...),
+		predicates: append([]predicate.Category{}, cq.predicates...),
 		withItems:  cq.withItems.Clone(),
 		// clone intermediate query.
 		sql:    cq.sql.Clone(),
@@ -275,7 +275,7 @@ func (cq *CategoriesQuery) Clone() *CategoriesQuery {
 
 // WithItems tells the query-builder to eager-load the nodes that are connected to
 // the "items" edge. The optional arguments are used to configure the query builder of the edge.
-func (cq *CategoriesQuery) WithItems(opts ...func(*ItemQuery)) *CategoriesQuery {
+func (cq *CategoryQuery) WithItems(opts ...func(*ItemQuery)) *CategoryQuery {
 	query := &ItemQuery{config: cq.config}
 	for _, opt := range opts {
 		opt(query)
@@ -294,12 +294,12 @@ func (cq *CategoriesQuery) WithItems(opts ...func(*ItemQuery)) *CategoriesQuery 
 //		Count int `json:"count,omitempty"`
 //	}
 //
-//	client.Categories.Query().
-//		GroupBy(categories.FieldCreatedAt).
+//	client.Category.Query().
+//		GroupBy(category.FieldCreatedAt).
 //		Aggregate(ent.Count()).
 //		Scan(ctx, &v)
-func (cq *CategoriesQuery) GroupBy(field string, fields ...string) *CategoriesGroupBy {
-	grbuild := &CategoriesGroupBy{config: cq.config}
+func (cq *CategoryQuery) GroupBy(field string, fields ...string) *CategoryGroupBy {
+	grbuild := &CategoryGroupBy{config: cq.config}
 	grbuild.fields = append([]string{field}, fields...)
 	grbuild.path = func(ctx context.Context) (prev *sql.Selector, err error) {
 		if err := cq.prepareQuery(ctx); err != nil {
@@ -307,7 +307,7 @@ func (cq *CategoriesQuery) GroupBy(field string, fields ...string) *CategoriesGr
 		}
 		return cq.sqlQuery(ctx), nil
 	}
-	grbuild.label = categories.Label
+	grbuild.label = category.Label
 	grbuild.flds, grbuild.scan = &grbuild.fields, grbuild.Scan
 	return grbuild
 }
@@ -321,25 +321,25 @@ func (cq *CategoriesQuery) GroupBy(field string, fields ...string) *CategoriesGr
 //		CreatedAt time.Time `json:"created_at,omitempty"`
 //	}
 //
-//	client.Categories.Query().
-//		Select(categories.FieldCreatedAt).
+//	client.Category.Query().
+//		Select(category.FieldCreatedAt).
 //		Scan(ctx, &v)
-func (cq *CategoriesQuery) Select(fields ...string) *CategoriesSelect {
+func (cq *CategoryQuery) Select(fields ...string) *CategorySelect {
 	cq.fields = append(cq.fields, fields...)
-	selbuild := &CategoriesSelect{CategoriesQuery: cq}
-	selbuild.label = categories.Label
+	selbuild := &CategorySelect{CategoryQuery: cq}
+	selbuild.label = category.Label
 	selbuild.flds, selbuild.scan = &cq.fields, selbuild.Scan
 	return selbuild
 }
 
-// Aggregate returns a CategoriesSelect configured with the given aggregations.
-func (cq *CategoriesQuery) Aggregate(fns ...AggregateFunc) *CategoriesSelect {
+// Aggregate returns a CategorySelect configured with the given aggregations.
+func (cq *CategoryQuery) Aggregate(fns ...AggregateFunc) *CategorySelect {
 	return cq.Select().Aggregate(fns...)
 }
 
-func (cq *CategoriesQuery) prepareQuery(ctx context.Context) error {
+func (cq *CategoryQuery) prepareQuery(ctx context.Context) error {
 	for _, f := range cq.fields {
-		if !categories.ValidColumn(f) {
+		if !category.ValidColumn(f) {
 			return &ValidationError{Name: f, err: fmt.Errorf("ent: invalid field %q for query", f)}
 		}
 	}
@@ -353,19 +353,19 @@ func (cq *CategoriesQuery) prepareQuery(ctx context.Context) error {
 	return nil
 }
 
-func (cq *CategoriesQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*Categories, error) {
+func (cq *CategoryQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*Category, error) {
 	var (
-		nodes       = []*Categories{}
+		nodes       = []*Category{}
 		_spec       = cq.querySpec()
 		loadedTypes = [1]bool{
 			cq.withItems != nil,
 		}
 	)
 	_spec.ScanValues = func(columns []string) ([]any, error) {
-		return (*Categories).scanValues(nil, columns)
+		return (*Category).scanValues(nil, columns)
 	}
 	_spec.Assign = func(columns []string, values []any) error {
-		node := &Categories{config: cq.config}
+		node := &Category{config: cq.config}
 		nodes = append(nodes, node)
 		node.Edges.loadedTypes = loadedTypes
 		return node.assignValues(columns, values)
@@ -381,17 +381,17 @@ func (cq *CategoriesQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*C
 	}
 	if query := cq.withItems; query != nil {
 		if err := cq.loadItems(ctx, query, nodes,
-			func(n *Categories) { n.Edges.Items = []*Item{} },
-			func(n *Categories, e *Item) { n.Edges.Items = append(n.Edges.Items, e) }); err != nil {
+			func(n *Category) { n.Edges.Items = []*Item{} },
+			func(n *Category, e *Item) { n.Edges.Items = append(n.Edges.Items, e) }); err != nil {
 			return nil, err
 		}
 	}
 	return nodes, nil
 }
 
-func (cq *CategoriesQuery) loadItems(ctx context.Context, query *ItemQuery, nodes []*Categories, init func(*Categories), assign func(*Categories, *Item)) error {
+func (cq *CategoryQuery) loadItems(ctx context.Context, query *ItemQuery, nodes []*Category, init func(*Category), assign func(*Category, *Item)) error {
 	fks := make([]driver.Value, 0, len(nodes))
-	nodeids := make(map[int]*Categories)
+	nodeids := make(map[int]*Category)
 	for i := range nodes {
 		fks = append(fks, nodes[i].ID)
 		nodeids[nodes[i].ID] = nodes[i]
@@ -400,7 +400,7 @@ func (cq *CategoriesQuery) loadItems(ctx context.Context, query *ItemQuery, node
 		}
 	}
 	query.Where(predicate.Item(func(s *sql.Selector) {
-		s.Where(sql.InValues(categories.ItemsColumn, fks...))
+		s.Where(sql.InValues(category.ItemsColumn, fks...))
 	}))
 	neighbors, err := query.All(ctx)
 	if err != nil {
@@ -417,7 +417,7 @@ func (cq *CategoriesQuery) loadItems(ctx context.Context, query *ItemQuery, node
 	return nil
 }
 
-func (cq *CategoriesQuery) sqlCount(ctx context.Context) (int, error) {
+func (cq *CategoryQuery) sqlCount(ctx context.Context) (int, error) {
 	_spec := cq.querySpec()
 	_spec.Node.Columns = cq.fields
 	if len(cq.fields) > 0 {
@@ -426,7 +426,7 @@ func (cq *CategoriesQuery) sqlCount(ctx context.Context) (int, error) {
 	return sqlgraph.CountNodes(ctx, cq.driver, _spec)
 }
 
-func (cq *CategoriesQuery) sqlExist(ctx context.Context) (bool, error) {
+func (cq *CategoryQuery) sqlExist(ctx context.Context) (bool, error) {
 	switch _, err := cq.FirstID(ctx); {
 	case IsNotFound(err):
 		return false, nil
@@ -437,14 +437,14 @@ func (cq *CategoriesQuery) sqlExist(ctx context.Context) (bool, error) {
 	}
 }
 
-func (cq *CategoriesQuery) querySpec() *sqlgraph.QuerySpec {
+func (cq *CategoryQuery) querySpec() *sqlgraph.QuerySpec {
 	_spec := &sqlgraph.QuerySpec{
 		Node: &sqlgraph.NodeSpec{
-			Table:   categories.Table,
-			Columns: categories.Columns,
+			Table:   category.Table,
+			Columns: category.Columns,
 			ID: &sqlgraph.FieldSpec{
 				Type:   field.TypeInt,
-				Column: categories.FieldID,
+				Column: category.FieldID,
 			},
 		},
 		From:   cq.sql,
@@ -455,9 +455,9 @@ func (cq *CategoriesQuery) querySpec() *sqlgraph.QuerySpec {
 	}
 	if fields := cq.fields; len(fields) > 0 {
 		_spec.Node.Columns = make([]string, 0, len(fields))
-		_spec.Node.Columns = append(_spec.Node.Columns, categories.FieldID)
+		_spec.Node.Columns = append(_spec.Node.Columns, category.FieldID)
 		for i := range fields {
-			if fields[i] != categories.FieldID {
+			if fields[i] != category.FieldID {
 				_spec.Node.Columns = append(_spec.Node.Columns, fields[i])
 			}
 		}
@@ -485,12 +485,12 @@ func (cq *CategoriesQuery) querySpec() *sqlgraph.QuerySpec {
 	return _spec
 }
 
-func (cq *CategoriesQuery) sqlQuery(ctx context.Context) *sql.Selector {
+func (cq *CategoryQuery) sqlQuery(ctx context.Context) *sql.Selector {
 	builder := sql.Dialect(cq.driver.Dialect())
-	t1 := builder.Table(categories.Table)
+	t1 := builder.Table(category.Table)
 	columns := cq.fields
 	if len(columns) == 0 {
-		columns = categories.Columns
+		columns = category.Columns
 	}
 	selector := builder.Select(t1.Columns(columns...)...).From(t1)
 	if cq.sql != nil {
@@ -517,8 +517,8 @@ func (cq *CategoriesQuery) sqlQuery(ctx context.Context) *sql.Selector {
 	return selector
 }
 
-// CategoriesGroupBy is the group-by builder for Categories entities.
-type CategoriesGroupBy struct {
+// CategoryGroupBy is the group-by builder for Category entities.
+type CategoryGroupBy struct {
 	config
 	selector
 	fields []string
@@ -529,13 +529,13 @@ type CategoriesGroupBy struct {
 }
 
 // Aggregate adds the given aggregation functions to the group-by query.
-func (cgb *CategoriesGroupBy) Aggregate(fns ...AggregateFunc) *CategoriesGroupBy {
+func (cgb *CategoryGroupBy) Aggregate(fns ...AggregateFunc) *CategoryGroupBy {
 	cgb.fns = append(cgb.fns, fns...)
 	return cgb
 }
 
 // Scan applies the group-by query and scans the result into the given value.
-func (cgb *CategoriesGroupBy) Scan(ctx context.Context, v any) error {
+func (cgb *CategoryGroupBy) Scan(ctx context.Context, v any) error {
 	query, err := cgb.path(ctx)
 	if err != nil {
 		return err
@@ -544,9 +544,9 @@ func (cgb *CategoriesGroupBy) Scan(ctx context.Context, v any) error {
 	return cgb.sqlScan(ctx, v)
 }
 
-func (cgb *CategoriesGroupBy) sqlScan(ctx context.Context, v any) error {
+func (cgb *CategoryGroupBy) sqlScan(ctx context.Context, v any) error {
 	for _, f := range cgb.fields {
-		if !categories.ValidColumn(f) {
+		if !category.ValidColumn(f) {
 			return &ValidationError{Name: f, err: fmt.Errorf("invalid field %q for group-by", f)}
 		}
 	}
@@ -563,7 +563,7 @@ func (cgb *CategoriesGroupBy) sqlScan(ctx context.Context, v any) error {
 	return sql.ScanSlice(rows, v)
 }
 
-func (cgb *CategoriesGroupBy) sqlQuery() *sql.Selector {
+func (cgb *CategoryGroupBy) sqlQuery() *sql.Selector {
 	selector := cgb.sql.Select()
 	aggregation := make([]string, 0, len(cgb.fns))
 	for _, fn := range cgb.fns {
@@ -580,30 +580,30 @@ func (cgb *CategoriesGroupBy) sqlQuery() *sql.Selector {
 	return selector.GroupBy(selector.Columns(cgb.fields...)...)
 }
 
-// CategoriesSelect is the builder for selecting fields of Categories entities.
-type CategoriesSelect struct {
-	*CategoriesQuery
+// CategorySelect is the builder for selecting fields of Category entities.
+type CategorySelect struct {
+	*CategoryQuery
 	selector
 	// intermediate query (i.e. traversal path).
 	sql *sql.Selector
 }
 
 // Aggregate adds the given aggregation functions to the selector query.
-func (cs *CategoriesSelect) Aggregate(fns ...AggregateFunc) *CategoriesSelect {
+func (cs *CategorySelect) Aggregate(fns ...AggregateFunc) *CategorySelect {
 	cs.fns = append(cs.fns, fns...)
 	return cs
 }
 
 // Scan applies the selector query and scans the result into the given value.
-func (cs *CategoriesSelect) Scan(ctx context.Context, v any) error {
+func (cs *CategorySelect) Scan(ctx context.Context, v any) error {
 	if err := cs.prepareQuery(ctx); err != nil {
 		return err
 	}
-	cs.sql = cs.CategoriesQuery.sqlQuery(ctx)
+	cs.sql = cs.CategoryQuery.sqlQuery(ctx)
 	return cs.sqlScan(ctx, v)
 }
 
-func (cs *CategoriesSelect) sqlScan(ctx context.Context, v any) error {
+func (cs *CategorySelect) sqlScan(ctx context.Context, v any) error {
 	aggregation := make([]string, 0, len(cs.fns))
 	for _, fn := range cs.fns {
 		aggregation = append(aggregation, fn(cs.sql))

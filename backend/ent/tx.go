@@ -22,8 +22,8 @@ type Tx struct {
 	Cart *CartClient
 	// CartDetail is the client for interacting with the CartDetail builders.
 	CartDetail *CartDetailClient
-	// Categories is the client for interacting with the Categories builders.
-	Categories *CategoriesClient
+	// Category is the client for interacting with the Category builders.
+	Category *CategoryClient
 	// Images is the client for interacting with the Images builders.
 	Images *ImagesClient
 	// Item is the client for interacting with the Item builders.
@@ -168,7 +168,7 @@ func (tx *Tx) init() {
 	tx.Admin = NewAdminClient(tx.config)
 	tx.Cart = NewCartClient(tx.config)
 	tx.CartDetail = NewCartDetailClient(tx.config)
-	tx.Categories = NewCategoriesClient(tx.config)
+	tx.Category = NewCategoryClient(tx.config)
 	tx.Images = NewImagesClient(tx.config)
 	tx.Item = NewItemClient(tx.config)
 	tx.Journals = NewJournalsClient(tx.config)
