@@ -5,7 +5,6 @@ import (
 	"log"
 	"os"
 	"selfregi/ent"
-
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/joho/godotenv"
 )
@@ -16,7 +15,8 @@ func EntOpen() (*ent.Client, error) {
     if err != nil {
         panic ("failed reading env file")
     }
-    var USER string
+  
+	var USER string
 	var PASS string
 	var PROTOCOL string
 	var DBNAME string
@@ -35,5 +35,6 @@ func EntOpen() (*ent.Client, error) {
     } else {
         fmt.Println("database connect ok")
     }
+
     return db, err
 }
