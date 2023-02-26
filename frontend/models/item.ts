@@ -1,6 +1,6 @@
 import { immerable, produce } from 'immer'
 
-export interface Item {
+export default interface Item {
   id?: number
   name: string
   category_id: number
@@ -11,4 +11,12 @@ export interface Item {
   temporary_stock: number
 }
 
-export default Item
+export interface PostItem {
+  name: string
+  category_id: number
+  is_display: number
+  price: number
+  tax: number
+  tax_rate: number
+  temporary_stock: number
+}

@@ -25,15 +25,10 @@
       "static/chunks/main.js",
       "static/chunks/pages/_error.js"
     ],
-    "/categories/[id]": [
+    "/admin/items/edit": [
       "static/chunks/webpack.js",
       "static/chunks/main.js",
-      "static/chunks/pages/categories/[id].js"
-    ],
-    "/items/[id]": [
-      "static/chunks/webpack.js",
-      "static/chunks/main.js",
-      "static/chunks/pages/items/[id].js"
+      "static/chunks/pages/admin/items/edit.js"
     ]
   },
   "ampFirstPages": []

@@ -23,7 +23,7 @@ const CategoryIndex = () => {
   }, [])
   
   useEffect(()  => {
-    getAllCategories();
+    getAllCategories()
 
   }, [])
 

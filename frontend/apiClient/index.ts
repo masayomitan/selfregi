@@ -19,7 +19,7 @@ export class ApiClient {
     )
   }
 
-  async get<T = object>(path: string, params: object={}): Promise<AxiosResponse<T>> {
+  async get<T=object>(path: string, params: object={}): Promise<AxiosResponse<T>> {
     try {
       const result = await this.axiosInstance.get(path, {
         params
@@ -30,7 +30,7 @@ export class ApiClient {
     }
   }
 
-  async post<T = object>(path: string, params: object={}): Promise<AxiosResponse<T>> {
+  async post<T=object>(path: string, params: object={}): Promise<AxiosResponse<T>> {
     try {
       const result = await this.axiosInstance.post(path, {
         params
@@ -41,7 +41,7 @@ export class ApiClient {
     }
   }
 
-  async put<T = object>(path: string, params: object={}): Promise<AxiosResponse<T>> {
+  async put<T=object>(path: string, params: object={}): Promise<AxiosResponse<T>> {
     try {
       const result = await this.axiosInstance.put(path, {
         params
@@ -52,7 +52,7 @@ export class ApiClient {
     }
   }
 
-  async patch<T = object>(path: string, params: object={}): Promise<AxiosResponse<T>> {
+  async patch<T=object>(path: string, params: object={}): Promise<AxiosResponse<T>> {
     try {
       const result = await this.axiosInstance.patch(path, {
         params
@@ -63,7 +63,7 @@ export class ApiClient {
     }
   }
 
-  async delete<T = object>(path: string): Promise<AxiosResponse<T>> {
+  async delete<T=object>(path: string): Promise<AxiosResponse<T>> {
     try {
       const result = await this.axiosInstance.delete(path)
       return this.successPromise(result.data)

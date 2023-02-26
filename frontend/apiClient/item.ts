@@ -3,13 +3,13 @@ import {ApiClient} from '.'
 const apiBaseUrl = process.env.NEXT_PUBLIC_BASE_URL
 const apiClient = new ApiClient(apiBaseUrl)
 
-export const getItemDisplayOn = (itemId: string) => {
+export const getItem = (itemId: string) => {
   return apiClient.get(
     '/api/items/get/' + itemId,
   )
 }
 
-export const getItemsDisplayOn = (categoryId: string) => {
+export const getItems = (categoryId: string) => {
   return apiClient.get(
     '/api/categories/' + categoryId + '/items/get',
   )
