@@ -32,9 +32,7 @@ export class ApiClient {
 
   async post<T=object>(path: string, params: object={}): Promise<AxiosResponse<T>> {
     try {
-      const result = await this.axiosInstance.post(path, {
-        params
-      })
+      const result = await this.axiosInstance.post(path, params)
       return this.successPromise(result.data)
     } catch(err: any) {
       return this.failurePromise<T>(err)
@@ -43,9 +41,7 @@ export class ApiClient {
 
   async put<T=object>(path: string, params: object={}): Promise<AxiosResponse<T>> {
     try {
-      const result = await this.axiosInstance.put(path, {
-        params
-      })
+      const result = await this.axiosInstance.put(path, params)
       return this.successPromise(result.data)
     } catch(err: any) {
       return this.failurePromise<T>(err)

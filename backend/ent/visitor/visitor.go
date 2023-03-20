@@ -21,6 +21,8 @@ const (
 	FieldName = "name"
 	// FieldSex holds the string denoting the sex field in the database.
 	FieldSex = "sex"
+	// FieldBillStatus holds the string denoting the bill_status field in the database.
+	FieldBillStatus = "bill_status"
 	// EdgeManagedAccounts holds the string denoting the managed_accounts edge name in mutations.
 	EdgeManagedAccounts = "managed_accounts"
 	// EdgeCarts holds the string denoting the carts edge name in mutations.
@@ -51,6 +53,7 @@ var Columns = []string{
 	FieldDeletedAt,
 	FieldName,
 	FieldSex,
+	FieldBillStatus,
 }
 
 // ValidColumn reports if the column name is valid (part of the table columns).

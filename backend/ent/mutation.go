@@ -9645,6 +9645,8 @@ type VisitorMutation struct {
 	name                    *string
 	sex                     *int
 	addsex                  *int
+	bill_status             *int
+	addbill_status          *int
 	clearedFields           map[string]struct{}
 	managed_accounts        map[int]struct{}
 	removedmanaged_accounts map[int]struct{}
@@ -9968,6 +9970,62 @@ func (m *VisitorMutation) ResetSex() {
 	m.addsex = nil
 }
 
+// SetBillStatus sets the "bill_status" field.
+func (m *VisitorMutation) SetBillStatus(i int) {
+	m.bill_status = &i
+	m.addbill_status = nil
+}
+
+// BillStatus returns the value of the "bill_status" field in the mutation.
+func (m *VisitorMutation) BillStatus() (r int, exists bool) {
+	v := m.bill_status
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldBillStatus returns the old "bill_status" field's value of the Visitor entity.
+// If the Visitor object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *VisitorMutation) OldBillStatus(ctx context.Context) (v int, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldBillStatus is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldBillStatus requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldBillStatus: %w", err)
+	}
+	return oldValue.BillStatus, nil
+}
+
+// AddBillStatus adds i to the "bill_status" field.
+func (m *VisitorMutation) AddBillStatus(i int) {
+	if m.addbill_status != nil {
+		*m.addbill_status += i
+	} else {
+		m.addbill_status = &i
+	}
+}
+
+// AddedBillStatus returns the value that was added to the "bill_status" field in this mutation.
+func (m *VisitorMutation) AddedBillStatus() (r int, exists bool) {
+	v := m.addbill_status
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ResetBillStatus resets all changes to the "bill_status" field.
+func (m *VisitorMutation) ResetBillStatus() {
+	m.bill_status = nil
+	m.addbill_status = nil
+}
+
 // AddManagedAccountIDs adds the "managed_accounts" edge to the Account entity by ids.
 func (m *VisitorMutation) AddManagedAccountIDs(ids ...int) {
 	if m.managed_accounts == nil {
@@ -10095,7 +10153,7 @@ func (m *VisitorMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *VisitorMutation) Fields() []string {
-	fields := make([]string, 0, 5)
+	fields := make([]string, 0, 6)
 	if m.created_at != nil {
 		fields = append(fields, visitor.FieldCreatedAt)
 	}
@@ -10110,6 +10168,9 @@ func (m *VisitorMutation) Fields() []string {
 	}
 	if m.sex != nil {
 		fields = append(fields, visitor.FieldSex)
+	}
+	if m.bill_status != nil {
+		fields = append(fields, visitor.FieldBillStatus)
 	}
 	return fields
 }
@@ -10129,6 +10190,8 @@ func (m *VisitorMutation) Field(name string) (ent.Value, bool) {
 		return m.Name()
 	case visitor.FieldSex:
 		return m.Sex()
+	case visitor.FieldBillStatus:
+		return m.BillStatus()
 	}
 	return nil, false
 }
@@ -10148,6 +10211,8 @@ func (m *VisitorMutation) OldField(ctx context.Context, name string) (ent.Value,
 		return m.OldName(ctx)
 	case visitor.FieldSex:
 		return m.OldSex(ctx)
+	case visitor.FieldBillStatus:
+		return m.OldBillStatus(ctx)
 	}
 	return nil, fmt.Errorf("unknown Visitor field %s", name)
 }
@@ -10192,6 +10257,13 @@ func (m *VisitorMutation) SetField(name string, value ent.Value) error {
 		}
 		m.SetSex(v)
 		return nil
+	case visitor.FieldBillStatus:
+		v, ok := value.(int)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetBillStatus(v)
+		return nil
 	}
 	return fmt.Errorf("unknown Visitor field %s", name)
 }
@@ -10203,6 +10275,9 @@ func (m *VisitorMutation) AddedFields() []string {
 	if m.addsex != nil {
 		fields = append(fields, visitor.FieldSex)
 	}
+	if m.addbill_status != nil {
+		fields = append(fields, visitor.FieldBillStatus)
+	}
 	return fields
 }
 
@@ -10213,6 +10288,8 @@ func (m *VisitorMutation) AddedField(name string) (ent.Value, bool) {
 	switch name {
 	case visitor.FieldSex:
 		return m.AddedSex()
+	case visitor.FieldBillStatus:
+		return m.AddedBillStatus()
 	}
 	return nil, false
 }
@@ -10228,6 +10305,13 @@ func (m *VisitorMutation) AddField(name string, value ent.Value) error {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.AddSex(v)
+		return nil
+	case visitor.FieldBillStatus:
+		v, ok := value.(int)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddBillStatus(v)
 		return nil
 	}
 	return fmt.Errorf("unknown Visitor numeric field %s", name)
@@ -10279,6 +10363,9 @@ func (m *VisitorMutation) ResetField(name string) error {
 		return nil
 	case visitor.FieldSex:
 		m.ResetSex()
+		return nil
+	case visitor.FieldBillStatus:
+		m.ResetBillStatus()
 		return nil
 	}
 	return fmt.Errorf("unknown Visitor field %s", name)

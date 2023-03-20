@@ -14,7 +14,7 @@ type Categories struct {
 }
 
 func GetCategories(w http.ResponseWriter, r *http.Request) {
-	middleware.CorsMiddleware(w)
+	middleware.CorsMiddleware(w, r)
 	a := &model.Categories{}
 	res, _ := a.GetCategories(context.Background())
 	json.NewEncoder(w).Encode(res)

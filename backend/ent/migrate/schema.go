@@ -233,6 +233,7 @@ var (
 		{Name: "deleted_at", Type: field.TypeTime, Nullable: true},
 		{Name: "name", Type: field.TypeString, Default: "unknown"},
 		{Name: "sex", Type: field.TypeInt},
+		{Name: "bill_status", Type: field.TypeInt},
 	}
 	// VisitorsTable holds the schema information for the "visitors" table.
 	VisitorsTable = &schema.Table{

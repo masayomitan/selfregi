@@ -83,6 +83,19 @@ func (vu *VisitorUpdate) AddSex(i int) *VisitorUpdate {
 	return vu
 }
 
+// SetBillStatus sets the "bill_status" field.
+func (vu *VisitorUpdate) SetBillStatus(i int) *VisitorUpdate {
+	vu.mutation.ResetBillStatus()
+	vu.mutation.SetBillStatus(i)
+	return vu
+}
+
+// AddBillStatus adds i to the "bill_status" field.
+func (vu *VisitorUpdate) AddBillStatus(i int) *VisitorUpdate {
+	vu.mutation.AddBillStatus(i)
+	return vu
+}
+
 // AddManagedAccountIDs adds the "managed_accounts" edge to the Account entity by IDs.
 func (vu *VisitorUpdate) AddManagedAccountIDs(ids ...int) *VisitorUpdate {
 	vu.mutation.AddManagedAccountIDs(ids...)
@@ -258,6 +271,12 @@ func (vu *VisitorUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	}
 	if value, ok := vu.mutation.AddedSex(); ok {
 		_spec.AddField(visitor.FieldSex, field.TypeInt, value)
+	}
+	if value, ok := vu.mutation.BillStatus(); ok {
+		_spec.SetField(visitor.FieldBillStatus, field.TypeInt, value)
+	}
+	if value, ok := vu.mutation.AddedBillStatus(); ok {
+		_spec.AddField(visitor.FieldBillStatus, field.TypeInt, value)
 	}
 	if vu.mutation.ManagedAccountsCleared() {
 		edge := &sqlgraph.EdgeSpec{
@@ -436,6 +455,19 @@ func (vuo *VisitorUpdateOne) SetSex(i int) *VisitorUpdateOne {
 // AddSex adds i to the "sex" field.
 func (vuo *VisitorUpdateOne) AddSex(i int) *VisitorUpdateOne {
 	vuo.mutation.AddSex(i)
+	return vuo
+}
+
+// SetBillStatus sets the "bill_status" field.
+func (vuo *VisitorUpdateOne) SetBillStatus(i int) *VisitorUpdateOne {
+	vuo.mutation.ResetBillStatus()
+	vuo.mutation.SetBillStatus(i)
+	return vuo
+}
+
+// AddBillStatus adds i to the "bill_status" field.
+func (vuo *VisitorUpdateOne) AddBillStatus(i int) *VisitorUpdateOne {
+	vuo.mutation.AddBillStatus(i)
 	return vuo
 }
 
@@ -644,6 +676,12 @@ func (vuo *VisitorUpdateOne) sqlSave(ctx context.Context) (_node *Visitor, err e
 	}
 	if value, ok := vuo.mutation.AddedSex(); ok {
 		_spec.AddField(visitor.FieldSex, field.TypeInt, value)
+	}
+	if value, ok := vuo.mutation.BillStatus(); ok {
+		_spec.SetField(visitor.FieldBillStatus, field.TypeInt, value)
+	}
+	if value, ok := vuo.mutation.AddedBillStatus(); ok {
+		_spec.AddField(visitor.FieldBillStatus, field.TypeInt, value)
 	}
 	if vuo.mutation.ManagedAccountsCleared() {
 		edge := &sqlgraph.EdgeSpec{

@@ -28,12 +28,13 @@ func DecodeJSONBody(w http.ResponseWriter, r *http.Request, dst interface{}) err
         }
     }
 
-		// 2^20 = 1048576 Excel's maximum row limit is 1,048,576
+    // 2^20 = 1048576 Excel's maximum row limit is 1,048,576
     r.Body = http.MaxBytesReader(w, r.Body, 1048576)
     dec := json.NewDecoder(r.Body)
     dec.DisallowUnknownFields()
 
-    err := dec.Decode(&dst)
+    err := dec.Decode(dst)
+    fmt.Println(dst)
     if err != nil {
         var syntaxError *json.SyntaxError
         var unmarshalTypeError *json.UnmarshalTypeError

@@ -116,6 +116,13 @@ func Sex(v int) predicate.Visitor {
 	})
 }
 
+// BillStatus applies equality check predicate on the "bill_status" field. It's identical to BillStatusEQ.
+func BillStatus(v int) predicate.Visitor {
+	return predicate.Visitor(func(s *sql.Selector) {
+		s.Where(sql.EQ(s.C(FieldBillStatus), v))
+	})
+}
+
 // CreatedAtEQ applies the EQ predicate on the "created_at" field.
 func CreatedAtEQ(v time.Time) predicate.Visitor {
 	return predicate.Visitor(func(s *sql.Selector) {
@@ -482,6 +489,70 @@ func SexLT(v int) predicate.Visitor {
 func SexLTE(v int) predicate.Visitor {
 	return predicate.Visitor(func(s *sql.Selector) {
 		s.Where(sql.LTE(s.C(FieldSex), v))
+	})
+}
+
+// BillStatusEQ applies the EQ predicate on the "bill_status" field.
+func BillStatusEQ(v int) predicate.Visitor {
+	return predicate.Visitor(func(s *sql.Selector) {
+		s.Where(sql.EQ(s.C(FieldBillStatus), v))
+	})
+}
+
+// BillStatusNEQ applies the NEQ predicate on the "bill_status" field.
+func BillStatusNEQ(v int) predicate.Visitor {
+	return predicate.Visitor(func(s *sql.Selector) {
+		s.Where(sql.NEQ(s.C(FieldBillStatus), v))
+	})
+}
+
+// BillStatusIn applies the In predicate on the "bill_status" field.
+func BillStatusIn(vs ...int) predicate.Visitor {
+	v := make([]any, len(vs))
+	for i := range v {
+		v[i] = vs[i]
+	}
+	return predicate.Visitor(func(s *sql.Selector) {
+		s.Where(sql.In(s.C(FieldBillStatus), v...))
+	})
+}
+
+// BillStatusNotIn applies the NotIn predicate on the "bill_status" field.
+func BillStatusNotIn(vs ...int) predicate.Visitor {
+	v := make([]any, len(vs))
+	for i := range v {
+		v[i] = vs[i]
+	}
+	return predicate.Visitor(func(s *sql.Selector) {
+		s.Where(sql.NotIn(s.C(FieldBillStatus), v...))
+	})
+}
+
+// BillStatusGT applies the GT predicate on the "bill_status" field.
+func BillStatusGT(v int) predicate.Visitor {
+	return predicate.Visitor(func(s *sql.Selector) {
+		s.Where(sql.GT(s.C(FieldBillStatus), v))
+	})
+}
+
+// BillStatusGTE applies the GTE predicate on the "bill_status" field.
+func BillStatusGTE(v int) predicate.Visitor {
+	return predicate.Visitor(func(s *sql.Selector) {
+		s.Where(sql.GTE(s.C(FieldBillStatus), v))
+	})
+}
+
+// BillStatusLT applies the LT predicate on the "bill_status" field.
+func BillStatusLT(v int) predicate.Visitor {
+	return predicate.Visitor(func(s *sql.Selector) {
+		s.Where(sql.LT(s.C(FieldBillStatus), v))
+	})
+}
+
+// BillStatusLTE applies the LTE predicate on the "bill_status" field.
+func BillStatusLTE(v int) predicate.Visitor {
+	return predicate.Visitor(func(s *sql.Selector) {
+		s.Where(sql.LTE(s.C(FieldBillStatus), v))
 	})
 }
 

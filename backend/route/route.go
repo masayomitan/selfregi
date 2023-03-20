@@ -15,7 +15,7 @@ type Route func(*mux.Router)
 
 func GetRoutes(r *mux.Router) *mux.Router{
 	fmt.Println()
-	r.Schemes("https")
+	// r.Schemes("https")
 	r.Headers("X-Requested-With", "XMLHttpRequest")
 
 	err := godotenv.Load((".env"))
@@ -30,13 +30,14 @@ func GetRoutes(r *mux.Router) *mux.Router{
 	// api
 	api := r.PathPrefix("/api").Subrouter()
 
+		///////////////// front /////////////////
 		// items
 		item := api.PathPrefix("/items").Subrouter()
 		item.HandleFunc("/get/{item_id:[0-9]+}", FrontAPI.GetItem).Methods("GET")
 		
 		// categories
 		c := api.PathPrefix("/categories").Subrouter()
-		c.HandleFunc("/{category_id:[0-9]+}/items/get", FrontAPI.GetItems).Methods("GET")
+		c.HandleFunc("/{category_id:[0-9]+}/items/get", FrontAPI.GetItemsByCategoryId).Methods("GET")
 		c.HandleFunc("/get", FrontAPI.GetCategories).Methods("GET")
 
 		///////////////// admin /////////////////
@@ -50,8 +51,8 @@ func GetRoutes(r *mux.Router) *mux.Router{
 
 			// admin/items
 			adminItem := admin.PathPrefix("/items").Subrouter()
-			adminItem.HandleFunc("/get", ManageAPI.GetItems).Methods("GET")
-			adminItem.HandleFunc("/post", ManageAPI.PostItem).Methods("POST")
+			adminItem.HandleFunc("/get", ManageAPI.GetItems).Methods("GET", "OPTIONS")
+			adminItem.HandleFunc("/post", ManageAPI.PostItem).Methods("POST", "OPTIONS")
 
 	
 	return r

@@ -11,11 +11,11 @@ import (
 )
 
 func main() {
-
+	fmt.Println()
 	r := mux.NewRouter()
 	r = route.GetRoutes(r)
 	db, _ := database.EntOpen()
-	// database.Migrate(db)
+	database.Migrate(db)
 	defer db.Close()
 	
 	server := &http.Server{

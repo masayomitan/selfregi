@@ -22,7 +22,7 @@ func (AccountDetail) Fields() []ent.Field {
 		field.Int("visitor_id").
       Positive().
 			Optional(),
-		field.Int("product_id").
+		field.Int("item_id").
       Positive().
 			Optional(),
 		field.Int("category_id").

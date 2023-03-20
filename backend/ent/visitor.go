@@ -26,6 +26,8 @@ type Visitor struct {
 	Name string `json:"name,omitempty"`
 	// Sex holds the value of the "sex" field.
 	Sex int `json:"sex,omitempty"`
+	// BillStatus holds the value of the "bill_status" field.
+	BillStatus int `json:"bill_status,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the VisitorQuery when eager-loading is set.
 	Edges VisitorEdges `json:"edges"`
@@ -65,7 +67,7 @@ func (*Visitor) scanValues(columns []string) ([]any, error) {
 	values := make([]any, len(columns))
 	for i := range columns {
 		switch columns[i] {
-		case visitor.FieldID, visitor.FieldSex:
+		case visitor.FieldID, visitor.FieldSex, visitor.FieldBillStatus:
 			values[i] = new(sql.NullInt64)
 		case visitor.FieldName:
 			values[i] = new(sql.NullString)
@@ -123,6 +125,12 @@ func (v *Visitor) assignValues(columns []string, values []any) error {
 			} else if value.Valid {
 				v.Sex = int(value.Int64)
 			}
+		case visitor.FieldBillStatus:
+			if value, ok := values[i].(*sql.NullInt64); !ok {
+				return fmt.Errorf("unexpected type %T for field bill_status", values[i])
+			} else if value.Valid {
+				v.BillStatus = int(value.Int64)
+			}
 		}
 	}
 	return nil
@@ -177,6 +185,9 @@ func (v *Visitor) String() string {
 	builder.WriteString(", ")
 	builder.WriteString("sex=")
 	builder.WriteString(fmt.Sprintf("%v", v.Sex))
+	builder.WriteString(", ")
+	builder.WriteString("bill_status=")
+	builder.WriteString(fmt.Sprintf("%v", v.BillStatus))
 	builder.WriteByte(')')
 	return builder.String()
 }

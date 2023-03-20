@@ -1,13 +1,16 @@
 package controller
 
 import (
-	"fmt"
-	"log"
-	"net/http"
-	"encoding/json"
-	// "github.com/gorilla/mux"
-	"selfregi/middleware"
-	"selfregi/component"
+		"fmt"
+		"log"
+		"net/http"
+		"encoding/json"
+		// "github.com/gorilla/mux"
+		"selfregi/middleware"
+		"selfregi/component"
+		"selfregi/entity"
+		"selfregi/usecase"
+		"io/ioutil"
 )
 
 func GetItems(w http.ResponseWriter, r *http.Request) {
@@ -15,22 +18,27 @@ func GetItems(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintf(w, "get pructsss")
 }
 
-type Book struct {
-	ID     string  `json:"id"`
-	Title  string  `json:"title"`
+type Item struct {
+		*entity.ItemEntity
 }
-var books []Book
 
 func PostItem(w http.ResponseWriter, r *http.Request) {
-	middleware.CorsMiddleware(w)
-	var book Book
-	err := component.DecodeJSONBody(w, r, &book)
-	if err != nil {
+	body, _ := ioutil.ReadAll(r.Body)
+	fmt.Print(len(body))
+	if len(body) > 0 {
+		fmt.Println("no null")
+
+		middleware.CorsMiddleware(w, r)
+		ctx := r.Context()
+		var item = entity.ItemEntity{}
+		err := component.DecodeJSONBody(w, r, &item)
+		if err != nil {
 				log.Print(err.Error())
 				http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
 		}
-	fmt.Println(book.ID)
-	fmt.Println(book.Title)
-	json.NewEncoder(w).Encode(book)
-	fmt.Println("ok")
+		fmt.Println(item)
+		usecase.ItemCreate(ctx, &item)
+		// json.NewEncoder(w).Encode(item)
+		fmt.Println("ok")
+}
 }

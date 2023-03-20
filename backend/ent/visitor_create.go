@@ -84,6 +84,12 @@ func (vc *VisitorCreate) SetSex(i int) *VisitorCreate {
 	return vc
 }
 
+// SetBillStatus sets the "bill_status" field.
+func (vc *VisitorCreate) SetBillStatus(i int) *VisitorCreate {
+	vc.mutation.SetBillStatus(i)
+	return vc
+}
+
 // AddManagedAccountIDs adds the "managed_accounts" edge to the Account entity by IDs.
 func (vc *VisitorCreate) AddManagedAccountIDs(ids ...int) *VisitorCreate {
 	vc.mutation.AddManagedAccountIDs(ids...)
@@ -219,6 +225,9 @@ func (vc *VisitorCreate) check() error {
 	if _, ok := vc.mutation.Sex(); !ok {
 		return &ValidationError{Name: "sex", err: errors.New(`ent: missing required field "Visitor.sex"`)}
 	}
+	if _, ok := vc.mutation.BillStatus(); !ok {
+		return &ValidationError{Name: "bill_status", err: errors.New(`ent: missing required field "Visitor.bill_status"`)}
+	}
 	return nil
 }
 
@@ -265,6 +274,10 @@ func (vc *VisitorCreate) createSpec() (*Visitor, *sqlgraph.CreateSpec) {
 	if value, ok := vc.mutation.Sex(); ok {
 		_spec.SetField(visitor.FieldSex, field.TypeInt, value)
 		_node.Sex = value
+	}
+	if value, ok := vc.mutation.BillStatus(); ok {
+		_spec.SetField(visitor.FieldBillStatus, field.TypeInt, value)
+		_node.BillStatus = value
 	}
 	if nodes := vc.mutation.ManagedAccountsIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{

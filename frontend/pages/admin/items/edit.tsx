@@ -24,8 +24,8 @@ export const ItemEdit = () => {
   })
 
   const handleOnSubmit: SubmitHandler<Item> = async (item) => {
+    if (!isNaN(item.category_id)) item.category_id = Number(item.category_id);
     console.log(item)
-
     await postItem(item)
       .then((res: any) => {
         console.log(res)
